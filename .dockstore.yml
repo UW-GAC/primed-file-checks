@@ -1,0 +1,7 @@
+version: 1.2
+workflows:
+   - name: data_model_report
+     subclass: WDL
+     primaryDescriptorPath: /anvil_file_report.wdl
+     testParameterFiles:
+         - /anvil_file_report.json
