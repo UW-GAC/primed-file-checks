@@ -1,6 +1,6 @@
 version 1.0
 
-workflow anvil_file_report {
+workflow data_model_report {
     input {
         Map[String, File] table_files
         String model_url
@@ -31,7 +31,7 @@ task results{
     }
 
     command {
-        Rscript /usr/local/primed-file-checks/anvil_file_report.R \
+        Rscript /usr/local/primed-file-checks/data_model_report.R \
             --table_files ${write_map(table_files)} \
             --model_file ${model_url} \
             --out_prefix ${out_prefix}
