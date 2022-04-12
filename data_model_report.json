@@ -1,5 +1,5 @@
 {
-    "table_files": {
+    "data_model_report.table_files": {
         "subject": "HapMap_subject_table.tsv",
         "sample": "HapMap_sample_table.tsv",
         "sample_set": "HapMap_sample_set_table.tsv",
@@ -7,6 +7,6 @@
         "array_dataset": "HapMap_array_dataset_table.tsv",
         "file": "HapMap_file_table.tsv"
     },
-    "model_url": "https://raw.githubusercontent.com/UW-GAC/primed_data_models/main/PRIMED_data_model_draft.tsv",
-    "out_prefix": "HapMap_example"
+    "data_model_report.model_url": "https://raw.githubusercontent.com/UW-GAC/primed_data_models/main/PRIMED_data_model_draft.tsv",
+    "data_model_report.out_prefix": "HapMap_example"
 }
