@@ -15,12 +15,13 @@ workflow data_model_report {
 
     output {
         File file_report = results.file_report
+        Boolean pass_checks = results.pass_checks
     }
 
      meta {
           author: "Stephanie Gogarten"
           email: "sdmorris@uw.edu"
-     }
+    }
 }
 
 task results{
@@ -39,6 +40,7 @@ task results{
 
     output {
         File file_report = "${out_prefix}.html"
+        Boolean pass_checks = read_boolean("pass.txt")
     }
 
     runtime {
