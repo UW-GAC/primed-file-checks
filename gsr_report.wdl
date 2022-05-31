@@ -37,7 +37,7 @@ task results{
 
     command {
         Rscript /usr/local/primed-file-checks/gsr_report.R \
-            --analysis_files ${analysis_file} \
+            --analysis_file ${analysis_file} \
             --file_table_file ${file_table_file} \
             --model_file ${model_url} \
             --out_prefix ${out_prefix}
