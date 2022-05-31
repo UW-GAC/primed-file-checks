@@ -1,0 +1,37 @@
+entity	table	column	type	required	note
+file	data	chromosome	chromosome	TRUE	the chromosome that the variant is located on
+file	data	position	integer	TRUE	the base pair location of the variant
+file	data	rs_id	string		rs Identifier
+file	data	strand	strand	TRUE	DNA strand designation
+file	data	effect_allele	string	TRUE	effect allele of the variant
+file	data	other_allele	string	TRUE	effect allele of the variant
+file	data	effect_allele_freq	float	TRUE	effect allele frequency of the variant
+file	data	p_value	float	TRUE	
+enum	chromosome	1			
+enum	chromosome	2			
+enum	chromosome	3			
+enum	chromosome	4			
+enum	chromosome	5			
+enum	chromosome	6			
+enum	chromosome	7			
+enum	chromosome	8			
+enum	chromosome	9			
+enum	chromosome	10			
+enum	chromosome	11			
+enum	chromosome	12			
+enum	chromosome	13			
+enum	chromosome	14			
+enum	chromosome	15			
+enum	chromosome	16			
+enum	chromosome	17			
+enum	chromosome	18			
+enum	chromosome	19			
+enum	chromosome	20			
+enum	chromosome	21			
+enum	chromosome	22			
+enum	chromosome	X			
+enum	chromosome	Y			
+enum	chromosome	XY			
+enum	chromosome	MT			
+enum	strand	"""+"""			
+enum	strand	"""-"""			

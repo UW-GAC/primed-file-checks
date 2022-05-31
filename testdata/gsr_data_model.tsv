@@ -1,0 +1,22 @@
+entity	table	column	type	required	pk	ref	note
+Table	analysis	primed_gwas_id 	string	TRUE	TRUE		unique identifier for a gwas in primed 
+Table	analysis	gwas_catalog_study_id	string				GWAS catalog study identifier for a GWAS downloaded from GWAS Catalogue
+Table	analysis	pubmed_id	string				Pubmed ID identifier of the publication reporting the GWAS
+Table	analysis	upload_date	date	TRUE			Date on which the GWAS was uploaded to PRIMED data model
+Table	analysis	reported_trait	string	TRUE			"The author-reported trait (e.g. body mass index [BMI], or coronary artery disease) that the GWAS has been developed to predict."
+Table	analysis	outcome_type	outcome_type	TRUE			"Binary, continous, time to event (survival)"
+enum	outcome_type	binary					
+enum	outcome_type	continuous					
+enum	outcome_type	time_to_event					
+Table	analysis	num_variants	integer	TRUE			Total number of variants submitted
+Table	analysis	num_individuals	integer	TRUE			This field describes the number of individuals included in the sample
+Table	analysis	is_meta_analysis	boolean	TRUE			
+Table	file	primed_gwas_id 	string	TRUE		> analysis.primed_gwas_id	
+Table	file	chromosome	string	TRUE			chromsome included in the data file
+Table	file	num_vars	integer	TRUE			Count of variants in the GSR file
+Table	file	file_type	file_type	TRUE			Type of the file
+enum	file_type	data					
+enum	file_type	data_dictionary					
+enum	file_type	readme					
+Table	file	file_path	string	TRUE			File path in cloud storage
+Table	file	md5sum	string	TRUE	TRUE		A valid md5 checksum 

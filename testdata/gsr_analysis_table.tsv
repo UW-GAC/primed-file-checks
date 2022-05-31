@@ -1,0 +1,9 @@
+field	value
+gwas_catalog_study_id	12345
+pubmed_id	11111111
+upload_date	2022-01-01
+reported_trait	coronary artery disease
+outcome_type	binary
+num_variants	999999
+num_individuals	10000
+is_meta_analysis	FALSE
