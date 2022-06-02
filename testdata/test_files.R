@@ -3,13 +3,12 @@ library(dplyr)
 alleles <- c("A", "C", "G", "T")
 chr <- 1:2
 n <- round(runif(length(chr), min=100, max=200))
-files <- paste0("gsr_chr", chr, ".tsv")
+files <- paste0("testdata/gsr_chr", chr, ".tsv")
 
 for (i in 1:length(n)) {
     set.seed(i)
     dat <- tibble(
-        chr=i,
-        num_vars=n[i],
+        chromosome=i,
         position=1:n[i],
         strand=sample(c("+","-"), n[i], replace=TRUE),
         effect_allele=sample(alleles, n[i], replace=TRUE),
@@ -28,4 +27,4 @@ files <- tibble(
     md5sum=openssl::md5(files)
 )
 
-readr::write_tsv(files, "gsr_file.tsv")
+readr::write_tsv(files, "testdata/gsr_file.tsv")

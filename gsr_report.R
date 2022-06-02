@@ -51,8 +51,5 @@ pass <- custom_render_markdown("data_model_report", argv$out_prefix, parameters=
 ## check that files in file table exist?
 ## prepend bucket path to file_path column? (before or after checks?)
 
-## create "data model" from DD?
-## check that data files agree with DD? read first few rows?
-
 writeLines(tolower(as.character(pass)), "pass.txt")
 
