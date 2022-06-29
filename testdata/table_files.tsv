@@ -1,0 +1,5 @@
+subject	testdata/subject.tsv
+sample	testdata/sample.tsv
+sample_set	testdata/sample_set.tsv
+phenotype	testdata/phenotype.tsv
+file	testdata/file.tsv
