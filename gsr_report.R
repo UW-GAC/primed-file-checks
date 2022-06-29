@@ -24,19 +24,17 @@ fv <- readr::read_tsv(argv$analysis_file, col_types="cc")
 # transpose
 analysis <- transpose_field_value(fv, table_name="analysis", model=model)
 
-# add primed_gwas_id
-gwas_id <- hash_id(paste0(analysis$reported_trait,
-                          analysis$outcome_type,
-                          analysis$num_individuals,
-                          analysis$num_variants))
-
-analysis <- dplyr::bind_cols(primed_gwas_id=gwas_id, analysis)
+# add analysis_id
+analysis <- add_auto_columns(analysis, table_name="analysis", model=model)
 
 # read file table
 file <- readr::read_tsv(argv$file_table_file)
 
-# add primed_gwas_id
-file <- dplyr::bind_cols(primed_gwas_id=gwas_id, file)
+# add analysis_id
+file <- dplyr::bind_cols(analysis_id=analysis$analysis_id, file)
+
+# add file_id 
+file <- add_auto_columns(file, table_name="file", model=model)
 
 # write tsv files
 analysis_file <- paste0(argv$out_prefix, "_analysis_table.tsv")

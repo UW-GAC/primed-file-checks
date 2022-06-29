@@ -1,5 +1,5 @@
 entity	table	column	type	required	pk	ref	note
-Table	analysis	primed_gwas_id 	string	TRUE	TRUE		unique identifier for a gwas in primed 
+Table	analysis	analysis_id 	string		TRUE	"from: reported_trait, outcome_type, num_individuals, num_variants"	unique identifier for a gwas in primed 
 Table	analysis	gwas_catalog_study_id	string				GWAS catalog study identifier for a GWAS downloaded from GWAS Catalogue
 Table	analysis	pubmed_id	string				Pubmed ID identifier of the publication reporting the GWAS
 Table	analysis	upload_date	date	TRUE			Date on which the GWAS was uploaded to PRIMED data model
@@ -11,7 +11,8 @@ enum	outcome_type	time_to_event
 Table	analysis	num_variants	integer	TRUE			Total number of variants submitted
 Table	analysis	num_individuals	integer	TRUE			This field describes the number of individuals included in the sample
 Table	analysis	is_meta_analysis	boolean	TRUE			
-Table	file	primed_gwas_id 	string	TRUE		> analysis.primed_gwas_id	
+Table	file	file_id	string			from: md5sum	
+Table	file	analysis_id 	string	TRUE		> analysis.analysis_id	
 Table	file	chromosome	string	TRUE			chromsome included in the data file
 Table	file	num_vars	integer	TRUE			Count of variants in the GSR file
 Table	file	file_type	file_type	TRUE			Type of the file
