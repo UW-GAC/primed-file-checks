@@ -7,6 +7,6 @@
         "array_dataset": "gs://fc-5c335881-c450-4352-b2ba-79809add9f91/HapMap_array_dataset_table.tsv",
         "file": "gs://fc-5c335881-c450-4352-b2ba-79809add9f91/HapMap_file_table.tsv"
     },
-    "data_model_report.model_url": "https://raw.githubusercontent.com/UW-GAC/primed_data_models/main/PRIMED_data_model_draft.tsv",
+    "data_model_report.model_url": "https://raw.githubusercontent.com/UW-GAC/primed_data_models/main/PRIMED_genotype_data_model_v0.tsv",
     "data_model_report.out_prefix": "HapMap_example"
 }
