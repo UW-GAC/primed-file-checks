@@ -22,6 +22,8 @@ The workflows are written in the Workflow Description Language ([WDL](https://do
 
 This workflow checks whether expected tables (both required and optional) are included. For each table, it checks column names, data types, and primary keys. Finally, it checks foreign keys (cross-references across tables). Results of all checks are displayed in an HTML file.
 
+If the data model specifies that any columns be auto-generated from other columns, the workflow returns TSV files with updated tables. The user can then use functions from the AnvilDataModels](https://github.com/UW-GAC/AnvilDataModels) package to import these tables to an AnVIL workspace.
+
 The user must specify the following inputs:
 
 input | description
@@ -35,14 +37,15 @@ The workflow returns the following outputs:
 output | description
 --- | ---
 file_report | An HTML file with check results
+tables | A file array with the tables after adding auto-generated columns. These tables can be imported into an AnVIL workspace as data tables. This output is not generated if no additional columns are specified in the data model.
 pass_checks | a boolean value where 'true' means the set of tables fulfilled the minimum requirements of the data model (all required tables/columns present)
 
 
 ### gsr_report
 
-This workflow performs the same checks as the data_model_report workflow, but first performs some GSR-specific manipulations to the input. The analysis table is supplied in long form as key/value pairs ([example](testdata/gsr_analysis_table.tsv)) rather than wide form. A unique `primed_gwas_id` is added to both the analysis table and the file table to link the analysis and the data files.
+This workflow performs the same checks as the data_model_report workflow, but first performs some GSR-specific manipulations to the input. The analysis table is supplied in long form as key/value pairs ([example](testdata/gsr_analysis_table.tsv)) rather than wide form. A unique `analysis_id` is added to both the analysis table and the file table to link the analysis and the data files.
 
-This workflow returns, in addition to reports, TSV files with the 'analysis' and 'file' tables with the `primed_gwas_id` added. The user can then use functions from the AnvilDataModels](https://github.com/UW-GAC/AnvilDataModels) package to import these tables to an AnVIL workspace.
+This workflow returns, in addition to reports, TSV files with the 'analysis' and 'file' tables with the `analysis_id` added. The user can then use functions from the AnvilDataModels](https://github.com/UW-GAC/AnvilDataModels) package to import these tables to an AnVIL workspace.
 
 The user must specify the following inputs:
 
@@ -58,7 +61,7 @@ The workflow returns the following outputs:
 output | description
 --- | ---
 file_report | An HTML file with check results
-table | A file array with the analysis and file tables after adding the `primed_gwas_id`. These tables can be imported into an AnVIL workspace as data tables.
+tables | A file array with the analysis and file tables after adding the `analysis_id`. These tables can be imported into an AnVIL workspace as data tables.
 pass_checks | a boolean value where 'true' means the set of tables fulfilled the minimum requirements of the data model (all required tables/columns present)
 
 
