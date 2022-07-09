@@ -72,8 +72,7 @@ rand_string <- function(x) {
 filename <- sapply(1:2, function(x) rand_string(6))
 file <- tibble(
     md5sum = sapply(1:4, function(x) rand_string(32)),
-    sample_set_id = rep(c("set1", "set2"), each=2),
-    filename = paste0(rep(filename, each=2), rep(c(".vcf.gz", ".vcf.gz.tbi"), length(filename)))
+    file_path = paste0("gs://fc-8ce226a8-7d00-41b7-a315-5bd2fd521659/", paste0(rep(filename, each=2), rep(c(".vcf.gz", ".vcf.gz.tbi"), length(filename))))
 )
 
 write_tsv(subject, "testdata/subject.tsv")

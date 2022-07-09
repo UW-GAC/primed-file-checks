@@ -5,6 +5,11 @@ workflows:
      primaryDescriptorPath: /data_model_report.wdl
      testParameterFiles:
          - /data_model_report.json
+   - name: genotype_report
+     subclass: WDL
+     primaryDescriptorPath: /genotype_report.wdl
+     testParameterFiles:
+         - /genotype_report.json
    - name: gsr_report
      subclass: WDL
      primaryDescriptorPath: /gsr_report.wdl

@@ -19,11 +19,16 @@ Table	sample	age_at_sample_collection	integer				age of subject when sample was 
 Table	sample	date_of_sample_processing	date				date sample was processed in the lab
 Table	sample_set	sample_set_id	string	TRUE	TRUE		identifier for sample set
 Table	sample_set	sample_id	string	TRUE		> sample.sample_id	
-Table	file	file_id	string		TRUE	from: md5sum	
-Table	file	md5sum	string	TRUE			md5 checksum
-Table	file	sample_set_id	string	TRUE		> sample_set.sample_set_id	
-Table	file	filename	string	TRUE			name of file
+Table	array_dataset	array_dataset_id	string		TRUE	"from: sample_set_id, array_name, reference_assembly"	
+Table	array_dataset	sample_set_id	string	TRUE		> sample_set.sample_set_id	
+Table	array_dataset	array_name	string	TRUE			name of array
+Table	array_dataset	reference_assembly	string	TRUE			reference genome build
+Table	array_file	file_id	string		TRUE	from: md5sum	
+Table	array_file	md5sum	string	TRUE			md5 checksum
+Table	array_file	array_dataset_id	string	TRUE		> array_dataset.array_dataset_id	
+Table	array_file	file_path	string	TRUE			path to file
 meta	subject			TRUE			
 meta	sample			TRUE			
 meta	sample_set			TRUE			
-meta	file			TRUE			
+meta	array_dataset						
+meta	array_file						

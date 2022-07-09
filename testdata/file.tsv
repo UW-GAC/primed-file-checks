@@ -1,5 +1,5 @@
-md5sum	sample_set_id	filename
-og03evtk1iwzks1u9vy3uufjxgnljyb8	set1	2lti82.vcf.gz
-7040p9xutk6n16295vge45rm3b1c62ti	set1	2lti82.vcf.gz.tbi
-jg1ryjisocvt7wqrsq3jj7dyz6vsfy3y	set2	p1e1br.vcf.gz
-bikf4enajlvadcet7w9ti0c4rj6tf2d0	set2	p1e1br.vcf.gz.tbi
+md5sum	file_path
+xreu99r0ms5p2qiuh2amneipz62y5qnf	gs://fc-8ce226a8-7d00-41b7-a315-5bd2fd521659/2lti82.vcf.gz
+p4735fv4fto7wlzabx7y1n7b450j1je8	gs://fc-8ce226a8-7d00-41b7-a315-5bd2fd521659/2lti82.vcf.gz.tbi
+nn168z45q039tkqiqm4aq61b4hpcmla3	gs://fc-8ce226a8-7d00-41b7-a315-5bd2fd521659/p1e1br.vcf.gz
+4fpjgiycr1o2typx6vztou7yank1r79t	gs://fc-8ce226a8-7d00-41b7-a315-5bd2fd521659/p1e1br.vcf.gz.tbi
