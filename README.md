@@ -41,9 +41,37 @@ tables | A file array with the tables after adding auto-generated columns. These
 pass_checks | a boolean value where 'true' means the set of tables fulfilled the minimum requirements of the data model (all required tables/columns present)
 
 
+### genotype_report
+
+This workflow is a version of the data model report specific to the PRIMED genotype data model. A dataset table is supplied in long form as key/value pairs ([example](testdata/dataset.tsv)) rather than wide form. The dataset_type parameter defines whether the dataset will be added to the array_dataset, imputation_dataset, or sequencing_dataset table. A unique `<type>_dataset_id` is added to both the dataset table and the file table to link the dataset and the data files.
+
+This workflow returns, in addition to reports, TSV files with the '<type>_dataset' and '<type>_file' tables with the `<type>_dataset_id` added. The user can then use functions from the AnvilDataModels](https://github.com/UW-GAC/AnvilDataModels) package to import these tables to an AnVIL workspace.
+
+The user must specify the following inputs:
+
+input | description
+--- | ---
+subject_file | Google bucket path to a TSV file with contents of the 'subject' table.
+sample_file | Google bucket path to a TSV file with contents of the 'sample' table.
+sample_set_file | Google bucket path to a TSV file with contents of the 'sample_set' table.
+dataset_type | The type of dataset; one of 'array', 'imputation', or 'sequencing'.
+dataset_file | Google bucket path to a TSV file with two columns: `field` and `value`, where the fields correspond to fields in the <type>_dataset table. 
+file_table_file | Google bucket path to a TSV file with contents of the '<type>_file' table.
+model_url | A URL providing the path to the data model in TSV format.
+out_prefix | A prefix for the resulting HTML report.
+
+The workflow returns the following outputs:
+
+output | description
+--- | ---
+file_report | An HTML file with check results
+tables | A file array with the tables after adding auto-generated columns. These tables can be imported into an AnVIL workspace as data tables. This output is not generated if no additional columns are specified in the data model.
+pass_checks | a boolean value where 'true' means the set of tables fulfilled the minimum requirements of the data model (all required tables/columns present)
+
+
 ### gsr_report
 
-This workflow performs the same checks as the data_model_report workflow, but first performs some GSR-specific manipulations to the input. The analysis table is supplied in long form as key/value pairs ([example](testdata/gsr_analysis_table.tsv)) rather than wide form. A unique `analysis_id` is added to both the analysis table and the file table to link the analysis and the data files.
+This workflow is a version of the data model report specific to the PRIMED Genomic Summary Results (GSR) data model. The analysis table is supplied in long form as key/value pairs ([example](testdata/gsr_analysis_table.tsv)) rather than wide form. A unique `analysis_id` is added to both the analysis table and the file table to link the analysis and the data files.
 
 This workflow returns, in addition to reports, TSV files with the 'analysis' and 'file' tables with the `analysis_id` added. The user can then use functions from the AnvilDataModels](https://github.com/UW-GAC/AnvilDataModels) package to import these tables to an AnVIL workspace.
 
