@@ -1,6 +1,6 @@
 version 1.0
 
-workflow data_model_report {
+workflow genotype_report {
     input {
         File subject_file
         File sample_file
