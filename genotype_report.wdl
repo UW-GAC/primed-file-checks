@@ -53,7 +53,7 @@ task results{
             --sample_file ${sample_file} \
             --sample_set_file ${sample_set_file} \
             --dataset_type ${dataset_type} \
-            --dataset_file ${dataset_file}
+            --dataset_file ${dataset_file} \
             --file_table_file ${file_table_file} \
             --model_file ${model_url} \
             --out_prefix ${out_prefix}
