@@ -12,14 +12,14 @@ argp <- add_argument(argp, "--model_file", help="tsv file with data model")
 argp <- add_argument(argp, "--out_prefix", help="output prefix")
 argv <- parse_args(argp)
 
-argv <- list(subject_file="testdata/subject.tsv",
-             sample_file="testdata/sample.tsv",
-             sample_set_file="testdata/sample_set.tsv",
-             dataset_type="array",
-             dataset_file="testdata/dataset.tsv",
-             file_table_file="testdata/file.tsv",
-             model_file="testdata/data_model.tsv",
-             out_prefix="test")
+# argv <- list(subject_file="testdata/subject.tsv",
+#              sample_file="testdata/sample.tsv",
+#              sample_set_file="testdata/sample_set.tsv",
+#              dataset_type="array",
+#              dataset_file="testdata/dataset.tsv",
+#              file_table_file="testdata/file.tsv",
+#              model_file="testdata/data_model.tsv",
+#              out_prefix="test")
 
 stopifnot(argv$dataset_type %in% c("array", "imputation", "sequencing"))
 dataset_table_name <- paste0(argv$dataset_type, "_dataset")
