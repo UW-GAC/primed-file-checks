@@ -60,3 +60,11 @@ tables <- setNames(c(argv$subject_file, argv$sample_file, argv$sample_set_file,
 params <- list(tables=tables, model=argv$model_file)
 pass <- custom_render_markdown("data_model_report", argv$out_prefix, parameters=params)
 writeLines(tolower(as.character(pass)), "pass.txt")
+
+# write tsv with set of tables to import to workspace
+if (pass) {
+    table_files <- tibble(table=names(tables), file=tables)
+    out_file <- paste0(argv$out_prefix, "_files_to_import.tsv")
+    readr::write_tsv(table_files, out_file, col_names=FALSE)
+}
+
