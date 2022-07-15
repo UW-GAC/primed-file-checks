@@ -64,7 +64,7 @@ task results{
         File file_report = "${out_prefix}.html"
         Boolean pass_checks = read_boolean("pass.txt")
         Array[File]? tables = glob("*_table.tsv")
-        File? table_list = glob("*_files_to_import.tsv")
+        File? table_list = "${out_prefix}_files_to_import.tsv"
     }
 
     runtime {
