@@ -1,10 +1,10 @@
 {
-    "genotype_report.subject_file": "gs://fc-8ce226a8-7d00-41b7-a315-5bd2fd521659/subject.tsv",
-    "genotype_report.sample_file": "gs://fc-8ce226a8-7d00-41b7-a315-5bd2fd521659/sample.tsv",
-    "genotype_report.sample_set_file": "gs://fc-8ce226a8-7d00-41b7-a315-5bd2fd521659/sample_set.tsv",
+    "genotype_report.subject_file": "gs://fc-1f60889a-6c08-4ced-bafd-7a07c230d394/subject.tsv",
+    "genotype_report.sample_file": "gs://fc-1f60889a-6c08-4ced-bafd-7a07c230d394/sample.tsv",
+    "genotype_report.sample_set_file": "gs://fc-1f60889a-6c08-4ced-bafd-7a07c230d394/sample_set.tsv",
     "genotype_report.dataset_type": "array",
-    "genotype_report.dataset_file": "gs://fc-8ce226a8-7d00-41b7-a315-5bd2fd521659/dataset.tsv",
-    "genotype_report.file_table_file": "gs://fc-8ce226a8-7d00-41b7-a315-5bd2fd521659/file.tsv",
+    "genotype_report.dataset_file": "gs://fc-1f60889a-6c08-4ced-bafd-7a07c230d394/dataset.tsv",
+    "genotype_report.file_table_file": "gs://fc-1f60889a-6c08-4ced-bafd-7a07c230d394/file.tsv",
     "genotype_report.model_url": "https://raw.githubusercontent.com/UW-GAC/primed-file-checks/main/testdata/data_model.tsv",
     "genotype_report.out_prefix": "test"
 }
