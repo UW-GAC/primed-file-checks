@@ -27,7 +27,6 @@ workflow genotype_report {
         File file_report = results.file_report
         Boolean pass_checks = results.pass_checks
         Array[File]? tables = results.tables
-        File? table_list = results.table_list
     }
 
      meta {
@@ -64,7 +63,6 @@ task results{
         File file_report = "${out_prefix}.html"
         Boolean pass_checks = read_boolean("pass.txt")
         Array[File]? tables = glob("*_table.tsv")
-        File? table_list = "${out_prefix}_files_to_import.tsv"
     }
 
     runtime {
