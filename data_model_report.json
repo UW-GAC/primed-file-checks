@@ -1,12 +1,12 @@
 {
     "data_model_report.table_files": {
-        "subject": "gs://fc-5c335881-c450-4352-b2ba-79809add9f91/HapMap_subject_table.tsv",
-        "sample": "gs://fc-5c335881-c450-4352-b2ba-79809add9f91/HapMap_sample_table.tsv",
-        "sample_set": "gs://fc-5c335881-c450-4352-b2ba-79809add9f91/HapMap_sample_set_table.tsv",
-        "dataset": "gs://fc-5c335881-c450-4352-b2ba-79809add9f91/HapMap_dataset_table.tsv",
-        "array_dataset": "gs://fc-5c335881-c450-4352-b2ba-79809add9f91/HapMap_array_dataset_table.tsv",
-        "file": "gs://fc-5c335881-c450-4352-b2ba-79809add9f91/HapMap_file_table.tsv"
+        "subject": "gs://fc-1f60889a-6c08-4ced-bafd-7a07c230d394/subject.tsv",
+        "phenotype": "gs://fc-1f60889a-6c08-4ced-bafd-7a07c230d394/phenotype.tsv",
+        "sample": "gs://fc-1f60889a-6c08-4ced-bafd-7a07c230d394/sample.tsv",
+        "sample_set": "gs://fc-1f60889a-6c08-4ced-bafd-7a07c230d394/sample_set.tsv",
+        "array_dataset": "gs://fc-1f60889a-6c08-4ced-bafd-7a07c230d394/dataset.tsv",
+        "array_file": "gs://fc-1f60889a-6c08-4ced-bafd-7a07c230d394/file.tsv"
     },
-    "data_model_report.model_url": "https://raw.githubusercontent.com/UW-GAC/primed_data_models/main/PRIMED_genotype_data_model_v0.tsv",
-    "data_model_report.out_prefix": "HapMap_example"
+    "data_model_report.model_url": "https://raw.githubusercontent.com/UW-GAC/primed-file-checks/main/testdata/data_model.tsv",
+    "data_model_report.out_prefix": "test"
 }
