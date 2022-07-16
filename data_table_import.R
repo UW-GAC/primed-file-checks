@@ -30,7 +30,7 @@ tables <- read_data_tables(table_files$files, table_names=table_files$names)
 # identify set tables
 set_flag <- grepl("_set$", table_files$names)
 sets <- table_files$names[set_flag]
-not_sets <- !table_files$names[set_flag]
+not_sets <- table_files$names[!set_flag]
 
 # must write sets after other tables
 for (t in not_sets) {
