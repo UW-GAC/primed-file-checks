@@ -20,3 +20,8 @@ workflows:
      primaryDescriptorPath: /data_dictionary_report.wdl
      testParameterFiles:
          - /data_dictionary_report.json
+   - name: data_table_import
+     subclass: WDL
+     primaryDescriptorPath: /data_table_import.wdl
+     testParameterFiles:
+         - /data_table_import.json
