@@ -35,7 +35,8 @@ fv <- readr::read_tsv(argv$dataset_file, col_types="cc")
 dataset <- transpose_field_value(fv, table_name=dataset_table_name, model=model)
 
 # add dataset_id
-dataset <- add_auto_columns(dataset, table_name=dataset_table_name, model=model)
+dataset <- add_auto_columns(dataset, table_name=dataset_table_name, model=model,
+                            error_on_missing=FALSE)
 
 # read file table
 file <- readr::read_tsv(argv$file_table_file)
@@ -44,7 +45,8 @@ file <- readr::read_tsv(argv$file_table_file)
 file[[paste0(dataset_table_name, "_id")]] <- dataset[[paste0(dataset_table_name, "_id")]]
 
 # add file_id 
-file <- add_auto_columns(file, table_name=file_table_name, model=model)
+file <- add_auto_columns(file, table_name=file_table_name, model=model,
+                         error_on_missing=FALSE)
 
 # write tsv files
 dataset_file <- paste0(argv$out_prefix, "_dataset_table.tsv")
