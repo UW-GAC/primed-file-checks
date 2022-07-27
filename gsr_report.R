@@ -25,8 +25,8 @@ fv <- readr::read_tsv(argv$analysis_file, col_types="cc")
 analysis <- transpose_field_value(fv, table_name="analysis", model=model)
 
 # add analysis_id
-analysis <- add_auto_columns(analysis, table_name="analysis", model=model,
-                             error_on_missing=FALSE)
+analysis_id <- hash_id(paste(analysis, collapse=""))
+analysis <- dplyr::bind_cols(analysis_id=analysis_id, analysis)
 
 # read file table
 file <- readr::read_tsv(argv$file_table_file)
