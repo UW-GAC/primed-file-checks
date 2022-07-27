@@ -8,9 +8,8 @@ Data uploaded to PRIMED workspaces should conform to the [PRIMED data model](htt
 
 ### Docker
 
-The Dockerfile creates a docker image containing the AnvilDataModels R package and R script to generate the report. The
-image is available on Docker Hub as
-[uwgac/anvildatamodels](https://hub.docker.com/r/uwgac/anvildatamodels).
+The Dockerfile creates a docker image containing the AnvilDataModels R package and R script to generate the report. This image is built in layers, starting from an AnVIL-maintained image with the Bioconductor "AnVIL" package installed. The first layer contains the AnVILDataModels R package and is available at [uwgac/anvildatamodels](https://hub.docker.com/r/uwgac/anvildatamodels). The second layer contains the R scripts in this repository and is available on Docker Hub as
+[uwgac/primed-file-checks](https://hub.docker.com/r/uwgac/primed-file-checks).
 
 ### WDL
 
