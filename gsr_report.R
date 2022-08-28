@@ -45,7 +45,7 @@ file_file <- paste0(argv$out_prefix, "_file_table.tsv")
 readr::write_tsv(file, file_file)
 
 # check tsv files (analysis and file) against data model
-params <- list(tables=c(analysis=analysis_file, file=file_file), model=argv$model_file)
+params <- list(tables=c(analysis=analysis_file, gsr_file=file_file), model=argv$model_file)
 pass <- custom_render_markdown("data_model_report", argv$out_prefix, parameters=params)
 
 ## check that files in file table exist?
