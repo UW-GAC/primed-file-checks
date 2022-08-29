@@ -35,7 +35,7 @@ file <- readr::read_tsv(argv$file_table_file)
 file <- dplyr::bind_cols(analysis_id=analysis$analysis_id, file)
 
 # add file_id 
-file <- add_auto_columns(file, table_name="file", model=model,
+file <- add_auto_columns(file, table_name="gsr_file", model=model,
                          error_on_missing=FALSE)
 
 # write tsv files
