@@ -1,6 +1,6 @@
 subject_id	consent_code	study_nickname	dbgap_submission	reported_sex
-subject1	GRU	study	FALSE	F
-subject2	GRU	study	FALSE	F
+subject1	GRU	study	TRUE	F
+subject2	GRU	study	TRUE	F
 subject3	GRU	study	FALSE	F
 subject4	GRU	study	FALSE	F
 subject5	GRU	study	FALSE	M

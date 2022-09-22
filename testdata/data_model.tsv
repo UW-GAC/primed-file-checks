@@ -3,6 +3,7 @@ Table	subject	subject_id	string	TRUE	TRUE		Subject/Participant's Identifier with
 Table	subject	consent_code	string	TRUE			consent abbreviation
 Table	subject	study_nickname	string				short name for study
 Table	subject	dbgap_submission	boolean				Flag if subject has been submitted to dbGaP
+Table	subject	dbgap_subject_id	string	CONDITIONAL (dbgap_submission = TRUE)			subject identifier used by dbGaP
 Table	subject	reported_sex	sex	TRUE			reported sex
 enum	sex	F					
 enum	sex	M					
@@ -31,4 +32,4 @@ meta	subject			TRUE
 meta	sample			TRUE			
 meta	sample_set			TRUE			
 meta	array_dataset						
-meta	array_file						
+meta	array_file			CONDITIONAL (array_dataset)			

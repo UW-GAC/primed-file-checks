@@ -41,7 +41,7 @@ subject <- tibble(
     subject_id = paste0("subject", 1:n),
     consent_code = rep("GRU", n),
     study_nickname = rep("study", n),
-    dbgap_submission = rep(FALSE, n),
+    dbgap_submission = c(rep(TRUE, 2), rep(FALSE, n-2)),
     reported_sex = sample(c("F", "M", "X"), n, replace=TRUE)
 )
 

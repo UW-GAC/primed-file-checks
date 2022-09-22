@@ -1,23 +1,22 @@
 version 1.0
 
-workflow gsr_report {
+workflow gsr_data_report {
     input {
-        File analysis_file
-        File file_table_file
-        String model_url
+        File data_file
+        String dd_url
+        String analysis_file
         String out_prefix
     }
 
     call results {
-        input: analysis_file = analysis_file,
-               file_table_file = file_table_file,
-               model_url = model_url,
+        input: data_file = data_file,
+               dd_url = dd_url,
+               analysis_file = analysis_file,
                out_prefix = out_prefix
     }
 
     output {
         File file_report = results.file_report
-        Array[File] tables = results.tables
         Boolean pass_checks = results.pass_checks
     }
 
@@ -29,23 +28,22 @@ workflow gsr_report {
 
 task results{
     input {
-        File analysis_file
-        File file_table_file
-        String model_url
+        File data_file
+        String dd_url
+        String analysis_file
         String out_prefix
     }
 
     command {
-        Rscript /usr/local/primed-file-checks/gsr_report.R \
+        Rscript /usr/local/primed-file-checks/data_dictionary_report.R \
+            --data_file ${data_file} \
+            --dd_file ${dd_url} \
             --analysis_file ${analysis_file} \
-            --file_table_file ${file_table_file} \
-            --model_file ${model_url} \
             --out_prefix ${out_prefix}
     }
 
     output {
-        File file_report = "${out_prefix}.html"
-        Array[File] tables = glob("*_table.tsv")
+        File file_report = "${out_prefix}.txt"
         Boolean pass_checks = read_boolean("pass.txt")
     }
 
