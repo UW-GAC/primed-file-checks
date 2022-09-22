@@ -15,7 +15,7 @@ workflows:
      primaryDescriptorPath: /gsr_report.wdl
      testParameterFiles:
          - /gsr_report.json
-   - name: gsr_report
+   - name: gsr_data_report
      subclass: WDL
      primaryDescriptorPath: /gsr_data_report.wdl
      testParameterFiles:
