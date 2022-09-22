@@ -10,14 +10,16 @@ enum	outcome_type	continuous
 enum	outcome_type	time_to_event					
 Table	analysis	num_variants	integer	TRUE			Total number of variants submitted
 Table	analysis	num_individuals	integer	TRUE			This field describes the number of individuals included in the sample
+Table	analysis	num_case	integer	CONDITIONAL (outcome_type = binary)			
+Table	analysis	num_ctrl	integer	CONDITIONAL (outcome_type = binary)			
 Table	analysis	is_meta_analysis	boolean	TRUE			
-Table	file	file_id	string			from: md5sum	
-Table	file	analysis_id 	string	TRUE		> analysis.analysis_id	
-Table	file	chromosome	string	TRUE			chromsome included in the data file
-Table	file	num_vars	integer	TRUE			Count of variants in the GSR file
-Table	file	file_type	file_type	TRUE			Type of the file
+Table	gsr_file	file_id	string			from: md5sum	
+Table	gsr_file	analysis_id 	string	TRUE		> analysis.analysis_id	
+Table	gsr_file	chromosome	string	TRUE			chromsome included in the data file
+Table	gsr_file	num_vars	integer	TRUE			Count of variants in the GSR file
+Table	gsr_file	file_type	file_type	TRUE			Type of the file
 enum	file_type	data					
 enum	file_type	data_dictionary					
 enum	file_type	readme					
-Table	file	file_path	string	TRUE			File path in cloud storage
-Table	file	md5sum	string	TRUE	TRUE		A valid md5 checksum 
+Table	gsr_file	file_path	string	TRUE			File path in cloud storage
+Table	gsr_file	md5sum	string	TRUE	TRUE		A valid md5 checksum 

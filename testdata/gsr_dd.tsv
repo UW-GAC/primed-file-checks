@@ -7,6 +7,7 @@ Table	data	effect_allele	string	TRUE	effect allele of the variant
 Table	data	other_allele	string	TRUE	effect allele of the variant		
 Table	data	effect_allele_freq	float	TRUE	effect allele frequency of the variant		
 Table	data	p_value	float	TRUE			
+Table	data	odds_ratio	float	CONDITIONAL (outcome_type = binary)			
 enum	chromosome	1					
 enum	chromosome	2					
 enum	chromosome	3					

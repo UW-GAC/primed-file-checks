@@ -112,6 +112,27 @@ file_report | An HTML file with check results
 pass_checks | a boolean value where 'true' means the data file fulfilled the minimum requirements of the data dictionary (all required columns present)
 
 
+### gsr_data_report
+
+This workflow is a version of the data dictionary report specific to the PRIMED Genomic Summary Results (GSR) data model. It includes checking conditional fields depending on values in the analysis table.
+
+The user must specify the following inputs:
+
+input | description
+--- | ---
+data_file | Google bucket path to a TSV data file.
+dd_url | A URL providing the path to the data dictionary in TSV format.
+analysis_file | Google bucket path to the TSV file containing the analysis data table, output by gsr_report.
+out_prefix | A prefix for the resulting HTML report.
+
+The workflow returns the following outputs:
+
+output | description
+--- | ---
+file_report | An HTML file with check results
+pass_checks | a boolean value where 'true' means the data file fulfilled the minimum requirements of the data dictionary (all required columns present)
+
+
 ### data_table_import
 
 This workflow imports TSV files into AnVIL data tables. It does the same checks as data_model_report before import, and fails if minimum checks are not passed.
