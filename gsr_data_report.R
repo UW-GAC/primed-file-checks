@@ -8,10 +8,10 @@ argp <- add_argument(argp, "--analysis_file", help="tsv file with analysis table
 argp <- add_argument(argp, "--out_prefix", help="output prefix")
 argv <- parse_args(argp)
 
-argv <- list(data_file="testdata/gsr_chr1.tsv",
-             dd_file="testdata/gsr_dd.tsv",
-             analysis_file="test_analysis_table.tsv",
-             out_prefix="test")
+# argv <- list(data_file="testdata/gsr_chr1.tsv",
+#              dd_file="testdata/gsr_dd.tsv",
+#              analysis_file="test_analysis_table.tsv",
+#              out_prefix="test")
 
 # read 1000 rows for checking data against expected type
 dat <- readr::read_tsv(argv$data_file, n_max=1000)
