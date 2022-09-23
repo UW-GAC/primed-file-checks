@@ -4,7 +4,7 @@ workflow gsr_data_report {
     input {
         File data_file
         String dd_url
-        String analysis_file
+        File analysis_file
         String out_prefix
     }
 
@@ -30,7 +30,7 @@ task results{
     input {
         File data_file
         String dd_url
-        String analysis_file
+        File analysis_file
         String out_prefix
     }
 
