@@ -35,7 +35,7 @@ task results{
     }
 
     command {
-        Rscript /usr/local/primed-file-checks/data_dictionary_report.R \
+        Rscript /usr/local/primed-file-checks/gsr_data_report.R \
             --data_file ${data_file} \
             --dd_file ${dd_url} \
             --analysis_file ${analysis_file} \
