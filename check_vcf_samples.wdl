@@ -66,9 +66,9 @@ task compare_sample_sets {
         workspace_namespace <- '${workspace_namespace}'
         stopifnot(dataset_type %in% c('array', 'imputation', 'sequencing')); \
         dataset_table <- AnVIL::avtable(paste0(dataset_type, '_dataset'), name=workspace_name, namespace=workspace_namespace); \
-        sample_set_id <- dataset_table$sample_set_id[dataset_table[[paste0(dataset_type, '_dataset_id')]] == dataset_id]; \
+        sample_set_id <- dataset_table[['sample_set_id']][dataset_table[[paste0(dataset_type, '_dataset_id')]] == dataset_id]; \
         sample_set <- AnVIL::avtable('sample_set', name=workspace_name, namespace=workspace_namespace); \
-        samples <- sample_set[['samples.items']][sample_set$sample_set_id == sample_set_id][[1]]$entityName; \
+        samples <- sample_set[['samples.items']][sample_set[['sample_set_id']] == sample_set_id][[1]][['entityName']]; \
         vcf_samples <- readLines('${sample_file}'); \
         if (setequal(samples, vcf_samples)) status <- 'PASS' else status <- 'FAIL'; \
         cat(status, file='status.txt') \
