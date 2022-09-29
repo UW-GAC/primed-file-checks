@@ -1,0 +1,81 @@
+version 1.0
+
+workflow check_vcf_samples {
+    input {
+        File vcf_file
+        String dataset_id
+        String dataset_type
+        String workspace_name
+        String workspace_namespace
+    }
+
+    call vcf_samples {
+        input: vcf_file = vcf_file
+    }
+
+    call compare_sample_sets {
+        input: sample_file = vcf_samples.sample_file,
+               dataset_id = dataset_id,
+               dataset_type = dataset_type,
+               workspace_name = workspace_name,
+               workspace_namespace = workspace_namespace
+    }
+
+    output {
+        String check_status = compare_sample_sets.check_status
+    }
+
+     meta {
+          author: "Stephanie Gogarten"
+          email: "sdmorris@uw.edu"
+     }
+}
+
+task vcf_samples {
+    input {
+        File vcf_file
+    }
+
+    command {
+        bcftools query --list-samples ${vcf_file} > samples.txt
+    }
+
+    output {
+        File sample_file = "samples.txt"
+    }
+
+    runtime {
+        docker: "xbrianh/xsamtools:v0.5.2"
+    }
+}
+
+task compare_sample_sets {
+    input {
+        File sample_file
+        String dataset_id
+        String dataset_type
+        String workspace_name
+        String workspace_namespace
+    }
+
+    command {
+        Rscript -e "\
+        stopifnot(${dataset_type} %in% c("array", "imputation", "sequencing")); \
+        dataset_table <- AnVIL::avtable(paste0(${dataset_type}, "_dataset"), name=${workspace_name}, namespace=${workspace_namespace}); \
+        sample_set_id <- dataset_table$sample_set_id[dataset_table[[paste0(${dataset_type}, "_dataset_id")]] == ${dataset_id}]; \
+        sample_set <- AnVIL::avtable("sample_set", name=${workspace_name}, namespace=${workspace_namespace}); \
+        samples <- sample_set$samples.items[sample_set$sample_set_id == sample_set_id][[1]]$entityName; \
+        vcf_samples <- readLines('${sample_file}'); \
+        if (setequal(samples, vcf_samples)) status <- 'PASS' else status <- 'FAIL'; \
+        cat(status, file='status.txt') \
+        "
+    }
+
+    output {
+        String check_status = read_string("status.txt")
+    }
+
+    runtime {
+        docker: "us.gcr.io/anvil-gcr-public/anvil-rstudio-bioconductor-devel:3.15.0"
+    }
+}
