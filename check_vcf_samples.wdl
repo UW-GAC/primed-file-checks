@@ -60,10 +60,10 @@ task compare_sample_sets {
 
     command {
         Rscript -e "\
-        dataset_id <- '${dataset_id}'
-        dataset_type <- '${dataset_type}'
-        workspace_name <- '${workspace_name}'
-        workspace_namespace <- '${workspace_namespace}'
+        dataset_id <- '${dataset_id}'; \
+        dataset_type <- '${dataset_type}'; \
+        workspace_name <- '${workspace_name}'; \
+        workspace_namespace <- '${workspace_namespace}'; \
         stopifnot(dataset_type %in% c('array', 'imputation', 'sequencing')); \
         dataset_table <- AnVIL::avtable(paste0(dataset_type, '_dataset'), name=workspace_name, namespace=workspace_namespace); \
         sample_set_id <- dataset_table[['sample_set_id']][dataset_table[[paste0(dataset_type, '_dataset_id')]] == dataset_id]; \
