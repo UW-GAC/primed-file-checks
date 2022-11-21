@@ -1,3 +1,0 @@
-FROM us.gcr.io/anvil-gcr-public/anvil-rstudio-bioconductor-devel:3.15.0
-    
-RUN Rscript -e 'remotes::install_github("cynkra/dm", ref="v0.3.0")'
