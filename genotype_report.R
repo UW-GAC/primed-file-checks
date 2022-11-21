@@ -8,7 +8,7 @@ argp <- add_argument(argp, "--sample_set_file", help="tsv file with sample set t
 argp <- add_argument(argp, "--dataset_type", help="type of dataset (array, imputation, sequencing)")
 argp <- add_argument(argp, "--dataset_file", help="tsv file with dataset table entry as field,value")
 argp <- add_argument(argp, "--file_table_file", help="tsv file with file table")
-argp <- add_argument(argp, "--model_file", help="tsv file with data model")
+argp <- add_argument(argp, "--model_file", help="json file with data model")
 argp <- add_argument(argp, "--out_prefix", help="output prefix")
 argv <- parse_args(argp)
 
@@ -18,7 +18,7 @@ argv <- parse_args(argp)
 #              dataset_type="array",
 #              dataset_file="testdata/dataset.tsv",
 #              file_table_file="testdata/file.tsv",
-#              model_file="testdata/data_model.tsv",
+#              model_file="testdata/data_model.json",
 #              out_prefix="test")
 
 stopifnot(argv$dataset_type %in% c("array", "imputation", "sequencing"))
@@ -26,7 +26,7 @@ dataset_table_name <- paste0(argv$dataset_type, "_dataset")
 file_table_name <- paste0(argv$dataset_type, "_file")
 
 # read data model
-model <- tsv_to_dm(argv$model_file)
+model <- json_to_dm(argv$model_file)
 
 # read dataset field,value pairs
 fv <- readr::read_tsv(argv$dataset_file, col_types="cc")

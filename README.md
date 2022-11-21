@@ -35,7 +35,7 @@ sample_set_file | Google bucket path to a TSV file with contents of the 'sample_
 dataset_type | The type of dataset; one of 'array', 'imputation', or 'sequencing'.
 dataset_file | Google bucket path to a TSV file with two columns: `field` and `value`, where the fields correspond to fields in the <type>_dataset table. 
 file_table_file | Google bucket path to a TSV file with contents of the '<type>_file' table.
-model_url | A URL providing the path to the data model in TSV format.
+model_url | A URL providing the path to the data model in JSON format.
 out_prefix | A prefix for the resulting HTML report.
 
 The workflow returns the following outputs:
@@ -59,7 +59,7 @@ input | description
 --- | ---
 analysis_file | Google bucket path to a TSV file with two columns: `field` and `value`, where the fields correspond to fields in the analysis table of the PRIMED GSR data model. 
 file_table_file | Google bucket path to a TSV file with contents of the 'file' table.
-model_url | A URL providing the path to the data model in TSV format.
+model_url | A URL providing the path to the data model in JSON format.
 out_prefix | A prefix for the resulting HTML report.
 
 The workflow returns the following outputs:
@@ -80,7 +80,7 @@ The user must specify the following inputs:
 input | description
 --- | ---
 data_file | Google bucket path to a TSV data file.
-dd_url | A URL providing the path to the data dictionary in TSV format.
+dd_url | A URL providing the path to the data dictionary in JSON format.
 analysis_file | Google bucket path to the TSV file containing the analysis data table, output by gsr_report.
 out_prefix | A prefix for the resulting HTML report.
 

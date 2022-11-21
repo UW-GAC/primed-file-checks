@@ -1,0 +1,124 @@
+{
+    "name": "test data model",
+    "description": "test data model",
+    "version": "0",
+    "tables": [
+    {
+        "table": "analysis",
+        "columns": [
+        {
+            "column": "analysis_id",
+            "primary_key": true,
+            "description": "unique identifier for a gwas in primed",
+            "data_type": "string",
+            "references": "from: reported_trait, outcome_type, num_individuals, num_variants"
+        },
+        {
+            "column": "gwas_catalog_study_id",
+            "description": "GWAS catalog study identifier for a GWAS downloaded from GWAS Catalogue",
+            "data_type": "string"
+        },
+        {
+            "column": "pubmed_id",
+            "description": "Pubmed ID identifier of the publication reporting the GWAS",
+            "data_type": "string"
+        },
+        {
+            "column": "upload_date",
+            "required": true,
+            "description": "Date on which the GWAS was uploaded to PRIMED data model",
+            "data_type": "date"
+        },
+        {
+            "column": "outcome_type",
+            "required": true,
+            "description": "Binary, continous, time to event (survival)",
+            "data_type": "enumeration",
+            "enumerations": ["binary", "continuous", "time_to_event"]
+        },
+        {
+            "column": "reported_trait",
+            "required": true,
+            "description": "The author-reported trait (e.g. body mass index [BMI], or coronary artery disease) that the GWAS has been developed to predict.",
+            "data_type": "string"
+        },
+        {
+            "column": "num_variants",
+            "required": true,
+            "description": "",
+            "data_type": "integer"
+        },
+        {
+            "column": "num_individuals",
+            "required": true,
+            "description": "This field describes the number of individuals included in the sample",
+            "data_type": "integer"
+        },
+        {
+            "column": "num_case",
+            "required": "CONDITIONAL (outcome_type = binary)",
+            "data_type": "integer"
+        },
+        {
+            "column": "num_ctrl",
+            "required": "CONDITIONAL (outcome_type = binary)",
+            "data_type": "integer"
+        },
+        {
+            "column": "is_meta_analysis",
+            "required": true,
+            "data_type": "boolean"
+        }
+        ]
+    },						
+    {
+        "table": "gsr_file",
+        "columns": [
+            {
+                "column": "file_id",
+                "primary_key": true,
+                "data_type": "string",
+                "references": "from: md5sum"
+            },
+            {
+                "column": "md5sum",
+                "required": true,
+                "description": "md5 checksum",
+                "data_type": "string"
+            },
+            {
+                "column": "file_path",
+                "required": true,
+                "description": "File path in cloud storage",
+                "data_type": "string"
+            },
+            {
+                "column": "file_type",
+                "required": true,
+                "description": "Type of the file",
+                "data_type": "enumeration",
+                "enumerations": ["data", "data dictionary", "readme"]
+                
+            },
+            {
+                "column": "analysis_id",
+                "required": true,
+                "data_type": "string",
+                "references": "> analysis.analysis_id"
+            },
+            {
+                "column": "chromosome",
+                "required": true,
+                "description": "chromsome included in the data file",
+                "data_type": "string"
+            },
+            {
+                "column": "num_vars",
+                "required": true,
+                "description": "Count of variants in the GSR file",
+                "data_type": "integer"
+            }
+        ]
+    }
+    ]
+}
