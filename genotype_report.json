@@ -5,6 +5,6 @@
     "genotype_report.dataset_type": "array",
     "genotype_report.dataset_file": "gs://fc-1f60889a-6c08-4ced-bafd-7a07c230d394/dataset.tsv",
     "genotype_report.file_table_file": "gs://fc-1f60889a-6c08-4ced-bafd-7a07c230d394/file.tsv",
-    "genotype_report.model_url": "https://raw.githubusercontent.com/UW-GAC/primed-file-checks/main/testdata/data_model.tsv",
+    "genotype_report.model_url": "https://raw.githubusercontent.com/UW-GAC/primed-file-checks/main/testdata/data_model.json",
     "genotype_report.out_prefix": "test"
 }

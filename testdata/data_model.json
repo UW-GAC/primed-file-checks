@@ -1,0 +1,190 @@
+{
+    "name": "test data model",
+    "description": "test data model",
+    "version": "0",
+    "tables": [
+    {
+        "table": "subject",
+        "required": true,
+        "columns": [
+        {
+            "column": "subject_id",
+            "primary_key": true,
+            "required": true,
+            "description": "Subject/Participant's Identifier within project",
+            "data_type": "string"
+        },
+        {
+            "column": "consent_code",
+            "required": true,
+            "description": "consent abbreviation",
+            "data_type": "string"
+        },
+        {
+            "column": "study_nickname",
+            "description": "short name for study",
+            "data_type": "string"
+        },
+        {
+            "column": "dbgap_submission",
+            "description": "Flag if subject has been submitted to dbGaP",
+            "data_type": "boolean"
+        },
+        {
+            "column": "reported_sex",
+            "required": true,
+            "description": "reported sex",
+            "data_type": "enumeration",
+            "enumerations": ["F", "M", "X"]
+        }
+        ]
+    },
+    {
+        "table": "phenotype",
+        "required": false,
+        "columns": [
+        {
+            "column": "phenotype_id",
+            "primary_key": true,
+            "data_type": "string",
+            "references": "from: subject_id, visit_id"
+        },
+        {
+            "column": "subject_id",
+            "required": true,
+            "data_type": "string",
+            "references": "> subject.subject_id"
+        },
+        {
+            "column": "visit_id",
+            "required": true,
+            "description": "identifier for visit",
+            "data_type": "string"
+        },
+        {
+            "column": "height",
+            "description": "height in cm",
+            "data_type": "float"
+        },
+        {
+            "column": "weight",
+            "description": "weight in kg",
+            "data_type": "float"
+        }
+        ]
+    },
+    {
+        "table": "sample",
+        "required": true,
+        "columns": [
+        {
+            "column": "sample_id",
+            "primary_key": true,
+            "required": true,
+            "description": "sample identifier",
+            "data_type": "string"
+        },
+        {
+            "column": "subject_id",
+            "required": true,
+            "data_type": "string",
+            "references": "> subject.subject_id"
+        },
+        {
+            "column": "tissue_source",
+            "required": true,
+            "description": "tissue type of sample",
+            "data_type": "string"
+        },
+        {
+            "column": "age_at_sample_collection",
+            "description": "age of subject when sample was collected",
+            "data_type": "integer"
+        },
+        {
+            "column": "date_of_sample_processing",
+            "description": "date sample was processed in the lab",
+            "data_type": "date"
+        }
+        ]
+    },
+    {
+        "table": "sample_set",
+        "required": true,
+        "columns": [
+        {
+            "column": "sample_set_id",
+            "primary_key": true,
+            "required": true,
+            "description": "identifier for sample set",
+            "data_type": "string"
+        },
+        {
+            "column": "sample_id",
+            "required": true,
+            "data_type": "string",
+            "references": "> sample.sample_id"
+        }
+        ]
+    },
+    {
+        "table": "array_dataset",
+        "columns": [
+            {
+                "column": "array_dataset_id",
+                "primary_key": true,
+                "data_type": "string",
+                "references": "from: sample_set_id, array_name, reference_assembly"
+            },
+            {
+                "column": "sample_set_id",
+                "required": true,
+                "data_type": "string",
+                "references": "> sample_set.sample_set_id"
+            },
+            {
+                "column": "array_name",
+                "required": true,
+                "data_type": "string",
+                "description": "name of array"
+            },
+            {
+                "column": "reference_assembly",
+                "required": true,
+                "data_type": "string",
+                "description": "reference genome build"
+            }
+        ]
+    },
+    {
+        "table": "array_file",
+        "required": "CONDITIONAL (array_dataset)",
+        "columns": [
+        {
+            "column": "file_id",
+            "primary_key": true,
+            "data_type": "string",
+            "references": "from: md5sum"
+        },
+        {
+            "column": "md5sum",
+            "required": true,
+            "description": "md5 checksum",
+            "data_type": "string"
+        },
+        {
+            "column": "array_dataset_id",
+            "required": true,
+            "data_type": "string",
+            "references": "> array_dataset.array_dataset_id"
+        },
+        {
+            "column": "file_path",
+            "required": true,
+            "description": "name of file",
+            "data_type": "string"
+        }
+        ]
+    }
+    ]
+}

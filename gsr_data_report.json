@@ -1,6 +1,6 @@
 {
     "gsr_data_report.data_file": "gs://fc-547ef6ab-c518-416f-8e0f-26ab98009f30/gsr_chr1.tsv",
-    "gsr_data_report.dd_url": "https://raw.githubusercontent.com/UW-GAC/primed-file-checks/main/testdata/gsr_dd.tsv",
+    "gsr_data_report.dd_url": "https://raw.githubusercontent.com/UW-GAC/primed-file-checks/main/testdata/gsr_dd.json",
     "gsr_data_report.analysis_file": "gs://fc-547ef6ab-c518-416f-8e0f-26ab98009f30/test_analysis_table.tsv",
     "gsr_data_report.out_prefix": "test"
 }

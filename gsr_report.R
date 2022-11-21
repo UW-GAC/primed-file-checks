@@ -4,19 +4,17 @@ library(AnvilDataModels)
 argp <- arg_parser("report")
 argp <- add_argument(argp, "--analysis_file", help="tsv file with analysis table entry as field,value")
 argp <- add_argument(argp, "--file_table_file", help="tsv file with file table")
-#argp <- add_argument(argp, "--dd_file", help="tsv file with data dictionary for GSR files")
-argp <- add_argument(argp, "--model_file", help="tsv file with data model")
+argp <- add_argument(argp, "--model_file", help="json file with data model")
 argp <- add_argument(argp, "--out_prefix", help="output prefix")
 argv <- parse_args(argp)
 
 # argv <- list(analysis_file="testdata/gsr_analysis_table.tsv",
 #              file_table_file="testdata/gsr_file.tsv",
-#              dd_file="testdata/gsr_dd.tsv",
-#              model_file="testdata/gsr_data_model.tsv",
+#              model_file="testdata/gsr_data_model.json",
 #              out_prefix="test")
 
 # read data model
-model <- tsv_to_dm(argv$model_file)
+model <- json_to_dm(argv$model_file)
 
 # read analysis field,value pairs
 fv <- readr::read_tsv(argv$analysis_file, col_types="cc")
@@ -49,7 +47,5 @@ params <- list(tables=c(analysis=analysis_file, gsr_file=file_file), model=argv$
 pass <- custom_render_markdown("data_model_report", argv$out_prefix, parameters=params)
 
 ## check that files in file table exist?
-## prepend bucket path to file_path column? (before or after checks?)
 
 writeLines(tolower(as.character(pass)), "pass.txt")
-
