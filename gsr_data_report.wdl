@@ -5,7 +5,7 @@ workflow gsr_data_report {
         File data_file
         String dd_url
         File analysis_file
-        String out_prefix
+        String out_prefix = "report"
     }
 
     call results {
