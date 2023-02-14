@@ -10,6 +10,7 @@ argp <- add_argument(argp, "--dataset_file", help="tsv file with dataset table e
 argp <- add_argument(argp, "--file_table_file", help="tsv file with file table")
 argp <- add_argument(argp, "--model_file", help="json file with data model")
 argp <- add_argument(argp, "--out_prefix", help="output prefix")
+argp <- add_argument(argp, "--overwrite", flag=TRUE, help="overwrite existing rows in tables")
 argp <- add_argument(argp, "--workspace_name", help="name of AnVIL workspace to import data to")
 argp <- add_argument(argp, "--workspace_namespace", help="namespace of AnVIL workspace to import data to")
 argv <- parse_args(argp)

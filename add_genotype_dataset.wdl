@@ -9,6 +9,7 @@ workflow add_genotype_dataset {
         String out_prefix = "report"
         String workspace_name
         String workspace_namespace
+        Boolean overwrite
     }
 
     call results {
@@ -18,7 +19,8 @@ workflow add_genotype_dataset {
                model_url = model_url,
                out_prefix = out_prefix,
                workspace_name = workspace_name,
-               workspace_namespace = workspace_namespace
+               workspace_namespace = workspace_namespace,
+               overwrite = overwrite
     }
 
     output {
@@ -41,6 +43,7 @@ task results{
         String out_prefix
         String workspace_name
         String workspace_namespace
+        Boolean overwrite
     }
 
     command {
@@ -48,7 +51,7 @@ task results{
             --dataset_type ${dataset_type} \
             --dataset_file ${dataset_file} \
             --file_table_file ${file_table_file} \
-            --model_file ${model_url} \
+            --model_file ${model_url} ${true="--overwrite" false="" overwrite} \
             --out_prefix ${out_prefix} \
             --workspace_name ${workspace_name} \
             --workspace_namespace ${workspace_namespace}
