@@ -55,7 +55,7 @@ task results{
     }
 
     output {
-        File file_report = "${out_prefix}.html"
+        File file_report = "pre_import_check.html"
         Array[File]? tables = glob("*_table.tsv")
     }
 
