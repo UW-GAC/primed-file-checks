@@ -5,7 +5,7 @@ workflows:
      primaryDescriptorPath: /genotype_report.wdl
      testParameterFiles:
          - /genotype_report.json
-   - name: genotype_report
+   - name: add_genotype_dataset
      subclass: WDL
      primaryDescriptorPath: /add_genotype_dataset.wdl
      testParameterFiles:
