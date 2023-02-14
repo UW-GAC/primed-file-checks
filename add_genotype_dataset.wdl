@@ -60,6 +60,6 @@ task results{
     }
 
     runtime {
-        docker: "uwgac/primed-file-checks:0.2.4"
+        docker: "uwgac/primed-file-checks:0.2.4.1"
     }
 }
