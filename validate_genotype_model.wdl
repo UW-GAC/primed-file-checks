@@ -22,7 +22,6 @@ workflow validate_genotype_model {
     output {
         File validation_report = results.validation_report
         Array[File]? tables = results.tables
-        File? file_list = results.file_list
     }
 
      meta {
@@ -56,7 +55,6 @@ task results {
     output {
         File validation_report = "data_model_validation.html"
         Array[File]? tables = glob("*_table.tsv")
-        File? file_list = "output_table_files.tsv"
     }
 
     runtime {

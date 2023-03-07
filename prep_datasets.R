@@ -52,9 +52,9 @@ if (nrow(dataset_files) > 0) {
                                  error_on_missing=FALSE)
         
         # write tsv files
-        dataset_file <- paste0("prep_", type, "_dataset_table.tsv")
+        dataset_file <- paste0("output_", type, "_dataset_table.tsv")
         write_tsv(dataset, dataset_file)
-        file_file <- paste0("prep_", type, "_file_table.tsv")
+        file_file <- paste0("output_", type, "_file_table.tsv")
         write_tsv(file, file_file)
         
         table_files$files[table_files$names == dataset_table_name] <- dataset_file
