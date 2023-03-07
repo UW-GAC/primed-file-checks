@@ -10,21 +10,6 @@ workflows:
      primaryDescriptorPath: /validate_gsr_model.wdl
      testParameterFiles:
          - /validate_gsr_model.json
-   - name: genotype_report
-     subclass: WDL
-     primaryDescriptorPath: /genotype_report.wdl
-     testParameterFiles:
-         - /genotype_report.json
-   - name: add_genotype_dataset
-     subclass: WDL
-     primaryDescriptorPath: /add_genotype_dataset.wdl
-     testParameterFiles:
-         - /add_genotype_dataset.json
-   - name: gsr_report
-     subclass: WDL
-     primaryDescriptorPath: /gsr_report.wdl
-     testParameterFiles:
-         - /gsr_report.json
    - name: gsr_data_report
      subclass: WDL
      primaryDescriptorPath: /gsr_data_report.wdl
