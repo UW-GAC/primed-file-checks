@@ -44,7 +44,7 @@ if (nrow(dataset_files) > 0) {
         file <- read_tsv(dataset_files$file[i], show_col_types=FALSE)
         
         # add dataset_id
-        dataset_id <- paste0(type, "_id")
+        dataset_id <- paste0(dataset_table_name, "_id")
         file[[dataset_id]] <- dataset[[dataset_id]]
         
         # add file_id 
