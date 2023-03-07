@@ -44,7 +44,7 @@ file <- add_auto_columns(file, table_name="gsr_file", model=model,
 # write tsv files
 analysis_file <- "output_analysis_table.tsv"
 write_tsv(analysis, analysis_file)
-file_file <- "output_file_table.tsv"
+file_file <- "output_gsr_file_table.tsv"
 write_tsv(file, file_file)
 
 # write new version of table_files
