@@ -30,8 +30,8 @@ analysis_id <- hash_id(paste(analysis, collapse=""))
 analysis <- bind_cols(analysis_id=analysis_id, analysis)
 
 # read file table
-file_file <- table_files$files[table_files$names == "file"]
-if (length(file_file) == 0) stop("file table not found in table_files")
+file_file <- table_files$files[table_files$names == "gsr_file"]
+if (length(file_file) == 0) stop("gsr_file table not found in table_files")
 file <- read_tsv(file_file, show_col_types=FALSE)
 
 # add analysis_id
@@ -48,5 +48,5 @@ file_file <- "output_file_table.tsv"
 write_tsv(file, file_file)
 
 # write new version of table_files
-table_files <- tibble(c("analysis", "file"), c(analysis_file, file_file))
+table_files <- tibble(c("analysis", "gsr_file"), c(analysis_file, file_file))
 write_tsv(table_files, "output_table_files.tsv", col_names=FALSE)
