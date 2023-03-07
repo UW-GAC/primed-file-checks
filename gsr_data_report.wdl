@@ -4,19 +4,19 @@ workflow gsr_data_report {
     input {
         File data_file
         String dd_url
-        File analysis_file
-        String out_prefix = "report"
+        String workspace_name
+        String workspace_namespace
     }
 
     call results {
         input: data_file = data_file,
                dd_url = dd_url,
-               analysis_file = analysis_file,
-               out_prefix = out_prefix
+               workspace_name = workspace_name,
+               workspace_namespace = workspace_namespace
     }
 
     output {
-        File file_report = results.file_report
+        File validation_report = results.validation_report
         Boolean pass_checks = results.pass_checks
     }
 
@@ -30,24 +30,24 @@ task results{
     input {
         File data_file
         String dd_url
-        File analysis_file
-        String out_prefix
+        String workspace_name
+        String workspace_namespace
     }
 
     command {
         Rscript /usr/local/primed-file-checks/gsr_data_report.R \
             --data_file ${data_file} \
             --dd_file ${dd_url} \
-            --analysis_file ${analysis_file} \
-            --out_prefix ${out_prefix}
+            --workspace_name ${workspace_name} \
+            --workspace_namespace ${workspace_namespace}
     }
 
     output {
-        File file_report = "${out_prefix}.txt"
+        File validation_report = "data_dictionary_validation.txt"
         Boolean pass_checks = read_boolean("pass.txt")
     }
 
     runtime {
-        docker: "uwgac/primed-file-checks:0.2.5"
+        docker: "uwgac/primed-file-checks:0.2.7"
     }
 }

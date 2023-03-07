@@ -1,17 +1,16 @@
 library(argparser)
 library(AnvilDataModels)
+library(AnVIL)
 
 argp <- arg_parser("report")
 argp <- add_argument(argp, "--data_file", help="tsv file with data")
 argp <- add_argument(argp, "--dd_file", help="json file with GSR data dictionary")
-argp <- add_argument(argp, "--analysis_file", help="tsv file with analysis table (output by gsr_report)")
-argp <- add_argument(argp, "--out_prefix", help="output prefix")
+argp <- add_argument(argp, "--workspace_name", help="name of AnVIL workspace to read analysis table from")
+argp <- add_argument(argp, "--workspace_namespace", help="namespace of AnVIL workspace to read analysis table from")
 argv <- parse_args(argp)
 
 # argv <- list(data_file="testdata/gsr_chr1.tsv",
-#              dd_file="testdata/gsr_dd.json",
-#              analysis_file="test_analysis_table.tsv",
-#              out_prefix="test")
+#              dd_file="testdata/gsr_dd.json")
 
 # read data model
 dd <- json_to_dm(argv$dd_file)
@@ -21,9 +20,9 @@ dat <- readr::read_tsv(argv$data_file, n_max=1000)
 dat <- list(dat)
 names(dat) <- names(dd)
 
-# read file to assess conditions
-if (!is.na(argv$analysis_file)) {
-    analysis <- readr::read_tsv(argv$analysis_file)
+# read analysis table to assess conditions
+if (!is.na(argv$workspace_name) & !is.na(argv$workspace_namespace)) {
+    analysis <- avtable("analysis", namespace=argv$workspace_namespace, name=argv$workspace_name)
     # parse conditions and add cols to 'required' as necessary
     req <- character()
     cond <- attr(dd[[1]], "conditions")
@@ -46,7 +45,7 @@ if (!is.na(argv$analysis_file)) {
     }
 }
 
-outfile <- paste0(argv$out_prefix, ".txt")
+outfile <- "data_dictionary_validation.txt"
 con <- file(outfile, "w")
 
 pass <- TRUE
