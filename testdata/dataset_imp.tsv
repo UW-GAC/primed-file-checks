@@ -1,0 +1,5 @@
+field	value
+sample_set_id	set1
+reference_panel	1000G
+imputation_software	BEAGLE
+reference_assembly	GRCh37
