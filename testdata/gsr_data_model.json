@@ -10,8 +10,7 @@
             "column": "analysis_id",
             "primary_key": true,
             "description": "unique identifier for a gwas in primed",
-            "data_type": "string",
-            "references": "from: reported_trait, outcome_type, num_individuals, num_variants"
+            "data_type": "string"
         },
         {
             "column": "gwas_catalog_study_id",

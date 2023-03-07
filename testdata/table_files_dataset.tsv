@@ -1,0 +1,8 @@
+subject	testdata/subject.tsv
+sample	testdata/sample.tsv
+sample_set	testdata/sample_set.tsv
+phenotype	testdata/phenotype.tsv
+array_dataset	testdata/dataset.tsv
+array_file	testdata/file.tsv
+imputation_dataset	testdata/dataset_imp.tsv
+imputation_file	testdata/file2.tsv

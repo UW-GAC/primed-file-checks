@@ -185,6 +185,71 @@
             "data_type": "string"
         }
         ]
+    },
+    {
+      "table": "imputation_dataset",
+      "columns": [
+        {
+          "column": "imputation_dataset_id",
+          "primary_key": true,
+          "data_type": "string",
+          "references": "from: sample_set_id, reference_panel, imputation_software, reference_assembly"
+        },
+        {
+          "column": "sample_set_id",
+          "required": true,
+          "data_type": "string",
+          "references": "> sample_set.sample_set_id"
+        },
+        {
+          "column": "reference_panel",
+          "required": true,
+          "description": "reference panel with version (e.g. 1000G Phase 3, TOPMed version 2)",
+          "data_type": "string"
+        },
+        {
+          "column": "imputation_software",
+          "required": true,
+          "description": "software and version used for imputation (e.g. IMPUTE2 v2.3.2)",
+          "data_type": "string"
+        },
+        {
+          "column": "reference_assembly",
+          "required": true,
+          "description": "reference genome assembly that the submitted data is mapped to",
+          "data_type": "string"
+        }
+        ]
+    },
+    {
+      "table": "imputation_file",
+      "required": "CONDITIONAL (imputation_dataset)",
+      "columns": [
+        {
+          "column": "imputation_file_id",
+          "primary_key": true,
+          "data_type": "string",
+          "references": "from: md5sum"
+        },
+        {
+          "column": "md5sum",
+          "required": true,
+          "description": "md5 checksum for the file",
+          "data_type": "string"
+        },
+        {
+          "column": "imputation_dataset_id",
+          "required": true,
+          "data_type": "string",
+          "references": "> imputation_dataset.imputation_dataset_id"
+        },
+        {
+          "column": "file_path",
+          "required": true,
+          "description": "absolute file path in cloud storage",
+          "data_type": "string"
+        }
+        ]
     }
     ]
 }

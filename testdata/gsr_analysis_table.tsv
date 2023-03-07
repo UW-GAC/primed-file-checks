@@ -6,4 +6,6 @@ reported_trait	coronary artery disease
 outcome_type	binary
 num_variants	999999
 num_individuals	10000
+num_case	5000
+num_ctrl	5000
 is_meta_analysis	FALSE
