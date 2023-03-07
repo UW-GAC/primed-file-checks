@@ -43,7 +43,7 @@ task results {
     command {
         Rscript /usr/local/primed-file-checks/prep_datasets.R \
             --table_files ${write_map(table_files)} \
-            --model_file
+            --model_file ${model_url}
         Rscript /usr/local/anvil-util-workflows/validate_data_model.R \
             --table_files output_table_files.tsv ${true="--overwrite" false="" overwrite} \
             --model_file ${model_url} ${true="--import_tables" false="" import_tables} \
