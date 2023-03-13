@@ -1,11 +1,11 @@
 {
-    "validate_genotype_model.table_files": {
+    "validate_phenotype_model.table_files": {
         "subject": "gs://fc-1f60889a-6c08-4ced-bafd-7a07c230d394/subject.tsv",
         "phenotype": "gs://fc-1f60889a-6c08-4ced-bafd-7a07c230d394/phenotype.tsv"
     },
-    "validate_genotype_model.model_url": "https://raw.githubusercontent.com/UW-GAC/primed-file-checks/main/testdata/data_model_phen.json",
-    "validate_genotype_model.import_tables": true,
-    "validate_genotype_model.overwrite": true,
-    "validate_genotype_model.workspace_name": "PRIMED_genotype_test",
-    "validate_genotype_model.workspace_namespace": "primed-stephanie"
+    "validate_phenotype_model.model_url": "https://raw.githubusercontent.com/UW-GAC/primed-file-checks/main/testdata/data_model_phen.json",
+    "validate_phenotype_model.import_tables": true,
+    "validate_phenotype_model.overwrite": true,
+    "validate_phenotype_model.workspace_name": "PRIMED_genotype_test",
+    "validate_phenotype_model.workspace_namespace": "primed-stephanie"
 }
