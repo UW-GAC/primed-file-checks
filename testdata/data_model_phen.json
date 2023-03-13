@@ -1,0 +1,77 @@
+{
+    "name": "test data model",
+    "description": "test data model",
+    "version": "0",
+    "tables": [
+    {
+        "table": "subject",
+        "required": true,
+        "columns": [
+        {
+            "column": "subject_id",
+            "primary_key": true,
+            "required": true,
+            "description": "Subject/Participant's Identifier within project",
+            "data_type": "string"
+        },
+        {
+            "column": "consent_code",
+            "required": true,
+            "description": "consent abbreviation",
+            "data_type": "string"
+        },
+        {
+            "column": "study_nickname",
+            "description": "short name for study",
+            "data_type": "string"
+        },
+        {
+            "column": "dbgap_submission",
+            "description": "Flag if subject has been submitted to dbGaP",
+            "data_type": "boolean"
+        },
+        {
+            "column": "reported_sex",
+            "required": true,
+            "description": "reported sex",
+            "data_type": "enumeration",
+            "enumerations": ["F", "M", "X"]
+        }
+        ]
+    },
+    {
+        "table": "phenotype",
+        "required": true,
+        "columns": [
+        {
+            "column": "phenotype_id",
+            "primary_key": true,
+            "data_type": "string",
+            "references": "from: subject_id, visit_id"
+        },
+        {
+            "column": "subject_id",
+            "required": true,
+            "data_type": "string",
+            "references": "> subject.subject_id"
+        },
+        {
+            "column": "visit_id",
+            "required": true,
+            "description": "identifier for visit",
+            "data_type": "string"
+        },
+        {
+            "column": "height",
+            "description": "height in cm",
+            "data_type": "float"
+        },
+        {
+            "column": "weight",
+            "description": "weight in kg",
+            "data_type": "float"
+        }
+        ]
+    }
+    ]
+}

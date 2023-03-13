@@ -1,5 +1,10 @@
 version: 1.2
 workflows:
+   - name: validate_phenotype_model
+     subclass: WDL
+     primaryDescriptorPath: /validate_phenotype_model.wdl
+     testParameterFiles:
+         - /validate_phnotype_model.json
    - name: validate_genotype_model
      subclass: WDL
      primaryDescriptorPath: /validate_genotype_model.wdl
