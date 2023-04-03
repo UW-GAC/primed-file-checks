@@ -7,10 +7,12 @@ workflow check_vcf_samples {
         String dataset_type
         String workspace_name
         String workspace_namespace
+        Int? disk_gb
     }
 
     call vcf_samples {
-        input: vcf_file = vcf_file
+        input: vcf_file = vcf_file,
+               disk_gb = disk_gb
     }
 
     call compare_sample_sets {
@@ -34,6 +36,7 @@ workflow check_vcf_samples {
 task vcf_samples {
     input {
         File vcf_file
+        Int? disk_gb = 10
     }
 
     command {
@@ -46,6 +49,7 @@ task vcf_samples {
 
     runtime {
         docker: "xbrianh/xsamtools:v0.5.2"
+        disks: "local-disk ${disk_gb} SSD"
     }
 }
 
