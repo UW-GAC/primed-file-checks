@@ -36,7 +36,7 @@ workflow check_vcf_samples {
 task vcf_samples {
     input {
         File vcf_file
-        Int? disk_gb = 10
+        Int disk_gb = 10
     }
 
     command {
@@ -62,28 +62,31 @@ task compare_sample_sets {
         String workspace_namespace
     }
 
-    command {
+    command <<<
         Rscript -e "\
-        dataset_id <- '${dataset_id}'; \
-        dataset_type <- '${dataset_type}'; \
-        workspace_name <- '${workspace_name}'; \
-        workspace_namespace <- '${workspace_namespace}'; \
+        dataset_id <- '~{dataset_id}'; \
+        dataset_type <- '~{dataset_type}'; \
+        workspace_name <- '~{workspace_name}'; \
+        workspace_namespace <- '~{workspace_namespace}'; \
         stopifnot(dataset_type %in% c('array', 'imputation', 'sequencing')); \
         dataset_table <- AnVIL::avtable(paste0(dataset_type, '_dataset'), name=workspace_name, namespace=workspace_namespace); \
         sample_set_id <- dataset_table[['sample_set_id']][dataset_table[[paste0(dataset_type, '_dataset_id')]] == dataset_id]; \
         sample_set <- AnVIL::avtable('sample_set', name=workspace_name, namespace=workspace_namespace); \
         samples <- sample_set[['samples.items']][sample_set[['sample_set_id']] == sample_set_id][[1]][['entityName']]; \
-        vcf_samples <- readLines('${sample_file}'); \
+        writeLines(samples, 'workspace_samples.txt'); \
+        vcf_samples <- readLines('~{sample_file}'); \
         if (setequal(samples, vcf_samples)) status <- 'PASS' else status <- 'FAIL'; \
-        cat(status, file='status.txt') \
+        cat(status, file='status.txt'); \
+        if (status == 'FAIL') stop('Samples do not match; compare vcf_samples.txt and workspace_samples.txt') \
         "
-    }
+    >>>
 
     output {
         String check_status = read_string("status.txt")
+        File workspace_samples = "workspace_samples.txt"
     }
 
     runtime {
-        docker: "us.gcr.io/anvil-gcr-public/anvil-rstudio-bioconductor-devel:3.15.0"
+        docker: "us.gcr.io/broad-dsp-gcr-public/anvil-rstudio-bioconductor:3.16.0"
     }
 }
