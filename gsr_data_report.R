@@ -5,6 +5,7 @@ library(AnVIL)
 argp <- arg_parser("report")
 argp <- add_argument(argp, "--data_file", help="tsv file with data")
 argp <- add_argument(argp, "--dd_file", help="json file with GSR data dictionary")
+argp <- add_argument(argp, "--analysis_id", help="identifier for analysis in the analysis table")
 argp <- add_argument(argp, "--workspace_name", help="name of AnVIL workspace to read analysis table from")
 argp <- add_argument(argp, "--workspace_namespace", help="namespace of AnVIL workspace to read analysis table from")
 argv <- parse_args(argp)
@@ -22,7 +23,8 @@ names(dat) <- names(dd)
 
 # read analysis table to assess conditions
 if (!is.na(argv$workspace_name) & !is.na(argv$workspace_namespace)) {
-    analysis <- avtable("analysis", namespace=argv$workspace_namespace, name=argv$workspace_name)
+    analysis <- avtable("analysis", namespace=argv$workspace_namespace, name=argv$workspace_name) %>%
+        filter(analysis_id == argv$analysis_id)
     # parse conditions and add cols to 'required' as necessary
     req <- character()
     cond <- attr(dd[[1]], "conditions")
