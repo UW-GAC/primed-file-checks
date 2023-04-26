@@ -1,6 +1,7 @@
 {
     "gsr_data_report.data_file": "${this.file_path}",
     "gsr_data_report.dd_url": "https://raw.githubusercontent.com/UW-GAC/primed-file-checks/main/testdata/gsr_dd.json",
+    "gsr_data_report.analysis_id": "${this.analysis_id}",
     "validate_gsr_model.workspace_name": "PRIMED_GSR_test",
     "validate_gsr_model.workspace_namespace": "primed-stephanie"
 }

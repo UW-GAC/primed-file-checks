@@ -4,6 +4,7 @@ workflow gsr_data_report {
     input {
         File data_file
         String dd_url
+        String analysis_id
         String workspace_name
         String workspace_namespace
     }
@@ -11,6 +12,7 @@ workflow gsr_data_report {
     call results {
         input: data_file = data_file,
                dd_url = dd_url,
+               analysis_id = analysis_id,
                workspace_name = workspace_name,
                workspace_namespace = workspace_namespace
     }
@@ -30,6 +32,7 @@ task results{
     input {
         File data_file
         String dd_url
+        String analysis_id
         String workspace_name
         String workspace_namespace
     }
@@ -38,6 +41,7 @@ task results{
         Rscript /usr/local/primed-file-checks/gsr_data_report.R \
             --data_file ${data_file} \
             --dd_file ${dd_url} \
+            --analysis_id ${analysis_id} \
             --workspace_name ${workspace_name} \
             --workspace_namespace ${workspace_namespace}
     }
@@ -48,6 +52,6 @@ task results{
     }
 
     runtime {
-        docker: "uwgac/primed-file-checks:0.2.7"
+        docker: "uwgac/primed-file-checks:0.2.9"
     }
 }
