@@ -16,7 +16,7 @@ argv <- parse_args(argp)
 model <- json_to_dm(argv$model_file)
 
 # read tables
-table_files <- read_tsv(argv$table_files, col_names=c("names", "files"), col_types = cols())
+table_files <- read_tsv(argv$table_files, col_names=c("names", "files"), col_types="cc")
 
 # identify datasets
 dataset_files <- table_files %>%
@@ -31,7 +31,7 @@ if (nrow(dataset_files) > 0) {
         file_table_name <- paste0(type, "_file")
         
         # read dataset field,value pairs
-        fv <- read_tsv(dataset_files$dataset[i], col_types="cc")
+        fv <- read_tsv(dataset_files$dataset[i], col_types=cols(.default=col_character()))
         
         # transpose
         dataset <- transpose_field_value(fv, table_name=dataset_table_name, model=model)
@@ -41,7 +41,7 @@ if (nrow(dataset_files) > 0) {
                                     error_on_missing=FALSE)
         
         # read file table
-        file <- read_tsv(dataset_files$file[i], show_col_types=FALSE)
+        file <- read_tsv(dataset_files$file[i], col_types=cols(.default=col_character()))
         
         # add dataset_id
         dataset_id <- paste0(dataset_table_name, "_id")

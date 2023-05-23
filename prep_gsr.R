@@ -15,12 +15,12 @@ argv <- parse_args(argp)
 model <- json_to_dm(argv$model_file)
 
 # read tables
-table_files <- read_tsv(argv$table_files, col_names=c("names", "files"), col_types = cols())
+table_files <- read_tsv(argv$table_files, col_names=c("names", "files"), col_types="cc")
 
 # read analysis field,value pairs
 analysis_file <- table_files$files[table_files$names == "analysis"]
 if (length(analysis_file) == 0) stop("analysis table not found in table_files")
-fv <- read_tsv(analysis_file, col_types="cc")
+fv <- read_tsv(analysis_file, col_types=cols(.default=col_character()))
 
 # transpose
 analysis <- transpose_field_value(fv, table_name="analysis", model=model)
@@ -32,7 +32,7 @@ analysis <- bind_cols(analysis_id=analysis_id, analysis)
 # read file table
 file_file <- table_files$files[table_files$names == "gsr_file"]
 if (length(file_file) == 0) stop("gsr_file table not found in table_files")
-file <- read_tsv(file_file, show_col_types=FALSE)
+file <- read_tsv(file_file, col_types=cols(.default=col_character()))
 
 # add analysis_id
 file <- bind_cols(analysis_id=analysis$analysis_id, file)
