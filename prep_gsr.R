@@ -6,6 +6,7 @@ library(readr)
 argp <- arg_parser("report")
 argp <- add_argument(argp, "--table_files", help="2-column tsv file with (table name, table tsv file)")
 argp <- add_argument(argp, "--model_file", help="json file with data model")
+argp <- add_argument(argp, "--hash_id_nchar", default=16, help="number of characters in automatically generated ids")
 argv <- parse_args(argp)
 
 # argv <- list(table_files="testdata/table_files_gsr.tsv",
@@ -26,7 +27,7 @@ fv <- read_tsv(analysis_file, col_types=cols(.default=col_character()))
 analysis <- transpose_field_value(fv, table_name="analysis", model=model)
 
 # add analysis_id
-analysis_id <- hash_id(paste(analysis, collapse=""))
+analysis_id <- hash_id(paste(analysis, collapse="", nchar=argv$hash_id_nchar))
 analysis <- bind_cols(analysis_id=analysis_id, analysis)
 
 # read file table

@@ -7,6 +7,7 @@ library(readr)
 argp <- arg_parser("report")
 argp <- add_argument(argp, "--table_files", help="2-column tsv file with (table name, table tsv file)")
 argp <- add_argument(argp, "--model_file", help="json file with data model")
+argp <- add_argument(argp, "--hash_id_nchar", default=16, help="number of characters in automatically generated ids")
 argv <- parse_args(argp)
 
 # argv <- list(table_files="testdata/table_files_dataset.tsv",
@@ -38,7 +39,7 @@ if (nrow(dataset_files) > 0) {
         
         # add dataset_id
         dataset <- add_auto_columns(dataset, table_name=dataset_table_name, model=model,
-                                    error_on_missing=FALSE)
+                                    error_on_missing=FALSE, nchar=argv$hash_id_nchar)
         
         # read file table
         file <- read_tsv(dataset_files$file[i], col_types=cols(.default=col_character()))
@@ -49,7 +50,7 @@ if (nrow(dataset_files) > 0) {
         
         # add file_id 
         file <- add_auto_columns(file, table_name=file_table_name, model=model,
-                                 error_on_missing=FALSE)
+                                 error_on_missing=FALSE, nchar=argv$hash_id_nchar)
         
         # write tsv files
         dataset_file <- paste0("output_", type, "_dataset_table.tsv")
