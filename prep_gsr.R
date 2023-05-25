@@ -27,7 +27,7 @@ fv <- read_tsv(analysis_file, col_types=cols(.default=col_character()))
 analysis <- transpose_field_value(fv, table_name="analysis", model=model)
 
 # add analysis_id
-analysis_id <- hash_id(paste(analysis, collapse="", nchar=argv$hash_id_nchar))
+analysis_id <- hash_id(paste(analysis, collapse=""), nchar=argv$hash_id_nchar)
 analysis <- bind_cols(analysis_id=analysis_id, analysis)
 
 # read file table
