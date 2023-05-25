@@ -40,7 +40,7 @@ file <- bind_cols(analysis_id=analysis$analysis_id, file)
 
 # add file_id 
 file <- add_auto_columns(file, table_name="gsr_file", model=model,
-                         error_on_missing=FALSE)
+                         error_on_missing=FALSE, nchar=argv$hash_id_nchar)
 
 # write tsv files
 analysis_file <- "output_analysis_table.tsv"
