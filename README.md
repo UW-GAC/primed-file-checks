@@ -26,6 +26,7 @@ input | description
 --- | ---
 table_files | This input is of type Map[String, File], which consists of key:value pairs. Keys are table names, which should correspond to names in the data model, and values are Google bucket paths to TSV files for each table.
 model_url | A URL providing the path to the data model in JSON format.
+hash_id_nchar | Number of characters in auto-generated columns (default 16)
 import_tables | A boolean indicating whether tables should be imported to a workspace after validation.
 overwrite | A boolean indicating whether existing rows in the data tables should be overwritten.
 workspace_name | A string with the workspace name. e.g, if the workspace URL is https://anvil.terra.bio/#workspaces/fc-product-demo/Terra-Workflows-Quickstart, the workspace name is "Terra-Workflows-Quickstart"
@@ -57,6 +58,7 @@ input | description
 --- | ---
 table_files | This input is of type Map[String, File], which consists of key:value pairs. Keys are table names, which should correspond to names in the data model, and values are Google bucket paths to TSV files for each table.
 model_url | A URL providing the path to the data model in JSON format.
+hash_id_nchar | Number of characters in auto-generated columns (default 16)
 import_tables | A boolean indicating whether tables should be imported to a workspace after validation.
 overwrite | A boolean indicating whether existing rows in the data tables should be overwritten.
 workspace_name | A string with the workspace name. e.g, if the workspace URL is https://anvil.terra.bio/#workspaces/fc-product-demo/Terra-Workflows-Quickstart, the workspace name is "Terra-Workflows-Quickstart"
