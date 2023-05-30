@@ -8,11 +8,13 @@ workflow validate_genotype_model {
         String workspace_namespace
         Boolean overwrite = false
         Boolean import_tables = false
+        Int? hash_id_nchar
     }
 
     call results {
         input: table_files = table_files,
                model_url = model_url,
+               hash_id_nchar = hash_id_nchar,
                workspace_name = workspace_name,
                workspace_namespace = workspace_namespace,
                overwrite = overwrite,
@@ -38,18 +40,21 @@ task results {
         String workspace_namespace
         Boolean overwrite
         Boolean import_tables
+        Int hash_id_nchar = 16
     }
 
     command {
         Rscript /usr/local/primed-file-checks/prep_datasets.R \
             --table_files ${write_map(table_files)} \
-            --model_file ${model_url}
+            --model_file ${model_url} \
+            --hash_id_nchar ${hash_id_nchar}
         Rscript /usr/local/anvil-util-workflows/validate_data_model.R \
             --table_files output_table_files.tsv ${true="--overwrite" false="" overwrite} \
             --model_file ${model_url} ${true="--import_tables" false="" import_tables} \
             --workspace_name ${workspace_name} \
             --workspace_namespace ${workspace_namespace} \
-            --stop_on_fail --use_existing_tables
+            --stop_on_fail --use_existing_tables \
+            --hash_id_nchar ${hash_id_nchar}
     }
 
     output {
