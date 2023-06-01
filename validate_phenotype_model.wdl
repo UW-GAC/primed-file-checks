@@ -54,7 +54,7 @@ task results {
             --workspace_namespace ${workspace_namespace}
         echo "starting validation"
         Rscript /usr/local/anvil-util-workflows/validate_data_model.R \
-            --table_files output_tables_validate.tsv \
+            --table_files output_table_files_validate.tsv \
             --model_file ${model_url} \
             --workspace_name ${workspace_name} \
             --workspace_namespace ${workspace_namespace} \
@@ -66,7 +66,7 @@ task results {
         then
           echo "starting import"
           Rscript /usr/local/anvil-util-workflows/validate_data_model.R \
-            --table_files output_tables_import.tsv ${true="--overwrite" false="" overwrite} \
+            --table_files output_table_files_import.tsv ${true="--overwrite" false="" overwrite} \
             --model_file ${model_url} --import_tables \
             --workspace_name ${workspace_name} \
             --workspace_namespace ${workspace_namespace} \
