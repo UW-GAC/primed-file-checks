@@ -10,8 +10,8 @@ argp <- add_argument(argp, "--workspace_name", help="name of AnVIL workspace to 
 argp <- add_argument(argp, "--workspace_namespace", help="namespace of AnVIL workspace to import data to")
 argv <- parse_args(argp)
 
-argv <- list(table_file="testdata/table_files_phenotype.tsv",
-             harmonized=TRUE)
+# argv <- list(table_file="testdata/table_files_phenotype.tsv",
+#              harmonized=TRUE)
 
 # read phenotype table
 phen_table <- read_table(argv$table_file)
