@@ -82,7 +82,7 @@
           "column": "domain",
           "required": true,
           "data_type": "enumeration",
-          "enumerations": ["phenotype"]
+          "enumerations": ["subject", "phenotype"]
         },
         {
           "column": "md5sum",

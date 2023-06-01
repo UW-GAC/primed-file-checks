@@ -60,18 +60,14 @@ task results {
             --workspace_namespace ${workspace_namespace} \
             --stop_on_fail --use_existing_tables \
             --hash_id_nchar ${hash_id_nchar}
-        echo "done with validation"
-        echo "${import_tables}"
         if [ "${import_tables}" == "true" ]
         then
           echo "starting import"
-          Rscript /usr/local/anvil-util-workflows/validate_data_model.R \
+          Rscript /usr/local/anvil-util-workflows/data_table_import.R \
             --table_files output_table_files_import.tsv ${true="--overwrite" false="" overwrite} \
-            --model_file ${model_url} --import_tables \
+            --model_file ${model_url} \
             --workspace_name ${workspace_name} \
-            --workspace_namespace ${workspace_namespace} \
-            --stop_on_fail --use_existing_tables \
-            --hash_id_nchar ${hash_id_nchar}
+            --workspace_namespace ${workspace_namespace}
         else 
           echo "no import"
         fi
