@@ -1,0 +1,3 @@
+domain	md5sum	file_path	file_readme_path	n_subjects	n_rows
+subject	f9aaac850cfb67e5a9426b09d6b02a6d	testdata/subject.tsv	readme	10	10
+phenotype	880e7002f000a2e8e101ce6f6063656b	testdata/phenotype.tsv	readme	10	20

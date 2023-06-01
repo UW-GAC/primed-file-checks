@@ -2,7 +2,8 @@ version 1.0
 
 workflow validate_phenotype_model {
     input {
-        Map[String, File] table_files
+        File phenotype_table
+        Boolean harmonized
         String model_url
         String workspace_name
         String workspace_namespace
@@ -12,7 +13,8 @@ workflow validate_phenotype_model {
     }
 
     call results {
-        input: table_files = table_files,
+        input: phenotype_table = phenotype_table,
+               harmonized = harmonized,
                model_url = model_url,
                hash_id_nchar = hash_id_nchar,
                workspace_name = workspace_name,
@@ -34,7 +36,8 @@ workflow validate_phenotype_model {
 
 task results {
     input {
-        Map[String, File] table_files
+        File phenotype_table
+        Boolean harmonized
         String model_url
         String workspace_name
         String workspace_namespace
@@ -44,13 +47,34 @@ task results {
     }
 
     command {
+        echo "starting prep"
+        Rscript /usr/local/primed-file-checks/prep_phenotypes.R \
+            --table_file ${phenotype_table} ${true="--harmonized" false="" harmonized} \
+            --workspace_name ${workspace_name} \
+            --workspace_namespace ${workspace_namespace}
+        echo "starting validation"
         Rscript /usr/local/anvil-util-workflows/validate_data_model.R \
-            --table_files ${write_map(table_files)} ${true="--overwrite" false="" overwrite} \
-            --model_file ${model_url} ${true="--import_tables" false="" import_tables} \
+            --table_files output_tables_validate.tsv \
+            --model_file ${model_url} \
             --workspace_name ${workspace_name} \
             --workspace_namespace ${workspace_namespace} \
             --stop_on_fail --use_existing_tables \
             --hash_id_nchar ${hash_id_nchar}
+        echo "done with validation"
+        echo "${import_tables}"
+        if [ "${import_tables}" == "true" ]
+        then
+          echo "starting import"
+          Rscript /usr/local/anvil-util-workflows/validate_data_model.R \
+            --table_files output_tables_import.tsv ${true="--overwrite" false="" overwrite} \
+            --model_file ${model_url} --import_tables \
+            --workspace_name ${workspace_name} \
+            --workspace_namespace ${workspace_namespace} \
+            --stop_on_fail --use_existing_tables \
+            --hash_id_nchar ${hash_id_nchar}
+        else 
+          echo "no import"
+        fi
     }
 
     output {
@@ -59,6 +83,6 @@ task results {
     }
 
     runtime {
-        docker: "uwgac/primed-file-checks:0.3.1"
+        docker: "uwgac/primed-file-checks:0.3.2"
     }
 }
