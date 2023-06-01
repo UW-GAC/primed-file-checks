@@ -71,6 +71,10 @@ task results {
         else 
           echo "no import"
         fi
+        if [[ "$(<pass.txt)" == "FAIL" ]]
+        then
+          exit 1
+        fi
     >>>
 
     output {
