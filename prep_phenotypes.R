@@ -17,19 +17,26 @@ argv <- parse_args(argp)
 # read phenotype table
 phen_table <- read_table(argv$table_file)
 
+# check column names
 common_cols <- c("md5sum", "file_path", "n_subjects", "n_rows")
+if (argv$harmonized) {
+    stopifnot(all(c(common_cols, "domain", "file_readme_path") %in% names(phen_table)))
+} else {
+    stopifnot(all(c(common_cols, "description", "file_dd_path") %in% names(phen_table)))
+}
+
+# copy files to local instance
+gsutil_cp(phen_table$file_path, ".")
+phen_table$file_path <- basename(phen_table$file_path)
 
 # make sure we have a subject table
 if (argv$harmonized) {
-    stopifnot(all(c(common_cols, "domain", "file_readme_path") %in% names(phen_table)))
-    
     if ("subject" %in% phen_table$domain) {
         subj <- phen_table %>%
             filter(domain == "subject") %>%
             select(file_path) %>%
             unlist() %>%
-            gsutil_pipe("rb") %>%
-            read_table()
+            read_tsv()
     } else {
         existing_table_names <- avtables(namespace=argv$workspace_namespace, name=argv$workspace_name)$table
         if ("subject" %in% existing_table_names) {
@@ -55,28 +62,27 @@ if (argv$harmonized) {
 
 # check subject id in file
 if (nrow(no_subj) > 0) {
-for (i in 1:nrow(no_subj)) {
-    message("checking subjects in file ", no_subj$file_path)
-    phen <- gsutil_pipe(no_subj$file_path[i], "rb") %>%
-        read_tsv()
-    if (!("subject_id" %in% names(phen))) {
-        stop("no subject_id column found")
+    for (i in 1:nrow(no_subj)) {
+        message("checking subjects in file ", no_subj$file_path)
+        phen <- read_tsv(no_subj$file_path[i])
+        if (!("subject_id" %in% names(phen))) {
+            stop("no subject_id column found")
+        }
+        extra <- setdiff(phen$subject_id, subj$subject_id)
+        if (length(extra) > 0) {
+            stop("subject_id values not present in subject table: ", paste(extra, collapse=", "))
+        }
+        ns1 <- no_subj$n_subjects[i]
+        ns2 <- length(unique(phen$subject_id))
+        if (ns1 != ns2) {
+            stop("reported ", ns1, " subjects but counted ", ns2)
+        }
+        nr1 <- no_subj$n_rows[i]
+        nr2 <- nrow(phen)
+        if (nr1 != nr2) {
+            stop("reported ", nr1, " rows but counted ", nr2)
+        }
     }
-    extra <- setdiff(phen$subject_id, subj$subject_id)
-    if (length(extra) > 0) {
-        stop("subject_id values not present in subject table: ", paste(extra, collapse=", "))
-    }
-    ns1 <- no_subj$n_subjects[i]
-    ns2 <- length(unique(phen$subject_id))
-    if (ns1 != ns2) {
-        stop("reported ", ns1, " subjects but counted ", ns2)
-    }
-    nr1 <- no_subj$n_rows[i]
-    nr2 <- nrow(phen)
-    if (nr1 != nr2) {
-        stop("reported ", nr1, " rows but counted ", nr2)
-    }
-}
 }
 
 # tables to validate
