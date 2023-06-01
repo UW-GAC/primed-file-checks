@@ -44,19 +44,15 @@
         "required": true,
         "columns": [
         {
-            "column": "phenotype_id",
-            "primary_key": true,
-            "data_type": "string",
-            "references": "from: subject_id, visit_id"
-        },
-        {
             "column": "subject_id",
+            "primary_key": true,
             "required": true,
             "data_type": "string",
             "references": "> subject.subject_id"
         },
         {
             "column": "visit_id",
+            "primary_key": true,
             "required": true,
             "description": "identifier for visit",
             "data_type": "string"
@@ -72,6 +68,86 @@
             "data_type": "float"
         }
         ]
+    },
+    {
+      "table": "phenotype_harmonized",
+      "columns": [
+        {
+          "column": "phenotype_harmonized_id",
+          "primary_key": true,
+          "data_type": "string",
+          "references": "from: md5sum"
+        },
+        {
+          "column": "domain",
+          "required": true,
+          "data_type": "enumeration",
+          "enumerations": ["phenotype"]
+        },
+        {
+          "column": "md5sum",
+          "required": true,
+          "description": "md5 checksum for the file",
+          "data_type": "string"
+        },
+        {
+          "column": "file_path",
+          "required": true,
+          "description": "absolute file path in cloud storage",
+          "data_type": "string"
+        },
+        {
+          "column": "file_readme_path",
+          "required": true,
+          "description": "path to the README",
+          "data_type": "string"
+        },
+        {
+          "column": "n_subjects",
+          "description": "Number of unique subjects in file",
+          "data_type": "integer"
+        },
+        {
+          "column": "n_rows",
+          "description": "Number of rows in file (may be > n_subjects for longitudinal data)",
+          "data_type": "integer"
+        }
+      ]
+    },
+    {
+      "table": "phenotype_unharmonized",
+      "columns": [
+        {
+          "column": "phenotype_unharmonized_id",
+          "primary_key": true,
+          "data_type": "string",
+          "references": "from: md5sum"
+        },
+        {
+          "column": "md5sum",
+          "required": true,
+          "description": "md5 checksum for the file in file_path",
+          "data_type": "string"
+        },
+        {
+          "column": "file_path",
+          "required": true,
+          "description": "absolute file path in cloud storage",
+          "data_type": "string"
+        },
+        {
+          "column": "file_dd_path",
+          "required": true,
+          "description": "path to the data dictionary",
+          "data_type": "string"
+        },
+        {
+          "column": "description",
+          "required": true,
+          "description": "description of data in file",
+          "data_type": "string"
+        }
+      ]
     }
     ]
 }
