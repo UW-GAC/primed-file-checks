@@ -24,10 +24,11 @@ if (argv$harmonized) {
     stopifnot(all(c(common_cols, "domain", "file_readme_path") %in% names(phen_table)))
     
     if ("subject" %in% phen_table$domain) {
-        subj <- gsutil_pipe(phen_table, "rb") %>%
+        subj <- phen_table %>%
             filter(domain == "subject") %>%
             select(file_path) %>%
             unlist() %>%
+            gsutil_pipe("rb") %>%
             read_table()
     } else {
         existing_table_names <- avtables(namespace=argv$workspace_namespace, name=argv$workspace_name)$table
