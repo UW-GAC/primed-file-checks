@@ -46,32 +46,32 @@ task results {
         Int hash_id_nchar = 16
     }
 
-    command {
+    command <<<
         echo "starting prep"
         Rscript /usr/local/primed-file-checks/prep_phenotypes.R \
-            --table_file ${phenotype_table} ${true="--harmonized" false="" harmonized} \
-            --workspace_name ${workspace_name} \
-            --workspace_namespace ${workspace_namespace}
+            --table_file ~{phenotype_table} ~{true="--harmonized" false="" harmonized} \
+            --workspace_name ~{workspace_name} \
+            --workspace_namespace ~{workspace_namespace}
         echo "starting validation"
         Rscript /usr/local/anvil-util-workflows/validate_data_model.R \
             --table_files output_table_files_validate.tsv \
-            --model_file ${model_url} \
-            --workspace_name ${workspace_name} \
-            --workspace_namespace ${workspace_namespace} \
+            --model_file ~{model_url} \
+            --workspace_name ~{workspace_name} \
+            --workspace_namespace ~{workspace_namespace} \
             --stop_on_fail --use_existing_tables \
-            --hash_id_nchar ${hash_id_nchar}
-        if [ "${import_tables}" == "true" ]
+            --hash_id_nchar ~{hash_id_nchar}
+        if [[ "~{import_tables}" == "true" ]] && [[ "$(<pass.txt)" == "PASS" ]]
         then
           echo "starting import"
           Rscript /usr/local/anvil-util-workflows/data_table_import.R \
-            --table_files output_table_files_import.tsv ${true="--overwrite" false="" overwrite} \
-            --model_file ${model_url} \
-            --workspace_name ${workspace_name} \
-            --workspace_namespace ${workspace_namespace}
+            --table_files output_table_files_import.tsv ~{true="--overwrite" false="" overwrite} \
+            --model_file ~{model_url} \
+            --workspace_name ~{workspace_name} \
+            --workspace_namespace ~{workspace_namespace}
         else 
           echo "no import"
         fi
-    }
+    >>>
 
     output {
         File validation_report = "data_model_validation.html"
