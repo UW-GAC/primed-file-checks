@@ -2,8 +2,7 @@ version 1.0
 
 workflow validate_phenotype_model {
     input {
-        File phenotype_table
-        Boolean harmonized
+        Map[String, File] table_files
         String model_url
         String workspace_name
         String workspace_namespace
@@ -13,8 +12,7 @@ workflow validate_phenotype_model {
     }
 
     call results {
-        input: phenotype_table = phenotype_table,
-               harmonized = harmonized,
+        input: table_files = table_files,
                model_url = model_url,
                hash_id_nchar = hash_id_nchar,
                workspace_name = workspace_name,
@@ -36,8 +34,7 @@ workflow validate_phenotype_model {
 
 task results {
     input {
-        File phenotype_table
-        Boolean harmonized
+        Map[String, File] table_files
         String model_url
         String workspace_name
         String workspace_namespace
@@ -50,7 +47,7 @@ task results {
         set -o pipefail
         echo "starting prep"
         Rscript /usr/local/primed-file-checks/prep_phenotypes.R \
-            --table_file ~{phenotype_table} ~{true="--harmonized" false="" harmonized} \
+            --table_files ~{write_map(table_files)} \
             --workspace_name ~{workspace_name} \
             --workspace_namespace ~{workspace_namespace}
         echo "starting validation"
