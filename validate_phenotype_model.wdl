@@ -58,6 +58,7 @@ task results {
             --workspace_namespace ~{workspace_namespace} \
             --stop_on_fail --use_existing_tables \
             --hash_id_nchar ~{hash_id_nchar}
+        cat pass.txt
         if [[ "~{import_tables}" == "true" ]] && [[ -f "pass.txt" ]] && [[ "$(<pass.txt)" == "PASS" ]]
         then
           echo "starting import"
@@ -66,6 +67,8 @@ task results {
             --model_file ~{model_url} \
             --workspace_name ~{workspace_name} \
             --workspace_namespace ~{workspace_namespace}
+        else
+            echo "no import"
         fi
     >>>
 
