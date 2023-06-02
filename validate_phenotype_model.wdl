@@ -47,6 +47,7 @@ task results {
     }
 
     command <<<
+        set -o pipefail
         echo "starting prep"
         Rscript /usr/local/primed-file-checks/prep_phenotypes.R \
             --table_file ~{phenotype_table} ~{true="--harmonized" false="" harmonized} \
@@ -60,11 +61,7 @@ task results {
             --workspace_namespace ~{workspace_namespace} \
             --stop_on_fail --use_existing_tables \
             --hash_id_nchar ~{hash_id_nchar}
-        if ! [[ -f "pass.txt" ]] || [[ "$(<pass.txt)" == "FAIL" ]]
-        then
-          exit 1
-        fi
-        if [[ "~{import_tables}" == "true" ]] && [[ "$(<pass.txt)" == "PASS" ]]
+        if [[ "~{import_tables}" == "true" ]] && [[ -f "pass.txt" ]] && [[ "$(<pass.txt)" == "PASS" ]]
         then
           echo "starting import"
           Rscript /usr/local/anvil-util-workflows/data_table_import.R \
@@ -72,8 +69,6 @@ task results {
             --model_file ~{model_url} \
             --workspace_name ~{workspace_name} \
             --workspace_namespace ~{workspace_namespace}
-        else 
-          echo "no import"
         fi
     >>>
 
