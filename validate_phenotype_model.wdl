@@ -58,21 +58,24 @@ task results {
             --workspace_namespace ~{workspace_namespace} \
             --stop_on_fail --use_existing_tables \
             --hash_id_nchar ~{hash_id_nchar}
+        mv data_model_validation.html phenotype_table_validation.html
         if [[ "~{import_tables}" == "true" ]]
         then
           echo "starting import"
-          Rscript /usr/local/anvil-util-workflows/data_table_import.R \
+          Rscript /usr/local/anvil-util-workflows/validate_data_model.R \
             --table_files output_table_files_import.tsv ~{true="--overwrite" false="" overwrite} \
             --model_file ~{model_url} \
             --workspace_name ~{workspace_name} \
-            --workspace_namespace ~{workspace_namespace}
+            --workspace_namespace ~{workspace_namespace} \
+            --stop_on_fail --use_existing_tables \
+            --hash_id_nchar ~{hash_id_nchar}
         else
             echo "no import"
         fi
     >>>
 
     output {
-        File validation_report = "data_model_validation.html"
+        File validation_report = "phenotype_table_validation.html"
         Array[File]? tables = glob("*_table.tsv")
     }
 
