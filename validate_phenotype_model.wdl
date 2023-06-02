@@ -60,6 +60,10 @@ task results {
             --workspace_namespace ~{workspace_namespace} \
             --stop_on_fail --use_existing_tables \
             --hash_id_nchar ~{hash_id_nchar}
+        if ! [[ -f "pass.txt" ]] || [[ "$(<pass.txt)" == "FAIL" ]]
+        then
+          exit 1
+        fi
         if [[ "~{import_tables}" == "true" ]] && [[ "$(<pass.txt)" == "PASS" ]]
         then
           echo "starting import"
@@ -70,10 +74,6 @@ task results {
             --workspace_namespace ~{workspace_namespace}
         else 
           echo "no import"
-        fi
-        if [[ "$(<pass.txt)" == "FAIL" ]]
-        then
-          exit 1
         fi
     >>>
 
