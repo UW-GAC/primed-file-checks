@@ -44,7 +44,7 @@ task results {
     }
 
     command <<<
-        set -o pipefail
+        set -e
         echo "starting prep"
         Rscript /usr/local/primed-file-checks/prep_phenotypes.R \
             --table_files ~{write_map(table_files)} \
@@ -58,8 +58,7 @@ task results {
             --workspace_namespace ~{workspace_namespace} \
             --stop_on_fail --use_existing_tables \
             --hash_id_nchar ~{hash_id_nchar}
-        cat pass.txt
-        if [[ "~{import_tables}" == "true" ]] && [[ -f "pass.txt" ]] && [[ "$(<pass.txt)" == "PASS" ]]
+        if [[ "~{import_tables}" == "true" ]]
         then
           echo "starting import"
           Rscript /usr/local/anvil-util-workflows/data_table_import.R \
