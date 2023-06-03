@@ -76,7 +76,8 @@ task results {
 
     output {
         File validation_report = "phenotype_table_validation.html"
-        Array[File]? tables = glob("*_table.tsv")
+        #Array[File]? tables = glob("*_table.tsv")
+        Array[File]? tables = glob("output_*.tsv")
     }
 
     runtime {
