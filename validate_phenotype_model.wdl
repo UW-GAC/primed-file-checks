@@ -67,7 +67,8 @@ task results {
           echo "starting import"
           cat output_table_files_import.tsv
           Rscript /usr/local/primed-file-checks-2/validate_data_model.R \
-            --table_files output_table_files_import.tsv ~{true="--overwrite" false="" overwrite} \
+            --table_files output_table_files_import.tsv \
+            --import_tables ~{true="--overwrite" false="" overwrite} \
             --model_file ~{model_url} \
             --workspace_name ~{workspace_name} \
             --workspace_namespace ~{workspace_namespace} \
