@@ -57,7 +57,7 @@ task results {
             --model_file ~{model_url} \
             --workspace_name ~{workspace_name} \
             --workspace_namespace ~{workspace_namespace} \
-            --use_existing_tables \
+            --stop_on_fail --use_existing_tables \
             --hash_id_nchar ~{hash_id_nchar}
         cat pass.txt
         mv data_model_validation.html phenotype_table_validation.html
@@ -69,7 +69,7 @@ task results {
             --model_file ~{model_url} \
             --workspace_name ~{workspace_name} \
             --workspace_namespace ~{workspace_namespace} \
-            --use_existing_tables \
+            --stop_on_fail --use_existing_tables \
             --hash_id_nchar ~{hash_id_nchar}
         cat pass.txt
         else

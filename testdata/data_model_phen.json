@@ -41,7 +41,6 @@
     },
     {
         "table": "phenotype",
-        "required": true,
         "columns": [
         {
             "column": "subject_id",
