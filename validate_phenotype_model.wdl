@@ -68,8 +68,9 @@ task results {
             --model_file ~{model_url} \
             --workspace_name ~{workspace_name} \
             --workspace_namespace ~{workspace_namespace} \
-            --stop_on_fail --use_existing_tables \
+            --use_existing_tables \
             --hash_id_nchar ~{hash_id_nchar}
+        cat pass.txt
         else
             echo "no import"
         fi
@@ -77,6 +78,7 @@ task results {
 
     output {
         File validation_report = "phenotype_table_validation.html"
+        File validation_report_2 = "data_model_validation.html"
         #Array[File]? tables = glob("*_table.tsv")
         Array[File]? tables = glob("output_*.tsv")
     }
