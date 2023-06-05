@@ -59,7 +59,7 @@ task results {
             --workspace_namespace ~{workspace_namespace} \
             --stop_on_fail --use_existing_tables \
             --hash_id_nchar ~{hash_id_nchar}
-        cat pass.txt
+        #cat pass.txt
         mv data_model_validation.html phenotype_table_validation.html
         if [[ "~{import_tables}" == "true" ]]
         then
@@ -71,7 +71,7 @@ task results {
             --workspace_namespace ~{workspace_namespace} \
             --stop_on_fail --use_existing_tables \
             --hash_id_nchar ~{hash_id_nchar}
-        cat pass.txt
+        #cat pass.txt
         else
             echo "no import"
         fi
