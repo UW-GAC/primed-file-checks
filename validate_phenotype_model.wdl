@@ -51,7 +51,7 @@ task results {
             --workspace_name ~{workspace_name} \
             --workspace_namespace ~{workspace_namespace}
         echo "starting validation"
-        Rscript /usr/local/primed-file-checks/validate_data_model.R \
+        Rscript /usr/local/anvil-util-workflows/validate_data_model.R \
             --table_files output_table_files_validate.tsv \
             --model_file ~{model_url} \
             --workspace_name ~{workspace_name} \
@@ -62,7 +62,7 @@ task results {
         if [[ "~{import_tables}" == "true" ]]
         then
           echo "starting import"
-          Rscript /usr/local/primed-file-checks/validate_data_model.R \
+          Rscript /usr/local/anvil-util-workflows/validate_data_model.R \
             --table_files output_table_files_import.tsv \
             --import_tables ~{true="--overwrite" false="" overwrite} \
             --model_file ~{model_url} \
