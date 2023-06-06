@@ -44,7 +44,6 @@ task results {
     }
 
     command <<<
-        git clone -b phen_tables https://github.com/UW-GAC/primed-file-checks.git /usr/local/primed-file-checks-2
         set -e
         echo "starting prep"
         Rscript /usr/local/primed-file-checks/prep_phenotypes.R \
@@ -52,21 +51,18 @@ task results {
             --workspace_name ~{workspace_name} \
             --workspace_namespace ~{workspace_namespace}
         echo "starting validation"
-        cat output_table_files_validate.tsv
-        Rscript /usr/local/primed-file-checks-2/validate_data_model.R \
+        Rscript /usr/local/primed-file-checks/validate_data_model.R \
             --table_files output_table_files_validate.tsv \
             --model_file ~{model_url} \
             --workspace_name ~{workspace_name} \
             --workspace_namespace ~{workspace_namespace} \
             --stop_on_fail --use_existing_tables \
             --hash_id_nchar ~{hash_id_nchar}
-        cat output_*_table.tsv
         mv data_model_validation.html phenotype_table_validation.html
         if [[ "~{import_tables}" == "true" ]]
         then
           echo "starting import"
-          cat output_table_files_import.tsv
-          Rscript /usr/local/primed-file-checks-2/validate_data_model.R \
+          Rscript /usr/local/primed-file-checks/validate_data_model.R \
             --table_files output_table_files_import.tsv \
             --import_tables ~{true="--overwrite" false="" overwrite} \
             --model_file ~{model_url} \
