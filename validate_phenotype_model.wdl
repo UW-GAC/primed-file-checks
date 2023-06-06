@@ -43,22 +43,46 @@ task results {
         Int hash_id_nchar = 16
     }
 
-    command {
+    command <<<
+        set -e
+        echo "starting prep"
+        Rscript /usr/local/primed-file-checks/prep_phenotypes.R \
+            --table_files ~{write_map(table_files)} \
+            --workspace_name ~{workspace_name} \
+            --workspace_namespace ~{workspace_namespace}
+        echo "starting validation"
         Rscript /usr/local/anvil-util-workflows/validate_data_model.R \
-            --table_files ${write_map(table_files)} ${true="--overwrite" false="" overwrite} \
-            --model_file ${model_url} ${true="--import_tables" false="" import_tables} \
-            --workspace_name ${workspace_name} \
-            --workspace_namespace ${workspace_namespace} \
+            --table_files output_table_files_validate.tsv \
+            --model_file ~{model_url} \
+            --workspace_name ~{workspace_name} \
+            --workspace_namespace ~{workspace_namespace} \
             --stop_on_fail --use_existing_tables \
-            --hash_id_nchar ${hash_id_nchar}
-    }
+            --hash_id_nchar ~{hash_id_nchar}
+        if [[ "~{import_tables}" == "true" ]]
+        then
+          echo "starting import"
+          mv data_model_validation.html tmp.html
+          Rscript /usr/local/anvil-util-workflows/validate_data_model.R \
+            --table_files output_table_files_import.tsv \
+            --import_tables ~{true="--overwrite" false="" overwrite} \
+            --model_file ~{model_url} \
+            --workspace_name ~{workspace_name} \
+            --workspace_namespace ~{workspace_namespace} \
+            --stop_on_fail --use_existing_tables \
+            --hash_id_nchar ~{hash_id_nchar}
+          mv tmp.html data_model_validation.html
+        else
+            echo "no import"
+        fi
+    >>>
 
     output {
         File validation_report = "data_model_validation.html"
         Array[File]? tables = glob("*_table.tsv")
+        #Array[File]? tables = glob("output_*.tsv")
     }
 
     runtime {
-        docker: "uwgac/primed-file-checks:0.3.1"
+        docker: "uwgac/primed-file-checks:0.3.1.1"
     }
 }

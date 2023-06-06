@@ -1,0 +1,3 @@
+subject	testdata/subject.tsv
+phenotype_harmonized	testdata/phenotype_harmonized.tsv
+phenotype_unharmonized	testdata/phenotype_unharmonized.tsv
