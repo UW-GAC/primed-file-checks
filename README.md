@@ -8,6 +8,42 @@ The Dockerfile creates a docker image containing the AnvilDataModels R package a
 [uwgac/primed-file-checks](https://hub.docker.com/r/uwgac/primed-file-checks).
 
 
+## validate_phenotype_model
+
+Workflow to validate TSV files against the PRIMED phenotype data model using the [AnvilDataModels](https://github.com/UW-GAC/AnvilDataModels) package. An uploader will prepare files in tab separated values (TSV) format, with one file for each data table in the model, and upload them to an AnVIL workspace. This workflow will compare those files to the data model, and generate an HTML report describing any inconsistencies. 
+
+If the data model specifies that any columns be auto-generated from other columns, the workflow generates TSV files with updated tables before running checks.
+
+Phenotype tables in TSV form are listed in either a “phenotype_harmonized” table (for domain tables where adherence to the data model is verified by the workflow), and/or a “phenotype_unharmonized” table (for tables where only the column “subject_id” is required).
+
+Phenotype domain tables are supplied in long form with each row as one time per subject rather than wide form. The set of columns that form a unique observation is indicated in the “Primary key” column in the data model.
+
+This workflow checks whether the subject table, phenotype_harmonized and phenotype_unharmonized tables, and domain tables conform to the data model. For each table, it checks column names, data types, and primary keys. Finally, it checks foreign keys (cross-references across tables). Results of all checks are displayed in an HTML file. For unharmonized phenotype tables, the only check performed is whether the “subject_id” column exists and that all values appear in the subject table.
+
+If any tables in the data model are not included in the "table_files" input but are already present in the workspace, the workflow will read them from the workspace for cross-checks with supplied tables.
+
+If miminal checks are passed and `import_tables` is set to `true`, the workflow will then import the files as data tables in an AnVIL workspace. If checks are not passed, the workflow will fail and the user should review the file "data_model_validation.html" in the workflow output directory.
+
+The user must specify the following inputs:
+
+input | description
+--- | ---
+table_files | This input is of type Map[String, File], which consists of key:value pairs. Keys are table names, which should correspond to names in the data model, and values are Google bucket paths to TSV files for each table.
+model_url | A URL providing the path to the data model in JSON format.
+hash_id_nchar | Number of characters in auto-generated columns (default 16)
+import_tables | A boolean indicating whether tables should be imported to a workspace after validation.
+overwrite | A boolean indicating whether existing rows in the data tables should be overwritten.
+workspace_name | A string with the workspace name. e.g, if the workspace URL is https://anvil.terra.bio/#workspaces/fc-product-demo/Terra-Workflows-Quickstart, the workspace name is "Terra-Workflows-Quickstart"
+workspace_namespace | A string with the workspace name. e.g, if the workspace URL is https://anvil.terra.bio/#workspaces/fc-product-demo/Terra-Workflows-Quickstart, the workspace namespace is "fc-product-demo"
+
+The workflow returns the following outputs:
+
+output | description
+--- | ---
+validation_report | An HTML file with validation results
+tables | A file array with the tables after adding auto-generated columns. This output is not generated if no additional columns are specified in the data model.
+
+
 ## validate_genotype_model
 
 Workflow to validate TSV files against the PRIMED genotype data model using the [AnvilDataModels](https://github.com/UW-GAC/AnvilDataModels) package. An uploader will prepare files in tab separated values (TSV) format, with one file for each data table in the model, and upload them to an AnVIL workspace. This workflow will compare those files to the data model, and generate an HTML report describing any inconsistencies. 
@@ -17,6 +53,8 @@ If the data model specifies that any columns be auto-generated from other column
 Each dataset table is supplied in long form as key/value pairs ([example](testdata/dataset.tsv)) rather than wide form. A unique `<type>_dataset_id` is added to both the dataset table and the file table to link the dataset and the data files.
 
 This workflow checks whether expected tables (both required and optional) are included. For each table, it checks column names, data types, and primary keys. Finally, it checks foreign keys (cross-references across tables). Results of all checks are displayed in an HTML file.
+
+If any tables in the data model are not included in the "table_files" input but are already present in the workspace, the workflow will read them from the workspace for cross-checks with supplied tables.
 
 If miminal checks are passed and `import_tables` is set to `true`, the workflow will then import the files as data tables in an AnVIL workspace. If checks are not passed, the workflow will fail and the user should review the file "data_model_validation.html" in the workflow output directory.
 
