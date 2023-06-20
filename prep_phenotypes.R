@@ -4,7 +4,7 @@ library(AnvilDataModels)
 library(dplyr)
 library(readr)
 
-argp <- arg_parser("report")
+argp <- arg_parser("prep")
 argp <- add_argument(argp, "--table_files", help="2-column tsv file with (table name, table tsv file)")
 argp <- add_argument(argp, "--workspace_name", help="name of AnVIL workspace to import data to")
 argp <- add_argument(argp, "--workspace_namespace", help="namespace of AnVIL workspace to import data to")
@@ -87,12 +87,6 @@ if ("phenotype_harmonized" %in% table_files$names) {
     validate_files <- phen_table %>%
         select(names=domain, files=file_path) %>%
         bind_rows(table_files)
-    
-    # tables to import - add population_descriptor
-    import_files <- phen_table %>%
-        select(names=domain, files=file_path) %>%
-        filter(names == "population_descriptor") %>%
-        bind_rows(table_files)
 }
 
 
@@ -111,4 +105,3 @@ if ("phenotype_unharmonized" %in% table_files$names) {
 
 
 write_tsv(validate_files, "output_table_files_validate.tsv", col_names=FALSE)
-write_tsv(import_files, "output_table_files_import.tsv", col_names=FALSE)

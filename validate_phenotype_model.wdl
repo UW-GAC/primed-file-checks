@@ -61,28 +61,23 @@ task results {
         if [[ "~{import_tables}" == "true" ]]
         then
           echo "starting import"
-          mv data_model_validation.html tmp.html
-          Rscript /usr/local/anvil-util-workflows/validate_data_model.R \
+          Rscript /usr/local/primed-file-checks/select_import_phenotypes.R \
+            --table_files output_tables.tsv
+          Rscript /usr/local/anvil-util-workflows/data_table_import.R \
             --table_files output_table_files_import.tsv \
-            --import_tables ~{true="--overwrite" false="" overwrite} \
-            --model_file ~{model_url} \
-            --workspace_name ~{workspace_name} \
-            --workspace_namespace ~{workspace_namespace} \
-            --stop_on_fail --use_existing_tables \
-            --hash_id_nchar ~{hash_id_nchar}
-          mv tmp.html data_model_validation.html
-        else
-            echo "no import"
+            --model_file ${model_url} ${true="--overwrite" false="" overwrite} \
+            --workspace_name ${workspace_name} \
+            --workspace_namespace ${workspace_namespace}
         fi
     >>>
 
     output {
         File validation_report = "data_model_validation.html"
-        Array[File]? tables = glob("*_table.tsv")
-        #Array[File]? tables = glob("output_*.tsv")
+        #Array[File]? tables = glob("output_*_table.tsv")
+        Array[File]? tables = glob("output_*.tsv")
     }
 
     runtime {
-        docker: "uwgac/primed-file-checks:0.3.1.1"
+        docker: "uwgac/primed-file-checks:0.3.1.2"
     }
 }
