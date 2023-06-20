@@ -73,8 +73,7 @@ task results {
 
     output {
         File validation_report = "data_model_validation.html"
-        #Array[File]? tables = glob("output_*_table.tsv")
-        Array[File]? tables = glob("output_*.tsv")
+        Array[File]? tables = glob("output_*_table.tsv")
     }
 
     runtime {
