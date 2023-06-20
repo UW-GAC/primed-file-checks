@@ -65,9 +65,9 @@ task results {
             --table_files output_tables.tsv
           Rscript /usr/local/anvil-util-workflows/data_table_import.R \
             --table_files output_table_files_import.tsv \
-            --model_file ${model_url} ${true="--overwrite" false="" overwrite} \
-            --workspace_name ${workspace_name} \
-            --workspace_namespace ${workspace_namespace}
+            --model_file ~{model_url} ~{true="--overwrite" false="" overwrite} \
+            --workspace_name ~{workspace_name} \
+            --workspace_namespace ~{workspace_namespace}
         fi
     >>>
 
