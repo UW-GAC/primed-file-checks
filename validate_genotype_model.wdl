@@ -1,6 +1,7 @@
 version 1.0
 
 import "https://raw.githubusercontent.com/UW-GAC/anvil-util-workflows/main/check_md5.wdl" as md5
+import "check_vcf_samples.wdl" as vcf
 
 workflow validate_genotype_model {
     input {
@@ -11,6 +12,7 @@ workflow validate_genotype_model {
         Boolean overwrite = false
         Boolean import_tables = false
         Int? hash_id_nchar
+        Int? vcf_disk_gb
     }
 
     call results {
@@ -42,6 +44,30 @@ workflow validate_genotype_model {
             call md5.summarize_md5_check {
                 input: file = select_md5_files.files_to_check,
                     md5_check = check_md5.md5_check
+            }
+        }
+
+        call select_vcf_files {
+            input: validated_table_files = val_tables
+        }
+
+        # can only check VCF files once tables are imported since check_vcf_samples reads tables
+        if (import_tables && select_vcf_files.files_to_check[0] != "NULL") {
+            scatter (pair in zip(zip(select_vcf_files.files_to_check, select_vcf_files.ids_to_check), 
+                                 select_vcf_files.datasets_to_check)) {
+                call vcf.check_vcf_samples {
+                    input: vcf_file = pair.left.left,
+                        dataset_id = pair.left.right,
+                        dataset_type = pair.right,
+                        workspace_name = workspace_name,
+                        workspace_namespace = workspace_namespace,
+                        disk_gb = vcf_disk_gb
+                }
+            }
+
+            call vcf.summarize_vcf_check {
+                input: file = select_vcf_files.files_to_check,
+                    vcf_check = check_vcf_samples.vcf_sample_check
             }
         }
     }
@@ -134,6 +160,50 @@ task select_md5_files {
     output {
         Array[String] files_to_check = read_lines("file.txt")
         Array[String] md5sum_to_check = read_lines("md5sum.txt")
+    }
+
+    runtime {
+        docker: "us.gcr.io/broad-dsp-gcr-public/anvil-rstudio-bioconductor:3.16.0"
+    }
+}
+
+
+task select_vcf_files {    
+    input {
+        Array[File] validated_table_files
+    }
+
+    command <<<
+        Rscript -e "\
+        tables <- readLines('~{write_lines(validated_table_files)}'); \
+        names(tables) <- sub('^output_', '', sub('_table.tsv', '', basename(tables))); \
+        dataset_types <- c('array', 'imputation', 'sequencing', 'simulation'); \
+        dataset_tables <- paste0(dataset_types, '_file'); \
+        tables <- tables[names(tables) %in% dataset_tables]; \
+        files <- list(); ids <- list(); datasets <- list(); \
+        for (t in names(tables)) { \
+          dat <- readr::read_tsv(tables[t]); \
+          dat <- dplyr::filter(dat, file_type == 'VCF'); \
+          files[[t]] <- dat[['file_path']]; \
+          ids[[t]] <- dat[[sub('_file', '_dataset_id', t)]]; \
+          datasets[[t]] <- rep(sub('_file', '', t), nrow(dat)); \
+        }; \
+        if (length(files) > 0) { \
+          writeLines(unlist(files), 'file.txt'); \
+          writeLines(unlist(ids), 'id.txt'); \
+          writeLines(unlist(datasets), 'dataset.txt'); \
+        } else { \
+          writeLines('NULL', 'file.txt'); \
+          writeLines('NULL', 'id.txt'); \
+          writeLines('NULL', 'dataset.txt'); \
+        } \
+        "
+    >>>
+
+    output {
+        Array[String] files_to_check = read_lines("file.txt")
+        Array[String] ids_to_check = read_lines("id.txt")
+        Array[String] datasets_to_check = read_lines("dataset.txt")
     }
 
     runtime {
