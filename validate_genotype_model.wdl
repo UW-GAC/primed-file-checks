@@ -77,6 +77,8 @@ workflow validate_genotype_model {
         Array[File]? tables = results.tables
         String? md5_check_summary = summarize_md5_check.summary
         File? md5_check_details = summarize_md5_check.details
+        String? vcf_check_summary = summarize_vcf_check.summary
+        File? vcf_check_details = summarize_vcf_check.details
     }
 
      meta {
