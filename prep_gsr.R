@@ -24,7 +24,15 @@ if (length(analysis_file) == 0) stop("analysis table not found in table_files")
 fv <- read_tsv(analysis_file, col_types=cols(.default=col_character()))
 
 # transpose
-analysis <- transpose_field_value(fv, table_name="analysis", model=model)
+transpose_fv <- function(fv) {
+    stopifnot(setequal(names(fv), c("field", "value")))
+    lapply(setNames(1:nrow(fv), fv$field), function(i) {
+        v <- fv$value[i]
+        return(v)
+    }) %>%
+        bind_cols()
+}
+analysis <- transpose_fv(fv)
 
 # add analysis_id
 analysis_id <- hash_id(paste(analysis, collapse=""), nchar=argv$hash_id_nchar)
