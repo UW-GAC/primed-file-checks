@@ -82,7 +82,8 @@ task validate {
 
     output {
         File validation_report = "data_model_validation.html"
-        Array[File]? tables = glob("*_table.tsv")
+        #Array[File]? tables = glob("output_*_table.tsv")
+        Array[File]? tables = glob("output_*.tsv")
         Array[File] data_files = read_lines("data_files.txt")
         String analysis_id = read_string("analysis_id.txt")
     }
