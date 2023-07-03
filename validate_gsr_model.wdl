@@ -72,7 +72,7 @@ task validate {
         if [[ "~{import_tables}" == "true" ]]
         then
           Rscript /usr/local/anvil-util-workflows/data_table_import.R \
-            --table_files output_tables.tsv \o
+            --table_files output_tables.tsv \
             --model_file ~{model_url} ~{true="--overwrite" false="" overwrite} \
             --workspace_name ~{workspace_name} \
             --workspace_namespace ~{workspace_namespace}
