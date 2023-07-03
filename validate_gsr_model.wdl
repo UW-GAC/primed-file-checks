@@ -1,5 +1,7 @@
 version 1.0
 
+import "gsr_data_report.wdl" as gsr
+
 workflow validate_gsr_model {
     input {
         Map[String, File] table_files
@@ -11,7 +13,7 @@ workflow validate_gsr_model {
         Int? hash_id_nchar
     }
 
-    call results {
+    call validate {
         input: table_files = table_files,
                model_url = model_url,
                hash_id_nchar = hash_id_nchar,
@@ -21,9 +23,19 @@ workflow validate_gsr_model {
                import_tables = import_tables
     }
 
+    scatter (f in validate.data_files) {
+        call gsr.gsr_data_report {
+            input: data_file = f,
+                   analysis_id = validate.analysis_id,
+                   dd_url = model_url,
+                   workspace_name = workspace_name,
+                   workspace_namespace = workspace_namespace
+        }
+    }
+
     output {
-        File validation_report = results.validation_report
-        Array[File]? tables = results.tables
+        File validation_report = validate.validation_report
+        Array[File]? tables = validate.tables
     }
 
      meta {
@@ -32,7 +44,7 @@ workflow validate_gsr_model {
     }
 }
 
-task results {
+task validate {
     input {
         Map[String, File] table_files
         String model_url
@@ -44,6 +56,7 @@ task results {
     }
 
     command {
+        set -e
         Rscript /usr/local/primed-file-checks/prep_gsr.R \
             --table_files ${write_map(table_files)} \
             --model_file ${model_url} \
@@ -55,14 +68,18 @@ task results {
             --workspace_namespace ${workspace_namespace} \
             --stop_on_fail --use_existing_tables \
             --hash_id_nchar ${hash_id_nchar}
+        Rscript /usr/local/primed-file-checks/select_gsr_files.R \
+            --table_files output_tables.tsv
     }
 
     output {
         File validation_report = "data_model_validation.html"
         Array[File]? tables = glob("*_table.tsv")
+        Array[File] data_files = read_lines("data_files.txt")
+        String analysis_id = read_string("analysis_id.txt")
     }
 
     runtime {
-        docker: "uwgac/primed-file-checks:0.3.1"
+        docker: "uwgac/primed-file-checks:0.3.2"
     }
 }
