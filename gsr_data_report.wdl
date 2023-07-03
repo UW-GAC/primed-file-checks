@@ -9,7 +9,7 @@ workflow gsr_data_report {
         String workspace_namespace
     }
 
-    call results {
+    call validate {
         input: data_file = data_file,
                dd_url = dd_url,
                analysis_id = analysis_id,
@@ -18,8 +18,8 @@ workflow gsr_data_report {
     }
 
     output {
-        File validation_report = results.validation_report
-        Boolean pass_checks = results.pass_checks
+        File validation_report = validate.validation_report
+        Boolean pass_checks = validate.pass_checks
     }
 
      meta {
@@ -28,7 +28,7 @@ workflow gsr_data_report {
     }
 }
 
-task results{
+task validate {
     input {
         File data_file
         String dd_url

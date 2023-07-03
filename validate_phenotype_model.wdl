@@ -13,7 +13,7 @@ workflow validate_phenotype_model {
         Int? hash_id_nchar
     }
 
-    call results {
+    call validate {
         input: table_files = table_files,
                model_url = model_url,
                hash_id_nchar = hash_id_nchar,
@@ -24,9 +24,9 @@ workflow validate_phenotype_model {
     }
 
     # need this because validate_data_model.tables is optional but input to select_md5_files is required
-    Array[File] val_tables = select_first([results.tables, ""])
+    Array[File] val_tables = select_first([validate.tables, ""])
 
-    if (defined(results.tables)) {
+    if (defined(validate.tables)) {
         call select_md5_files {
             input: validated_table_files = val_tables
         }
@@ -47,8 +47,8 @@ workflow validate_phenotype_model {
     }
 
     output {
-        File validation_report = results.validation_report
-        Array[File]? tables = results.tables
+        File validation_report = validate.validation_report
+        Array[File]? tables = validate.tables
         String? md5_check_summary = summarize_md5_check.summary
         File? md5_check_details = summarize_md5_check.details
     }
@@ -60,7 +60,7 @@ workflow validate_phenotype_model {
 }
 
 
-task results {
+task validate {
     input {
         Map[String, File] table_files
         String model_url
