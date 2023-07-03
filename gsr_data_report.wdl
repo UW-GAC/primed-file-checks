@@ -37,14 +37,14 @@ task validate {
         String workspace_namespace
     }
 
-    command {
+    command <<<
         Rscript /usr/local/primed-file-checks/gsr_data_report.R \
-            --data_file ${data_file} \
-            --dd_file ${dd_url} \
-            --analysis_id ${analysis_id} \
-            --workspace_name ${workspace_name} \
-            --workspace_namespace ${workspace_namespace}
-    }
+            --data_file ~{data_file} \
+            --dd_file ~{dd_url} \
+            --analysis_id ~{analysis_id} \
+            --workspace_name ~{workspace_name} \
+            --workspace_namespace ~{workspace_namespace}
+    >>>
 
     output {
         File validation_report = "data_dictionary_validation.txt"

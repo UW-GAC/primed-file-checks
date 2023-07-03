@@ -99,28 +99,29 @@ task validate {
         Int hash_id_nchar = 16
     }
 
-    command {
+    command <<<
         set -e
+        echo "starting prep"
         Rscript /usr/local/primed-file-checks/prep_datasets.R \
-            --table_files ${write_map(table_files)} \
-            --model_file ${model_url} \
-            --hash_id_nchar ${hash_id_nchar}
+            --table_files ~{write_map(table_files)} \
+            --model_file ~{model_url} \
+            --hash_id_nchar ~{hash_id_nchar}
         Rscript /usr/local/anvil-util-workflows/validate_data_model.R \
             --table_files output_table_files.tsv \
-            --model_file ${model_url} \
-            --workspace_name ${workspace_name} \
-            --workspace_namespace ${workspace_namespace} \
+            --model_file ~{model_url} \
+            --workspace_name ~{workspace_name} \
+            --workspace_namespace ~{workspace_namespace} \
             --stop_on_fail --use_existing_tables \
-            --hash_id_nchar ${hash_id_nchar}
+            --hash_id_nchar ~{hash_id_nchar}
         if [[ "~{import_tables}" == "true" ]]
         then
           Rscript /usr/local/anvil-util-workflows/data_table_import.R \
             --table_files output_tables.tsv \
-            --model_file ${model_url} ${true="--overwrite" false="" overwrite} \
-            --workspace_name ${workspace_name} \
-            --workspace_namespace ${workspace_namespace}
+            --model_file ~{model_url} ~{true="--overwrite" false="" overwrite} \
+            --workspace_name ~{workspace_name} \
+            --workspace_namespace ~{workspace_namespace}
         fi
-    }
+    >>>
 
     output {
         File validation_report = "data_model_validation.html"
