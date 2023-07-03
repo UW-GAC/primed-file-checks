@@ -9,7 +9,7 @@ argv <- parse_args(argp)
 # read tables
 table_files <- read_tsv(argv$table_files, col_names=c("names", "files"), col_types="cc")
 tables <- read_data_tables(table_files$files, table_names=table_files$names)
-stopifnot(setequal(names(tables_files), c("analysis", "gsr_file")))
+stopifnot(setequal(names(table_files), c("analysis", "gsr_file")))
 
 analysis_id <- tables[["analysis"]]$analysis_id
 stopifnot(length(analysis_id) == 1)
