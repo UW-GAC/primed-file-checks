@@ -118,6 +118,66 @@
                 "data_type": "integer"
             }
         ]
+    },
+    {
+        "table": "gsr_dd",
+        "columns": [
+            {
+              "column": "chromosome",
+              "required": true,
+              "description": "the chromosome that the variant is located on",
+              "data_type": "enumeration",
+              "enumerations": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "X", "Y", "MT"]
+            },
+            {
+              "column": "position",
+              "required": true,
+              "description": "the base pair location of the variant",
+              "data_type": "integer"
+            },
+            {
+              "column": "rs_id",
+              "description": "rs Identifier",
+              "data_type": "string"
+            },
+            {
+              "column": "strand",
+              "required": true,
+              "description": "DNA strand designation",
+              "data_type": "enumeration",
+              "enumerations": ["-", "+"]
+            },
+            {
+              "column": "effect_allele",
+              "required": true,
+              "description": "effect allele of the variant",
+              "data_type": "string"
+            },
+            {
+              "column": "other_allele",
+              "required": true,
+              "description": "the other allele to the effect allele",
+              "data_type": "string"
+            },
+            {
+              "column": "effect_allele_freq",
+              "required": true,
+              "description": "effect allele frequency of the variant",
+              "data_type": "float"
+            },
+            {
+              "column": "p_value",
+              "required": true,
+              "description": "p-value",
+              "data_type": "float"
+            },
+            {
+              "column": "odds_ratio",
+              "required": "CONDITIONAL (outcome_type = binary)",
+              "description": "odds ratio for binary traits",
+              "data_type": "float"
+            }
+        ]
     }
     ]
 }
