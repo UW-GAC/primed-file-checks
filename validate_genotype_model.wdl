@@ -106,6 +106,7 @@ task validate {
             --table_files ~{write_map(table_files)} \
             --model_file ~{model_url} \
             --hash_id_nchar ~{hash_id_nchar}
+        echo "starting validation"
         Rscript /usr/local/anvil-util-workflows/validate_data_model.R \
             --table_files output_table_files.tsv \
             --model_file ~{model_url} \
