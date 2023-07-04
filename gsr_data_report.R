@@ -30,7 +30,7 @@ if (!is.na(argv$workspace_name) & !is.na(argv$workspace_namespace)) {
         filter(analysis_id == argv$analysis_id)
     # parse conditions and add cols to 'required' as necessary
     req <- character()
-    cond <- attr(dd[[1]], "conditions")
+    cond <- attr(dd[[dd_table_name]], "conditions")
     for (c in names(cond)) {
         p <- AnvilDataModels:::.parse_condition(cond[[c]])
         if (analysis[[p$column]] == p$value) {
@@ -38,9 +38,9 @@ if (!is.na(argv$workspace_name) & !is.na(argv$workspace_namespace)) {
         }
     }
     if (length(req) > 0) {
-        req <- unique(c(attr(dd[[1]], "required"), req))
+        req <- unique(c(attr(dd[[dd_table_name]], "required"), req))
         # can't update attributes on a dm object
-        tmp <- dd[[1]]
+        tmp <- dd[[dd_table_name]]
         attr(tmp, "required") <- req
         # remove conditions so columns aren't listed twice in check
         attr(tmp, "conditions") <- character()
