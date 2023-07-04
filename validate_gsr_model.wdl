@@ -62,7 +62,6 @@ task validate {
             --table_files ~{write_map(table_files)} \
             --model_file ~{model_url} \
             --hash_id_nchar ~{hash_id_nchar}
-        cat output_table_files.tsv
         echo "starting validation"
         Rscript /usr/local/anvil-util-workflows/validate_data_model.R \
             --table_files output_table_files.tsv \
@@ -71,7 +70,6 @@ task validate {
             --workspace_namespace ~{workspace_namespace} \
             --stop_on_fail --use_existing_tables \
             --hash_id_nchar ~{hash_id_nchar}
-        cat output_tables.tsv
         if [[ "~{import_tables}" == "true" ]]
         then
           echo "starting import"
@@ -83,14 +81,13 @@ task validate {
         fi
         Rscript /usr/local/primed-file-checks/select_gsr_files.R \
             --table_files output_tables.tsv
-        cat data_files.txt
     >>>
 
     output {
         File validation_report = "data_model_validation.html"
-        #Array[File]? tables = glob("output_*_table.tsv")
-        Array[File]? tables = glob("output_*.tsv")
+        Array[File]? tables = glob("output_*_table.tsv")
         Array[File] data_files = read_lines("data_files.txt")
+        Array[File] md5sum = read_lines("md5sum.txt")
         String analysis_id = read_string("analysis_id.txt")
     }
 

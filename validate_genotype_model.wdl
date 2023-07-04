@@ -116,6 +116,7 @@ task validate {
             --hash_id_nchar ~{hash_id_nchar}
         if [[ "~{import_tables}" == "true" ]]
         then
+          echo "starting import"
           Rscript /usr/local/anvil-util-workflows/data_table_import.R \
             --table_files output_tables.tsv \
             --model_file ~{model_url} ~{true="--overwrite" false="" overwrite} \
