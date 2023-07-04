@@ -19,4 +19,4 @@ data_files <- tables[["gsr_file"]]$file_path
 writeLines(data_files, "data_files.txt")
 
 md5 <- tables[["gsr_file"]]$md5sum
-writeLines(data_files, "md5sum.txt")
+writeLines(md5, "md5sum.txt")
