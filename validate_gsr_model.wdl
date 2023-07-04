@@ -33,11 +33,19 @@ workflow validate_gsr_model {
                     workspace_namespace = workspace_namespace
             }
         }
+
+        call gsr.summarize_data_check {
+            input: file = validate.data_files,
+                data_check = gsr_data_report.pass_checks,
+                validation_report = gsr_data_report.validation_report
+        }
     }
 
     output {
         File validation_report = validate.validation_report
         Array[File]? tables = validate.tables
+        String? data_report_summary = summarize_data_check.summary
+        File? data_report_details = summarize_data_check.details
     }
 
      meta {
