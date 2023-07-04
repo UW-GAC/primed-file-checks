@@ -1,5 +1,6 @@
 version 1.0
 
+import "https://raw.githubusercontent.com/UW-GAC/anvil-util-workflows/main/check_md5.wdl" as md5
 import "gsr_data_report.wdl" as gsr
 
 workflow validate_gsr_model {
@@ -23,6 +24,18 @@ workflow validate_gsr_model {
                import_tables = import_tables
     }
 
+    scatter (pair in zip(validate.data_files, validate.md5sum)) {
+        call md5.check_md5 {
+            input: file = pair.left,
+                md5sum = pair.right
+        }
+    }
+
+    call md5.summarize_md5_check {
+        input: file = validate.data_files,
+            md5_check = check_md5.md5_check
+    }
+
     if (import_tables) {
         scatter (f in validate.data_files) {
             call gsr.gsr_data_report {
@@ -44,6 +57,8 @@ workflow validate_gsr_model {
     output {
         File validation_report = validate.validation_report
         Array[File]? tables = validate.tables
+        String? md5_check_summary = summarize_md5_check.summary
+        File? md5_check_details = summarize_md5_check.details
         String? data_report_summary = summarize_data_check.summary
         File? data_report_details = summarize_data_check.details
     }
@@ -88,13 +103,9 @@ task validate {
             --model_file ~{model_url} ~{true="--overwrite" false="" overwrite} \
             --workspace_name ~{workspace_name} \
             --workspace_namespace ~{workspace_namespace}
-          Rscript /usr/local/primed-file-checks/select_gsr_files.R \
-            --table_files output_tables.tsv
-        else
-          echo "NULL" > data_files.txt
-          echo "NULL" > md5sum.txt
-          echo "NULL" > analysis_id.txt
         fi
+        Rscript /usr/local/primed-file-checks/select_gsr_files.R \
+            --table_files output_tables.tsv
     >>>
 
     output {
