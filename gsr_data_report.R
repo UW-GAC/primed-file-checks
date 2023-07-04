@@ -1,6 +1,7 @@
 library(argparser)
 library(AnvilDataModels)
 library(AnVIL)
+library(readr)
 
 argp <- arg_parser("report")
 argp <- add_argument(argp, "--data_file", help="tsv file with data")
@@ -15,11 +16,11 @@ argv <- parse_args(argp)
 
 # read data model
 dd <- json_to_dm(argv$dd_file)
+stopifnot("gsr_dd" %in% names(dd))
 
 # read 1000 rows for checking data against expected type
-dat <- readr::read_tsv(argv$data_file, n_max=1000)
-dat <- list(dat)
-names(dat) <- names(dd)
+dat <- read_tsv(argv$data_file, n_max=1000)
+dat <- list(gsr_dd=dat)
 
 # read analysis table to assess conditions
 if (!is.na(argv$workspace_name) & !is.na(argv$workspace_namespace)) {
