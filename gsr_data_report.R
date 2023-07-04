@@ -16,11 +16,13 @@ argv <- parse_args(argp)
 
 # read data model
 dd <- json_to_dm(argv$dd_file)
-stopifnot("gsr_files_dd" %in% names(dd))
+dd_table_name <- "gsr_files_dd"
+stopifnot(dd_table_name %in% names(dd))
 
 # read 1000 rows for checking data against expected type
 dat <- read_tsv(argv$data_file, n_max=1000)
-dat <- list(gsr_dd=dat)
+dat <- list(dat)
+names(dat) <- dd_table_name
 
 # read analysis table to assess conditions
 if (!is.na(argv$workspace_name) & !is.na(argv$workspace_namespace)) {
@@ -43,7 +45,7 @@ if (!is.na(argv$workspace_name) & !is.na(argv$workspace_namespace)) {
         # remove conditions so columns aren't listed twice in check
         attr(tmp, "conditions") <- character()
         tmp <- list(tmp)
-        names(tmp) <- names(dd)
+        names(tmp) <- dd_table_name
         dd <- dm::as_dm(tmp)
     }
 }
