@@ -120,7 +120,7 @@
         ]
     },
     {
-        "table": "gsr_dd",
+        "table": "gsr_files_dd",
         "columns": [
             {
               "column": "chromosome",

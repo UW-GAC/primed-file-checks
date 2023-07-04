@@ -16,7 +16,7 @@ argv <- parse_args(argp)
 
 # read data model
 dd <- json_to_dm(argv$dd_file)
-stopifnot("gsr_dd" %in% names(dd))
+stopifnot("gsr_files_dd" %in% names(dd))
 
 # read 1000 rows for checking data against expected type
 dat <- read_tsv(argv$data_file, n_max=1000)
