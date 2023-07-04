@@ -23,13 +23,20 @@ workflow validate_gsr_model {
                import_tables = import_tables
     }
 
-    scatter (f in validate.data_files) {
-        call gsr.gsr_data_report {
-            input: data_file = f,
-                   analysis_id = validate.analysis_id,
-                   dd_url = model_url,
-                   workspace_name = workspace_name,
-                   workspace_namespace = workspace_namespace
+    # need this because validation outputs are optional but inputs to other tasks are required
+    Array[File] val_data_files = select_first([validate.data_files, ""])
+    Array[String] val_md5sum = select_first([validate.md5sum, ""])
+    String val_analysis_id = select_first([validate.analysis_id, ""])
+
+    if (defined(validate.data_files)) {
+        scatter (f in val_data_files) {
+            call gsr.gsr_data_report {
+                input: data_file = f,
+                    analysis_id = val_analysis_id,
+                    dd_url = model_url,
+                    workspace_name = workspace_name,
+                    workspace_namespace = workspace_namespace
+            }
         }
     }
 
@@ -86,9 +93,9 @@ task validate {
     output {
         File validation_report = "data_model_validation.html"
         Array[File]? tables = glob("output_*_table.tsv")
-        Array[File] data_files = read_lines("data_files.txt")
-        Array[File] md5sum = read_lines("md5sum.txt")
-        String analysis_id = read_string("analysis_id.txt")
+        Array[File]? data_files = read_lines("data_files.txt")
+        Array[String]? md5sum = read_lines("md5sum.txt")
+        String? analysis_id = read_string("analysis_id.txt")
     }
 
     runtime {

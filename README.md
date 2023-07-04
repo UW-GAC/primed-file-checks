@@ -24,6 +24,8 @@ If any tables in the data model are not included in the "table_files" input but 
 
 If miminal checks are passed and `import_tables` is set to `true`, the workflow will then import the files as data tables in an AnVIL workspace. If checks are not passed, the workflow will fail and the user should review the file "data_model_validation.html" in the workflow output directory.
 
+If validation is successful, the workflow will check the md5sums provided for each phenotype file against the value in google cloud storage. For each file, the workflow will return 'PASS' if the check was successful or 'UNVERIFIED' if the file was found but does not have an md5 value in its metadata. The workflow will fail if the md5sums do not match or if the file is not found. Review the log file for check details including the two md5 values compared.
+
 The user must specify the following inputs:
 
 input | description
@@ -42,6 +44,8 @@ output | description
 --- | ---
 validation_report | An HTML file with validation results
 tables | A file array with the tables after adding auto-generated columns. This output is not generated if no additional columns are specified in the data model.
+md5_check_summary | A string describing the check results. e.g. "10 PASS; 1 UNVERIFIED"
+md5_check_details | A TSV file with two columns: file_path of the file in cloud storage and md5_check with the check result.
 
 
 ## validate_genotype_model
@@ -58,6 +62,8 @@ If any tables in the data model are not included in the "table_files" input but 
 
 If miminal checks are passed and `import_tables` is set to `true`, the workflow will then import the files as data tables in an AnVIL workspace. If checks are not passed, the workflow will fail and the user should review the file "data_model_validation.html" in the workflow output directory.
 
+If validation is successful, the workflow will check the md5sums provided for each dataset file against the value in google cloud storage. For each file, the workflow will return 'PASS' if the check was successful or 'UNVERIFIED' if the file was found but does not have an md5 value in its metadata. The workflow will fail if the md5sums do not match or if the file is not found. Review the log file for check details including the two md5 values compared.
+
 The user must specify the following inputs:
 
 input | description
@@ -76,6 +82,8 @@ output | description
 --- | ---
 validation_report | An HTML file with validation results
 tables | A file array with the tables after adding auto-generated columns. This output is not generated if no additional columns are specified in the data model.
+md5_check_summary | A string describing the check results. e.g. "10 PASS; 1 UNVERIFIED"
+md5_check_details | A TSV file with two columns: file_path of the file in cloud storage and md5_check with the check result.
 
 
 ## validate_gsr_model
