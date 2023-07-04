@@ -7,6 +7,7 @@ argp <- arg_parser("report")
 argp <- add_argument(argp, "--data_file", help="tsv file with data")
 argp <- add_argument(argp, "--dd_file", help="json file with GSR data dictionary")
 argp <- add_argument(argp, "--analysis_id", help="identifier for analysis in the analysis table")
+argp <- add_argument(argp, "--stop_on_fail", flag=TRUE, help="return an error code if data_file does not pass checks")
 argp <- add_argument(argp, "--workspace_name", help="name of AnVIL workspace to read analysis table from")
 argp <- add_argument(argp, "--workspace_namespace", help="namespace of AnVIL workspace to read analysis table from")
 argv <- parse_args(argp)
@@ -72,3 +73,6 @@ if (nrow(res) > 0) {
 close(con)
 
 writeLines(tolower(as.character(pass)), "pass.txt")
+if (argv$stop_on_fail) {
+    if (!pass) stop("data file not compatible with data model; see data_dictionary_validation.txt")
+}

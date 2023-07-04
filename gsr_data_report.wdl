@@ -42,6 +42,7 @@ task validate {
             --data_file ~{data_file} \
             --dd_file ~{dd_url} \
             --analysis_id ~{analysis_id} \
+            --stop_on_fail \
             --workspace_name ~{workspace_name} \
             --workspace_namespace ~{workspace_namespace}
     >>>
