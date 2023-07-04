@@ -78,9 +78,9 @@ task validate {
             --model_file ~{model_url} ~{true="--overwrite" false="" overwrite} \
             --workspace_name ~{workspace_name} \
             --workspace_namespace ~{workspace_namespace}
-        fi
-        Rscript /usr/local/primed-file-checks/select_gsr_files.R \
+          Rscript /usr/local/primed-file-checks/select_gsr_files.R \
             --table_files output_tables.tsv
+        fi
     >>>
 
     output {
