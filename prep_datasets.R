@@ -13,6 +13,16 @@ argv <- parse_args(argp)
 # argv <- list(table_files="testdata/table_files_dataset.tsv",
 #              model_file="testdata/data_model.json")
 
+# version of transpose that does not change data types
+transpose_fv <- function(fv) {
+    stopifnot(setequal(names(fv), c("field", "value")))
+    lapply(setNames(1:nrow(fv), fv$field), function(i) {
+        v <- fv$value[i]
+        return(v)
+    }) %>%
+        bind_cols()
+}
+
 # read data model
 model <- json_to_dm(argv$model_file)
 
@@ -35,7 +45,7 @@ if (nrow(dataset_files) > 0) {
         fv <- read_tsv(dataset_files$dataset[i], col_types=cols(.default=col_character()))
         
         # transpose
-        dataset <- transpose_field_value(fv, table_name=dataset_table_name, model=model)
+        dataset <- transpose_fv(fv)
         
         # add dataset_id
         dataset <- add_auto_columns(dataset, table_name=dataset_table_name, model=model,

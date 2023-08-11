@@ -1,11 +1,13 @@
 library(argparser)
 library(AnvilDataModels)
 library(AnVIL)
+library(readr)
 
 argp <- arg_parser("report")
 argp <- add_argument(argp, "--data_file", help="tsv file with data")
 argp <- add_argument(argp, "--dd_file", help="json file with GSR data dictionary")
 argp <- add_argument(argp, "--analysis_id", help="identifier for analysis in the analysis table")
+argp <- add_argument(argp, "--stop_on_fail", flag=TRUE, help="return an error code if data_file does not pass checks")
 argp <- add_argument(argp, "--workspace_name", help="name of AnVIL workspace to read analysis table from")
 argp <- add_argument(argp, "--workspace_namespace", help="namespace of AnVIL workspace to read analysis table from")
 argv <- parse_args(argp)
@@ -15,11 +17,13 @@ argv <- parse_args(argp)
 
 # read data model
 dd <- json_to_dm(argv$dd_file)
+dd_table_name <- "gsr_files_dd"
+stopifnot(dd_table_name %in% names(dd))
 
 # read 1000 rows for checking data against expected type
-dat <- readr::read_tsv(argv$data_file, n_max=1000)
+dat <- read_tsv(argv$data_file, n_max=1000)
 dat <- list(dat)
-names(dat) <- names(dd)
+names(dat) <- dd_table_name
 
 # read analysis table to assess conditions
 if (!is.na(argv$workspace_name) & !is.na(argv$workspace_namespace)) {
@@ -27,7 +31,7 @@ if (!is.na(argv$workspace_name) & !is.na(argv$workspace_namespace)) {
         filter(analysis_id == argv$analysis_id)
     # parse conditions and add cols to 'required' as necessary
     req <- character()
-    cond <- attr(dd[[1]], "conditions")
+    cond <- attr(dd[[dd_table_name]], "conditions")
     for (c in names(cond)) {
         p <- AnvilDataModels:::.parse_condition(cond[[c]])
         if (analysis[[p$column]] == p$value) {
@@ -35,14 +39,14 @@ if (!is.na(argv$workspace_name) & !is.na(argv$workspace_namespace)) {
         }
     }
     if (length(req) > 0) {
-        req <- unique(c(attr(dd[[1]], "required"), req))
+        req <- unique(c(attr(dd[[dd_table_name]], "required"), req))
         # can't update attributes on a dm object
-        tmp <- dd[[1]]
+        tmp <- dd[[dd_table_name]]
         attr(tmp, "required") <- req
         # remove conditions so columns aren't listed twice in check
         attr(tmp, "conditions") <- character()
         tmp <- list(tmp)
-        names(tmp) <- names(dd)
+        names(tmp) <- dd_table_name
         dd <- dm::as_dm(tmp)
     }
 }
@@ -69,3 +73,6 @@ if (nrow(res) > 0) {
 close(con)
 
 writeLines(tolower(as.character(pass)), "pass.txt")
+if (argv$stop_on_fail) {
+    if (!pass) stop("data file not compatible with data model; see data_dictionary_validation.txt")
+}
