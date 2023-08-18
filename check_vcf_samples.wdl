@@ -40,11 +40,11 @@ task vcf_samples {
     }
 
     command {
-        bcftools query --list-samples ${vcf_file} > samples.txt
+        bcftools query --list-samples ${vcf_file} > vcf_samples.txt
     }
 
     output {
-        File sample_file = "samples.txt"
+        File sample_file = "vcf_samples.txt"
     }
 
     runtime {
