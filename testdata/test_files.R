@@ -15,7 +15,8 @@ for (i in 1:length(n)) {
         effect_allele=sample(alleles, n[i], replace=TRUE),
         other_allele=sample(alleles, n[i], replace=TRUE),
         effect_allele_freq=runif(n[i]),
-        p_value=runif(n[i])
+        p_value=runif(n[i]),
+        odds_ratio=runif(n[i])
     )
     write_tsv(dat, files[i])
 }

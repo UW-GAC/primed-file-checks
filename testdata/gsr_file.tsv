@@ -1,3 +1,3 @@
 chromosome	num_vars	file_type	file_path	md5sum
-1	113	data	testdata/gsr_chr1.tsv	31be080e560dc24c11110911b70ab117
-2	113	data	testdata/gsr_chr2.tsv	d2f9283b5d2327e149b5f2003ff29dc5
+1	189	data	testdata/testdata/gsr_chr1.tsv	7aef938132fbe1ca61f6499604dfe7b2
+2	198	data	testdata/testdata/gsr_chr2.tsv	ed7096b175e6871944c83efb606903b3
