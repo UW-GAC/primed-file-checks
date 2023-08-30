@@ -13,7 +13,7 @@ argp <- add_argument(argp, "--workspace_namespace", help="namespace of AnVIL wor
 argv <- parse_args(argp)
 
 # argv <- list(data_file="testdata/gsr_chr1.tsv",
-#              dd_file="testdata/gsr_dd.json")
+#              dd_file="testdata/gsr_data_model.json")
 
 # read data model
 dd <- json_to_dm(argv$dd_file)
