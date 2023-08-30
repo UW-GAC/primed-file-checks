@@ -4,17 +4,13 @@ workflow gsr_data_report {
     input {
         File data_file
         String dd_url
-        String analysis_id
-        String workspace_name
-        String workspace_namespace
+        File analysis_file
     }
 
     call validate {
         input: data_file = data_file,
                dd_url = dd_url,
-               analysis_id = analysis_id,
-               workspace_name = workspace_name,
-               workspace_namespace = workspace_namespace
+               analysis_file = analysis_file
     }
 
     output {
@@ -32,19 +28,15 @@ task validate {
     input {
         File data_file
         String dd_url
-        String analysis_id
-        String workspace_name
-        String workspace_namespace
+        File analysis_file
     }
 
     command <<<
         Rscript /usr/local/primed-file-checks/gsr_data_report.R \
             --data_file ~{data_file} \
             --dd_file ~{dd_url} \
-            --analysis_id ~{analysis_id} \
-            --stop_on_fail \
-            --workspace_name ~{workspace_name} \
-            --workspace_namespace ~{workspace_namespace}
+            --analysis_file ~{analysis_file} \
+            --stop_on_fail
     >>>
 
     output {
