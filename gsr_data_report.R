@@ -51,28 +51,10 @@ if (!is.na(argv$workspace_name) & !is.na(argv$workspace_namespace)) {
     }
 }
 
-outfile <- "data_dictionary_validation.txt"
-con <- file(outfile, "w")
-
-pass <- TRUE
-chk <- check_column_names(dat, dd)
-res <- parse_column_name_check(chk)
-if (nrow(res) > 0) {
-    if (length(chk[[1]]$missing_required_columns) > 0) pass <- FALSE
-    writeLines(knitr::kable(res[,-1]), con)
-    writeLines("\n", con)
-}
-
-chk <- check_column_types(dat, dd)
-res <- parse_column_type_check(chk)
-if (nrow(res) > 0) {
-    pass <- FALSE
-    writeLines(knitr::kable(res[,-1]), con)
-}
-
-close(con)
-
-writeLines(tolower(as.character(pass)), "pass.txt")
+params <- list(tables=dat, model=dd)
+pass <- custom_render_markdown("data_dictionary_report", "data_dictionary_validation", parameters=params)
 if (argv$stop_on_fail) {
-    if (!pass) stop("data file not compatible with data model; see data_dictionary_validation.txt")
+    if (!pass) stop("data file not compatible with data model; see data_dictionary_validation.html")
+} else {
+    writeLines(tolower(as.character(pass)), "pass.txt")
 }

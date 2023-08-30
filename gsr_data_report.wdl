@@ -48,12 +48,12 @@ task validate {
     >>>
 
     output {
-        File validation_report = "data_dictionary_validation.txt"
+        File validation_report = "data_dictionary_validation.html"
         Boolean pass_checks = read_boolean("pass.txt")
     }
 
     runtime {
-        docker: "uwgac/primed-file-checks:0.4.1"
+        docker: "uwgac/primed-file-checks:0.4.2"
     }
 }
 
