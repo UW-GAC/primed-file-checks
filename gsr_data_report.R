@@ -50,6 +50,7 @@ if (!is.na(argv$analysis_file)) {
 
 params <- list(tables=dat, model=dd)
 pass <- custom_render_markdown("data_dictionary_report", "data_dictionary_validation", parameters=params)
+print(list.files())
 if (argv$stop_on_fail) {
     if (!pass) stop("data file not compatible with data model; see data_dictionary_validation.html")
 } else {
