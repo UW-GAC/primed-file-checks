@@ -38,7 +38,7 @@ workflow validate_gsr_model {
 
     if (import_tables) {
         scatter (f in validate.data_files) {
-            call gsr.gsr_data_report {
+            call gsr.validate_data {
                 input: data_file = f,
                     analysis_file = validate.analysis_file,
                     dd_url = model_url
@@ -47,8 +47,8 @@ workflow validate_gsr_model {
 
         call gsr.summarize_data_check {
             input: file = validate.data_files,
-                data_check = gsr_data_report.pass_checks,
-                validation_report = gsr_data_report.validation_report
+                data_check = validate_data.pass_checks,
+                validation_report = validate_data.validation_report
         }
     }
 

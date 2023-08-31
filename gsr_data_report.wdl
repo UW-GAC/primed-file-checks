@@ -7,15 +7,15 @@ workflow gsr_data_report {
         File analysis_file
     }
 
-    call validate {
+    call validate_data {
         input: data_file = data_file,
                dd_url = dd_url,
                analysis_file = analysis_file
     }
 
     output {
-        File validation_report = validate.validation_report
-        Boolean pass_checks = validate.pass_checks
+        File validation_report = validate_data.validation_report
+        Boolean pass_checks = validate_data.pass_checks
     }
 
      meta {
@@ -24,7 +24,7 @@ workflow gsr_data_report {
     }
 }
 
-task validate {
+task validate_data {
     input {
         File data_file
         String dd_url
