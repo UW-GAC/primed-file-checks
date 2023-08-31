@@ -87,7 +87,7 @@ task compare_sample_sets {
     }
 
     runtime {
-        docker: "us.gcr.io/broad-dsp-gcr-public/anvil-rstudio-bioconductor:3.16.0"
+        docker: "us.gcr.io/broad-dsp-gcr-public/anvil-rstudio-bioconductor:3.17.0"
     }
 }
 
@@ -116,6 +116,6 @@ task summarize_vcf_check {
     }
 
     runtime {
-        docker: "us.gcr.io/broad-dsp-gcr-public/anvil-rstudio-bioconductor:3.16.0"
+        docker: "us.gcr.io/broad-dsp-gcr-public/anvil-rstudio-bioconductor:3.17.0"
     }
 }

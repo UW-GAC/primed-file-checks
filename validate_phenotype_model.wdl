@@ -105,7 +105,7 @@ task validate {
     }
 
     runtime {
-        docker: "uwgac/primed-file-checks:0.4.1"
+        docker: "uwgac/primed-file-checks:0.4.2"
     }
 }
 
@@ -143,6 +143,6 @@ task select_md5_files {
     }
 
     runtime {
-        docker: "us.gcr.io/broad-dsp-gcr-public/anvil-rstudio-bioconductor:3.16.0"
+        docker: "us.gcr.io/broad-dsp-gcr-public/anvil-rstudio-bioconductor:3.17.0"
     }
 }
