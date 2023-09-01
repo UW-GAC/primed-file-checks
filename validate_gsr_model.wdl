@@ -25,7 +25,7 @@ workflow validate_gsr_model {
     }
 
     scatter (pair in zip(validate.data_files, validate.md5sum)) {
-        call md5.check_md5 {
+        call md5.md5check {
             input: file = pair.left,
                 md5sum = pair.right
         }
@@ -33,30 +33,28 @@ workflow validate_gsr_model {
 
     call md5.summarize_md5_check {
         input: file = validate.data_files,
-            md5_check = check_md5.md5_check
+            md5_check = md5check.md5_check
     }
 
     if (import_tables) {
         scatter (f in validate.data_files) {
-            call gsr.gsr_data_report {
+            call gsr.validate_data {
                 input: data_file = f,
-                    analysis_id = validate.analysis_id,
-                    dd_url = model_url,
-                    workspace_name = workspace_name,
-                    workspace_namespace = workspace_namespace
+                    analysis_file = validate.analysis_file,
+                    dd_url = model_url
             }
         }
 
         call gsr.summarize_data_check {
             input: file = validate.data_files,
-                data_check = gsr_data_report.pass_checks,
-                validation_report = gsr_data_report.validation_report
+                data_check = validate_data.pass_checks,
+                validation_report = validate_data.validation_report
         }
     }
 
     output {
         File validation_report = validate.validation_report
-        Array[File]? tables = validate.tables
+        Array[File] tables = [validate.analysis_file, validate.gsr_file]
         String? md5_check_summary = summarize_md5_check.summary
         File? md5_check_details = summarize_md5_check.details
         String? data_report_summary = summarize_data_check.summary
@@ -110,13 +108,13 @@ task validate {
 
     output {
         File validation_report = "data_model_validation.html"
-        Array[File]? tables = glob("output_*_table.tsv")
+        File analysis_file = "output_analysis_table.tsv"
+        File gsr_file = "output_gsr_file_table.tsv"
         Array[File] data_files = read_lines("data_files.txt")
         Array[String] md5sum = read_lines("md5sum.txt")
-        String analysis_id = read_string("analysis_id.txt")
     }
 
     runtime {
-        docker: "uwgac/primed-file-checks:0.4.1"
+        docker: "uwgac/primed-file-checks:0.4.2"
     }
 }

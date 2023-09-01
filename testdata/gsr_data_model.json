@@ -74,7 +74,7 @@
         "table": "gsr_file",
         "columns": [
             {
-                "column": "file_id",
+                "column": "gsr_file_id",
                 "primary_key": true,
                 "data_type": "string",
                 "references": "from: md5sum"

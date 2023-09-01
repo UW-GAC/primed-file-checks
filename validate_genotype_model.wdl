@@ -35,7 +35,7 @@ workflow validate_genotype_model {
 
         if (select_md5_files.files_to_check[0] != "NULL") {
             scatter (pair in zip(select_md5_files.files_to_check, select_md5_files.md5sum_to_check)) {
-                call md5.check_md5 {
+                call md5.md5check {
                     input: file = pair.left,
                         md5sum = pair.right
                 }
@@ -43,7 +43,7 @@ workflow validate_genotype_model {
 
             call md5.summarize_md5_check {
                 input: file = select_md5_files.files_to_check,
-                    md5_check = check_md5.md5_check
+                    md5_check = md5check.md5_check
             }
         }
 
@@ -131,7 +131,7 @@ task validate {
     }
 
     runtime {
-        docker: "uwgac/primed-file-checks:0.4.1"
+        docker: "uwgac/primed-file-checks:0.4.2"
     }
 }
 
@@ -169,7 +169,7 @@ task select_md5_files {
     }
 
     runtime {
-        docker: "us.gcr.io/broad-dsp-gcr-public/anvil-rstudio-bioconductor:3.16.0"
+        docker: "us.gcr.io/broad-dsp-gcr-public/anvil-rstudio-bioconductor:3.17.0"
     }
 }
 
@@ -213,6 +213,6 @@ task select_vcf_files {
     }
 
     runtime {
-        docker: "us.gcr.io/broad-dsp-gcr-public/anvil-rstudio-bioconductor:3.16.0"
+        docker: "us.gcr.io/broad-dsp-gcr-public/anvil-rstudio-bioconductor:3.17.0"
     }
 }
