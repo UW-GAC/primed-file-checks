@@ -96,8 +96,9 @@ if ("phenotype_unharmonized" %in% table_files$names) {
     stopifnot(all(c(common_cols, "description", "file_dd_path") %in% names(phen_table)))
     
     # copy files to local instance
-    gsutil_cp(phen_table$file_path, ".")
-    phen_table$file_path <- basename(phen_table$file_path)
+    phen_file <- basename(phen_table$file_path)
+    gsutil_cp(phen_table$file_path, phen_file)
+    phen_table$file_path <- phen_file
     
     # check subject_id
     check_subject_id(phen_table)
