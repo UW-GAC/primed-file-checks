@@ -33,7 +33,7 @@ workflow validate_phenotype_model {
 
         if (select_md5_files.files_to_check[0] != "NULL") {
             scatter (pair in zip(select_md5_files.files_to_check, select_md5_files.md5sum_to_check)) {
-                call md5.check_md5 {
+                call md5.md5check {
                     input: file = pair.left,
                         md5sum = pair.right
                 }
@@ -41,7 +41,7 @@ workflow validate_phenotype_model {
 
             call md5.summarize_md5_check {
                 input: file = select_md5_files.files_to_check,
-                    md5_check = check_md5.md5_check
+                    md5_check = md5check.md5_check
             }
         }
     }

@@ -25,7 +25,7 @@ workflow validate_gsr_model {
     }
 
     scatter (pair in zip(validate.data_files, validate.md5sum)) {
-        call md5.check_md5 {
+        call md5.md5check {
             input: file = pair.left,
                 md5sum = pair.right
         }
@@ -33,7 +33,7 @@ workflow validate_gsr_model {
 
     call md5.summarize_md5_check {
         input: file = validate.data_files,
-            md5_check = check_md5.md5_check
+            md5_check = md5check.md5_check
     }
 
     if (import_tables) {
