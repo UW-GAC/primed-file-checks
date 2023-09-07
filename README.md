@@ -105,7 +105,7 @@ If miminal checks are passed and `import_tables` is set to `true`, the workflow 
 
 If validation is successful, the workflow will check the md5sums provided for each dataset file against the value in google cloud storage. For each file, the workflow will return 'PASS' if the check was successful or 'UNVERIFIED' if the file was found but does not have an md5 value in its metadata. The workflow will fail if the md5sums do not match or if the file is not found. Review the log file for check details including the two md5 values compared.
 
-If validation and import are successful, gsr_data_report (see below) is run on all data files.
+If validation is successful, gsr_data_report (see below) is run on all data files.
 
 The user must specify the following inputs:
 
