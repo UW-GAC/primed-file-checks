@@ -36,20 +36,18 @@ workflow validate_gsr_model {
             md5_check = md5check.md5_check
     }
 
-    if (import_tables) {
-        scatter (f in validate.data_files) {
-            call gsr.validate_data {
-                input: data_file = f,
-                    analysis_file = validate.analysis_file,
-                    dd_url = model_url
-            }
+    scatter (f in validate.data_files) {
+        call gsr.validate_data {
+            input: data_file = f,
+                analysis_file = validate.analysis_file,
+                dd_url = model_url
         }
+    }
 
-        call gsr.summarize_data_check {
-            input: file = validate.data_files,
-                data_check = validate_data.pass_checks,
-                validation_report = validate_data.validation_report
-        }
+    call gsr.summarize_data_check {
+        input: file = validate.data_files,
+            data_check = validate_data.pass_checks,
+            validation_report = validate_data.validation_report
     }
 
     output {
