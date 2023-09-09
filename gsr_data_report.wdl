@@ -45,7 +45,7 @@ task validate_data {
     }
 
     runtime {
-        docker: "uwgac/primed-file-checks:0.4.2"
+        docker: "uwgac/primed-file-checks:0.4.3"
     }
 }
 
