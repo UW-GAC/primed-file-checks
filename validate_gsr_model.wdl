@@ -113,6 +113,6 @@ task validate {
     }
 
     runtime {
-        docker: "uwgac/primed-file-checks:0.4.3.1"
+        docker: "uwgac/primed-file-checks:0.4.4"
     }
 }
