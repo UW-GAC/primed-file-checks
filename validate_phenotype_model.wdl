@@ -76,6 +76,7 @@ task validate {
         echo "starting prep"
         Rscript /usr/local/primed-file-checks/prep_phenotypes.R \
             --table_files ~{write_map(table_files)} \
+            --model_file ~{model_url} \
             --workspace_name ~{workspace_name} \
             --workspace_namespace ~{workspace_namespace}
         echo "starting validation"
