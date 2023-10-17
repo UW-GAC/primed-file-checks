@@ -1,0 +1,147 @@
+---
+title: "Quality Checks on PRIMED Phenotype Data"
+author: "Alyna Khan"
+output:
+  html_document:
+    df_print: paged
+---
+
+The phenotype quality check (QC) workflow performs basic data QC on harmonized phenotype data in PRIMED. The checks conducted in the workflow were approved by the Phenotype Harmonization Working Group and the phenotype domain sub-working groups. Phenotype data is heterogeneous, and expected QC results may be context-specific based on a number of factors, including phenotype definition, data variable type, study sample, etc. Therefore, these checks only provide a broad view of the data to help identify any glaring issues. More detailed QC checks should be performed by the analyst to ensure appropriate quality control.  
+
+## Load packages
+```{r libraries, echo=FALSE}
+library(AnvilDataModels) #remotes::install_github("UW-GAC/AnvilDataModels")
+library(AnVIL)
+library(readr)
+library(tidyverse)
+library(dplyr)
+library(knitr)
+library(DT)
+library(xtable)
+```
+
+## Read in data
+
+```{r test-aric-anthropometry}
+# Get your source google bucket ID
+bucket <- "gs://fc-secure-0285a1eb-c88a-4ea6-b970-ec5e092784ea/uploaded_data_prevent"
+
+# Get the google bucket ID for your data file
+prefix_anthro_data <- "aric_cmqt_anthropometry"
+anthro_data_file <- paste0(bucket, "/", prefix_anthro_data, ".tsv")
+
+# Check that the bucket ID for your data file is in your source bucket file list
+anthro_data_file %in% gsutil_ls(bucket)
+
+# Read in dataset
+anthro_table_pipe <- gsutil_pipe(anthro_data_file, "rb")
+anthro_dataset <- read_table(anthro_table_pipe)
+dat <- anthro_dataset
+```
+
+## Generate data summaries: Sample size and age
+```{r qc-file, echo=FALSE}
+# Get dataset
+this_table <- as.data.frame(dat)
+vars_to_qc <- names(this_table)[which(!names(this_table) %in% c("subject_id", "visit", "age_at_obs"))]
+
+# Get sample size and unique sample size
+sample_size <- length(this_table$subject_id)
+unique_samples <- length(unique(this_table$subject_id))
+
+# Get age distribution
+age_summary <- summary(this_table$age_at_obs)
+
+# Check that age values fall within 0 and 89
+
+
+
+
+
+
+age_p <- ggplot(this_table, aes(x=age_at_obs)) + 
+  geom_histogram() + 
+  #geom_density(alpha=0.25) +
+  labs(title="Age distribution", x="Age")
+
+# Print output
+print(vars_to_qc) # print variables included in this data file
+print(sample_size) # print sample size of data file
+print(unique_samples) # print number of unique samples in data file
+print(age_summary) # print summary stats for age variable
+print(age_p) # print distribution of age variables
+```
+
+## Generate summaries and plots of each variable
+```{r qc-variable-2, echo=FALSE}
+for(var_name in vars_to_qc){
+  this_variable <- eval(parse(text=paste0("this_table$", var_name)))
+  
+  # QC for numeric variable types
+  if(is.numeric(this_variable)){
+    
+    if(all(this_variable %in% c(0,1)) == FALSE){ # QC checks for continuous variables
+      
+      # Get variable summary: min, max, mean, median 
+      this_variable_summary <- summary(this_variable)
+      
+      # ADD MORE QC CHECKS HERE ########################################
+      
+      
+    
+    # Plot continuous variable
+    p <- ggplot(this_table, aes(x=this_variable)) + 
+      geom_histogram(color="darkgray", fill="darkgray") + 
+      xlab(var_name) +
+      labs(title=paste0("Distribution of ", var_name))
+    
+    }else{ # QC checks for binary variables (0/1)
+      
+      # Make table of counts 
+      this_variable_summary <- table(as.character(this_variable))
+      
+      # ADD MORE QC CHECKS FOR BINARY VARIABLES HERE ####################
+      
+      
+      
+      
+      # Plot binary variable
+      p <- ggplot(this_table, aes(x=as.character(this_variable))) + 
+      geom_bar() + 
+      xlab(var_name) + ylab("Count") + 
+      labs(title=paste0("Count of ", var_name))
+      
+    }
+    
+    # QC checks for categorical variable data type
+  } else if(is.character(this_variable)){ 
+    
+      # Get counts of categorical variable values 
+      this_variable_summary <- table(this_variable)
+      
+      # ADD MORE QC CHECKS FOR CATEGORICAL VARIABLES ####################
+      
+      
+      
+      
+      # Plot categorical variable
+      p <- ggplot(this_table) + 
+        geom_bar(aes(x=this_variable), fill = "gray") + 
+        xlab(var_name) + ylab("Count") + 
+        labs(title=paste0("Count of ", var_name))
+      
+  }
+  
+  print(p) # print distribution of variable
+  print(this_variable_summary) # print summary stats of variable
+     
+}
+```
+
+```{r set-child-doc, eval=FALSE}
+# set child document name based on table name
+#child_document_name = cmqt_lipids_qc.Rmd
+```
+
+```{r set-child-to-child_document_name, eval=FALSE}
+```
