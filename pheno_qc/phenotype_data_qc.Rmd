@@ -74,6 +74,7 @@ print(unique_samples) # print number of unique samples in data file
 print(age_summary) # print summary stats for age variable
 print(age_p) # print distribution of age variables
 
+
 if(age_over_max + age_under_min > 0) {
   print(age_under_min, ' samples with age < 0')
   print(age_over_max, ' samples with age > 89')
