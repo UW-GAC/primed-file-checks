@@ -1,19 +1,16 @@
 ---
 title: "Quality Checks on PRIMED Phenotype Data"
 author: "Alyna Khan"
-date:  "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   html_document:
-    toc: true
-    toc_float: true
-    code_folding: hide
+    df_print: paged
 ---
 
-The phenotype quality check (QC) workflow performs basic data QC on harmonized phenotype data in PRIMED. The checks conducted in the workflow were approved by the Phenotype Harmonization Working Group and the phenotype domain sub-working groups. Phenotype data is heterogeneous, and expected QC results may be context-specific based on a number of factors, including phenotype definition, data variable type, study sample, etc. Therefore, these checks only provide a broad view of the data to help identify any glaring issues. More detailed QC checks should be performed by the analyst to ensure appropriate quality control.  
+The phenotype quality check (QC) workflow performs basic data QC on harmonized phenotype data in PRIMED. The checks conducted in the workflow were approved by the Phenotype Harmonization Working Group and the phenotype domain sub-working groups. Phenotype data is heterogeneous, and expected QC results may be context-specific based on a number of factors, including phenotype definition, data variable type, study sample, etc. Therefore, these checks only provide a broad view of the data to help identify any glaring issues. More detailed QC checks should be performed by the analyst to ensure appropriate quality control. 
 
 ## Load packages
-```{r libraries, message=FALSE}
-library(AnvilDataModels) #remotes::install_github("UW-GAC/AnvilDataModels")
+```{r libraries, echo=FALSE}
+library(AnvilDataModels) # remotes::install_github("UW-GAC/AnvilDataModels")
 library(AnVIL)
 library(readr)
 library(tidyverse)
@@ -48,19 +45,22 @@ dat <- anthro_dataset
 this_table <- as.data.frame(dat)
 vars_to_qc <- names(this_table)[which(!names(this_table) %in% c("subject_id", "visit", "age_at_obs"))]
 
+# Get min and max values (currently using placeholder min and max values specific to columns in anthro dataset)
+min_values <- c(0, 0, 0) 
+min_values <- as.list(setNames(min_values, vars_to_qc))
+max_values <- c(400, 300, 100)
+max_values <- as.list(setNames(max_values, vars_to_qc))
+
 # Get sample size and unique sample size
 sample_size <- length(this_table$subject_id)
 unique_samples <- length(unique(this_table$subject_id))
 
 # Get age distribution
-age_summary <- summary(this_table$age_at_obs) 
+age_summary <- summary(this_table$age_at_obs)
 
 # Check that age values fall within 0 and 89
-
-
-
-
-
+age_over_max <- sum(this_table$age_at_obs > 89)
+age_under_min <- sum(this_table$age_at_obs < 0)
 
 age_p <- ggplot(this_table, aes(x=age_at_obs)) + 
   geom_histogram() + 
@@ -68,15 +68,24 @@ age_p <- ggplot(this_table, aes(x=age_at_obs)) +
   labs(title="Age distribution", x="Age")
 
 # Print output
-print(vars_to_qc)# print variables included in this data file
+print(vars_to_qc) # print variables included in this data file
 print(sample_size) # print sample size of data file
 print(unique_samples) # print number of unique samples in data file
 print(age_summary) # print summary stats for age variable
 print(age_p) # print distribution of age variables
+
+if(age_over_max + age_under_min > 0) {
+  print(age_under_min, ' samples with age < 0')
+  print(age_over_max, ' samples with age > 89')
+} else {
+  print('All age values within 0 to 89')
+}
 ```
 
 ## Generate summaries and plots of each variable
 ```{r qc-variable-2, echo=FALSE}
+this_table <- as.data.frame(test_df)
+
 for(var_name in vars_to_qc){
   this_variable <- eval(parse(text=paste0("this_table$", var_name)))
   
@@ -86,10 +95,17 @@ for(var_name in vars_to_qc){
     if(all(this_variable %in% c(0,1)) == FALSE){ # QC checks for continuous variables
       
       # Get variable summary: min, max, mean, median 
-      this_variable_summary <- summary(this_variable) 
+      this_variable_summary <- summary(this_variable)
       
       # ADD MORE QC CHECKS HERE ########################################
       
+      # check for values out of min and max
+      max <- max_values[[var_name]]
+      min <- min_values[[var_name]]
+      if(sum(this_variable > max) + sum(var_name < min) > 0) {
+        print(cat(sum(this_variable > max), ' samples with ', var_name, '>', max))
+        print(cat(sum(this_variable < min), ' samples with ', var_name, '<', min))
+      }
       
     
     # Plot continuous variable
@@ -141,10 +157,29 @@ for(var_name in vars_to_qc){
 }
 ```
 
-```{r set-child-doc, eval=FALSE}
-# set child document name based on table name
-#child_document_name = cmqt_lipids_qc.Rmd
+## Generate data set to run through QC checks 
+```{r}
+# create data frame 
+num_samples_pass <- 50 
+num_samples_fail <- 10
+total_samples <- num_samples_pass + 2*num_samples_fail
+test_df <- data.frame(matrix(ncol = length(vars_to_qc), nrow = total_samples))
+
+#provide column names
+colnames(test_df) <- vars_to_qc
+
+for(var_name in vars_to_qc){
+  min <- min_values[[var_name]]
+  max <- max_values[[var_name]]
+  samples1 <- runif(num_samples_pass, min, max)
+  samples2 <- runif(num_samples_fail, min = min-10, max = min)
+  samples3 <- runif(num_samples_fail, min = max, max = max+10)
+  c <- c(samples1, samples2, samples3)
+  
+  # put random data into test dataframe
+  test_df[var_name] <- c
+}
+
+test_df
 ```
 
-```{r set-child-to-child_document_name, eval=FALSE}
-```
