@@ -45,12 +45,6 @@ dat <- anthro_dataset
 this_table <- as.data.frame(dat)
 vars_to_qc <- names(this_table)[which(!names(this_table) %in% c("subject_id", "visit", "age_at_obs"))]
 
-# Get min and max values (currently using placeholder min and max values specific to columns in anthro dataset)
-min_values <- c(0, 0, 0) 
-min_values <- as.list(setNames(min_values, vars_to_qc))
-max_values <- c(400, 300, 100)
-max_values <- as.list(setNames(max_values, vars_to_qc))
-
 # Get sample size and unique sample size
 sample_size <- length(this_table$subject_id)
 unique_samples <- length(unique(this_table$subject_id))
@@ -85,8 +79,6 @@ if(age_over_max + age_under_min > 0) {
 
 ## Generate summaries and plots of each variable
 ```{r qc-variable-2, echo=FALSE}
-this_table <- as.data.frame(test_df)
-
 for(var_name in vars_to_qc){
   this_variable <- eval(parse(text=paste0("this_table$", var_name)))
   
@@ -99,14 +91,7 @@ for(var_name in vars_to_qc){
       this_variable_summary <- summary(this_variable)
       
       # ADD MORE QC CHECKS HERE ########################################
-      
-      # check for values out of min and max
-      max <- max_values[[var_name]]
-      min <- min_values[[var_name]]
-      if(sum(this_variable > max) + sum(var_name < min) > 0) {
-        print(cat(sum(this_variable > max), ' samples with ', var_name, '>', max))
-        print(cat(sum(this_variable < min), ' samples with ', var_name, '<', min))
-      }
+    
       
     
     # Plot continuous variable
@@ -158,29 +143,4 @@ for(var_name in vars_to_qc){
 }
 ```
 
-## Generate data set to run through QC checks 
-```{r}
-# create data frame 
-num_samples_pass <- 50 
-num_samples_fail <- 10
-total_samples <- num_samples_pass + 2*num_samples_fail
-test_df <- data.frame(matrix(ncol = length(vars_to_qc), nrow = total_samples))
-
-#provide column names
-colnames(test_df) <- vars_to_qc
-
-for(var_name in vars_to_qc){
-  min <- min_values[[var_name]]
-  max <- max_values[[var_name]]
-  samples1 <- runif(num_samples_pass, min, max)
-  samples2 <- runif(num_samples_fail, min = min-10, max = min)
-  samples3 <- runif(num_samples_fail, min = max, max = max+10)
-  c <- c(samples1, samples2, samples3)
-  
-  # put random data into test dataframe
-  test_df[var_name] <- c
-}
-
-test_df
-```
 

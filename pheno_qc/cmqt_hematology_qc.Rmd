@@ -1,0 +1,80 @@
+---
+title: "cmqt_hematology Quality Checks"
+output:
+  html_document:
+    toc: true
+    theme: united
+    df_print: paged
+date: `r format(Sys.time(), "%d %B, %Y")`
+author: "Alyna Khan"
+---
+
+# Description
+<Provide a description of table>
+
+Example: This document performs quality control checks on the cmqt_hematology data sets. Specific checks are determined through a collaborative effort between the CMQT sub-working group, the Phenotype Harmonization Working Group, and the CC. 
+
+# Quailty checks
+## Libraries
+```{r load-libraries}
+# Will not need this code chunk when this is integrated into main_qc markdown doc
+```
+
+## Read in data
+```{r read-in-data}
+
+```
+
+## Variable-specific QC limits
+```{r variable-specific-qc-limits}
+# Set biologically implausible values for blood pressure
+
+vars <- c('wbc_1', 'hemoglobin_1', 'hematocrit_1', 'platelet_count_1')
+min_values <- c(0, 0, 0, 0) 
+min_values <- as.list(setNames(min_values, vars))
+max_values <- c(200, 20, 60, 1000)
+max_values <- as.list(setNames(max_values, vars))
+```
+
+## Generate data set to run through QC checks 
+```{r generate-test-data}
+# Create data frame 
+num_samples_pass <- 50 
+num_samples_fail <- 10
+total_samples <- num_samples_pass + 2*num_samples_fail
+test_df <- data.frame(matrix(ncol = length(vars), nrow = total_samples))
+
+# Provide column names
+colnames(test_df) <- vars
+
+for(var_name in vars){
+  min <- min_values[[var_name]]
+  max <- max_values[[var_name]]
+  samples1 <- runif(num_samples_pass, min, max)
+  samples2 <- runif(num_samples_fail, min = min-10, max = min)
+  samples3 <- runif(num_samples_fail, min = max, max = max+100)
+  c <- c(samples1, samples2, samples3)
+  
+  # Put test data into dataframe
+  test_df[var_name] <- c
+}
+```
+
+## Variable-specific QC checks
+```{r variable-specific-qc}
+# Check for extreme values in dataset
+
+this_table <- as.data.frame(test_df) # for testing
+
+for (var_name in vars) {
+  this_variable <- eval(parse(text=paste0("this_table$", var_name)))
+  
+  max <- max_values[[var_name]]
+  min <- min_values[[var_name]]
+  
+  if(sum(this_variable > max) + sum(this_variable < min) > 0) {
+    print(paste(sum(this_variable > max), ' samples with ', var_name, '>', max))
+    print(paste(sum(this_variable < min), ' samples with ', var_name, '<', min))
+  }
+}
+```
