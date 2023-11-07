@@ -19,8 +19,8 @@ argv <- parse_args(argp)
 # read data model
 model <- fromJSON(argv$model_file)
 table_versions <- model$tables %>%
-    select(table, version) %>%
-    filter(!is.na(version))
+    select(table, data_model_version=version) %>%
+    filter(!is.na(data_model_version))
 
 # read tables
 table_files <- read_tsv(argv$table_files, col_names=c("names", "files"), col_types="cc")
