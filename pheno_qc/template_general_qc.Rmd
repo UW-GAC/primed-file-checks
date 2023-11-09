@@ -1,0 +1,23 @@
+---
+title: "template_general_qc"
+author: "Alyna Khan"
+date: "2023-11-07"
+output: html_document
+---
+
+```{r setup2, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Child R Markdown
+
+```{r hello2}
+print("hello galaxy!")
+grandchild_document <- paste0(grandchild_document_name, ".Rmd") # Complete constructing the file name for current table to be QC'd with table-specific checks
+```
+
+## Call Grandchild document 
+
+```{r child=grandchild_document}
+```
+

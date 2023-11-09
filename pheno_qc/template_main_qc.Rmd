@@ -1,0 +1,28 @@
+---
+title: "template_main_qc"
+author: "Alyna Khan"
+date: "2023-11-07"
+output: html_document
+---
+
+```{r setup1, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+
+```{r hello1}
+# This chunk will loop through the list of table names to be QC'd
+
+print("hello universe!")
+
+child_document <- "template_general_qc.Rmd" # the child doc will be the general qc Rmd
+grandchild_document_name <- "template_specific_qc" # grandchild doc will be assigned the current table name in the loop
+```
+
+## Call child document
+
+```{r child=child_document}
+```
+
