@@ -22,7 +22,7 @@ This document performs quality control checks on the cmqt_blood_pressure data se
 
 ## Read in data
 ```{r read-in-data}
-
+test_df <- read.table(file = '/home/rstudio/primed-file-checks/pheno_qc/test_data/cmqt_blood_pressure.tsv', sep = '\t', header = TRUE)
 ```
 
 ## Variable-specific QC limits
@@ -38,26 +38,26 @@ max_values <- as.list(setNames(max_values, vars))
 
 ## Generate data set to run through QC checks 
 ```{r generate-test-data}
-# Create data frame 
-num_samples_pass <- 50 
-num_samples_fail <- 10
-total_samples <- num_samples_pass + 2*num_samples_fail
-test_df <- data.frame(matrix(ncol = length(vars), nrow = total_samples))
-
-# Provide column names
-colnames(test_df) <- vars
-
-for(var_name in vars){
-  min <- min_values[[var_name]]
-  max <- max_values[[var_name]]
-  samples1 <- runif(num_samples_pass, min, max)
-  samples2 <- runif(num_samples_fail, min = min-10, max = min)
-  samples3 <- runif(num_samples_fail, min = max, max = max+100)
-  c <- c(samples1, samples2, samples3)
-  
-  # Put test data into dataframe
-  test_df[var_name] <- c
-}
+# # Create data frame 
+# num_samples_pass <- 50 
+# num_samples_fail <- 10
+# total_samples <- num_samples_pass + 2*num_samples_fail
+# test_df <- data.frame(matrix(ncol = length(vars), nrow = total_samples))
+# 
+# # Provide column names
+# colnames(test_df) <- vars
+# 
+# for(var_name in vars){
+#   min <- min_values[[var_name]]
+#   max <- max_values[[var_name]]
+#   samples1 <- runif(num_samples_pass, min, max)
+#   samples2 <- runif(num_samples_fail, min = min-10, max = min)
+#   samples3 <- runif(num_samples_fail, min = max, max = max+100)
+#   c <- c(samples1, samples2, samples3)
+#   
+#   # Put test data into dataframe
+#   test_df[var_name] <- c
+# }
 ```
 
 ## Variable-specific QC checks
@@ -65,6 +65,8 @@ for(var_name in vars){
 # Check for extreme values in dataset
 
 this_table <- as.data.frame(test_df) # for testing
+
+print(head(this_table))
 
 for (var_name in vars) {
   this_variable <- eval(parse(text=paste0("this_table$", var_name)))
