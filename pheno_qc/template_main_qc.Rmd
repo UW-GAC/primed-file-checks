@@ -18,7 +18,12 @@ knitr::opts_chunk$set(echo = TRUE)
 print("hello universe!")
 
 child_document <- "template_general_qc.Rmd" # the child doc will be the general qc Rmd
-grandchild_document_name <- "template_specific_qc" # grandchild doc will be assigned the current table name in the loop
+# grandchild_document_name <- "template_specific_qc" # grandchild doc will be assigned the current table name in the loop
+
+# grandchild_document_name <- "cmqt_anthropometry_qc"
+grandchild_document_name <- "cmqt_lipids_qc"
+# grandchild_document_name <- "cmqt_blood_pressure_qc"
+# grandchild_document_name <- "cmqt_hematology_qc"
 ```
 
 ## Call child document
