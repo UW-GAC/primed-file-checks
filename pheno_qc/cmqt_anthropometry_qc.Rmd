@@ -16,13 +16,21 @@ This document performs quality control checks on the cmqt_anthropometry data set
 
 # Quailty checks
 ## Libraries
-```{r load-libraries}
-# Will not need this code chunk when this is integrated into main_qc markdown doc
+```{r setup3, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r hello3}
+# Include table-specific QC checks
+print("hello world!")
 ```
 
 ## Read in data
 ```{r read-in-data}
-
+setwd("/home/rstudio/primed-file-checks/pheno_qc/test_data")
+test_df <- read.table(file = 'cmqt_anthropometry.tsv', sep = '\t', header = TRUE)
 ```
 
 ## Variable-specific QC limits
@@ -37,7 +45,7 @@ max_values <- as.list(setNames(max_values, vars))
 ```
 
 ## Generate data set to run through QC checks 
-```{r generate-test-data}
+```{r generate-test-data, include=FALSE}
 # Create data frame 
 num_samples_pass <- 50 
 num_samples_fail <- 10
