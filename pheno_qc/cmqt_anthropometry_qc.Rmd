@@ -12,15 +12,6 @@ This document performs quality control checks on the cmqt_anthropometry data set
 # Quailty checks
 ## Libraries
 ```{r setup3, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-library(AnvilDataModels) #remotes::install_github("UW-GAC/AnvilDataModels")
-library(AnVIL)
-library(readr)
-library(tidyverse)
-library(dplyr)
-library(knitr)
-library(DT)
-library(xtable)
 ```
 
 ## R Markdown
@@ -33,6 +24,8 @@ print("hello world!")
 ## Read in data
 ```{r read-in-data}
 test_df <- read.table(file = '/home/rstudio/primed-file-checks/pheno_qc/test_data/cmqt_anthropometry.tsv', sep = '\t', header = TRUE)
+
+head(test_df)
 ```
 
 ## Variable-specific QC limits
@@ -46,43 +39,11 @@ max_values <- c(400, 300, 100)
 max_values <- as.list(setNames(max_values, vars))
 ```
 
-## Generate data set to run through QC checks 
-```{r generate-test-data, include=FALSE}
-# # Create data frame 
-# num_samples_pass <- 50 
-# num_samples_fail <- 10
-# total_samples <- num_samples_pass + 2*num_samples_fail
-# test_df <- data.frame(matrix(ncol = length(vars), nrow = total_samples))
-# 
-# # Provide column names
-# colnames(test_df) <- vars
-# 
-# for(var_name in vars){
-#   min <- min_values[[var_name]]
-#   max <- max_values[[var_name]]
-#   samples1 <- runif(num_samples_pass, min, max)
-#   samples2 <- runif(num_samples_fail, min = min-10, max = min)
-#   samples3 <- runif(num_samples_fail, min = max, max = max+100)
-#   c <- c(samples1, samples2, samples3)
-#   
-#   # Put test data into dataframe
-#   test_df[var_name] <- c
-# }
-# 
-# # Change BMI to match calculation, keep some out of specified range
-# test_df <- test_df %>% mutate (
-#   bmi_1 = case_when(height_1 > max_values[['height_1']] ~ weight_1 / (height_1 / 100), 
-#                     TRUE ~ weight_1 / (height_1 / 100)^2)
-# )
-```
-
 ## Variable-specific QC checks
 ```{r variable-specific-qc}
 # Check for extreme values in dataset
 
 this_table <- as.data.frame(test_df) # for testing 
-
-print(head(this_table))
 
 for (var_name in vars) {
   this_variable <- eval(parse(text=paste0("this_table$", var_name)))
