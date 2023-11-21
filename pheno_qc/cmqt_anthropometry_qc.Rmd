@@ -1,55 +1,39 @@
----
-title: "cmqt_anthropometry_qc"
-author: "Alyna Khan"
-date: "2023-11-07"
-output: html_document
----
-
-# Description
+### CMQT Anthropometry QC 
 
 This document performs quality control checks on the cmqt_anthropometry data sets. Specific checks are determined through a collaborative effort between the CMQT sub-working group, the Phenotype Harmonization Working Group, and the CC. 
 
-# Quailty checks
-## Libraries
-```{r setup3, include=FALSE}
-```
+```{r}
+# Read in data
 
-## R Markdown
-
-```{r hello3}
-# Include table-specific QC checks
-print("hello world!")
-```
-
-## Read in data
-```{r read-in-data}
 test_df <- read.table(file = '/home/rstudio/primed-file-checks/pheno_qc/test_data/cmqt_anthropometry.tsv', sep = '\t', header = TRUE)
-
-head(test_df)
 ```
 
-## Variable-specific QC limits
-```{r variable-specific-qc-limits}
+### CMQT Anthropometry QC limits
+```{r}
 # Set min and max extreme values for height, weight, bmi
 
 vars <- c('height_1', 'weight_1', 'bmi_1')
 min_values <- c(0, 0, 0) 
-min_values <- as.list(setNames(min_values, vars))
 max_values <- c(400, 300, 100)
-max_values <- as.list(setNames(max_values, vars))
+
+df <- data.frame(vars, min_values, max_values)
+
+kable(df, col.names = c('Variable', 'Min Value', 'Max Value'),  caption = "Min and max extreme values for anthropometry variables")
 ```
 
-## Variable-specific QC checks
-```{r variable-specific-qc}
+### CMQT Anthropometry QC checks
+```{r}
 # Check for extreme values in dataset
 
 this_table <- as.data.frame(test_df) # for testing 
 
-for (var_name in vars) {
+for (i in 1:length(vars)) {
+  var_name = vars[i]
+  
   this_variable <- eval(parse(text=paste0("this_table$", var_name)))
   
-  max <- max_values[[var_name]]
-  min <- min_values[[var_name]]
+  max <- df[i, 3]
+  min <- df[i, 2]
   
   if(sum(this_variable > max) + sum(this_variable < min) > 0) {
     print(paste(sum(this_variable > max), ' samples with ', var_name, '>', max))
@@ -62,7 +46,5 @@ this_table <- this_table %>% mutate(
   bmi_check = weight_1 / (height_1/100)^2
   )
 
-if(sum(this_table$bmi_1 != this_table$bmi_check) > 0) {
-    print(paste(sum(this_table$bmi_1 != this_table$bmi_check), ' samples with incorrect bmi calcation'))
-  }
+print(paste(sum(this_table$bmi_1 != this_table$bmi_check), ' samples with incorrect bmi calcation'))
 ```

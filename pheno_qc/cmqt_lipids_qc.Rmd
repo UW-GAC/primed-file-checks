@@ -1,53 +1,39 @@
----
-title: "cmqt_lipids_qc"
-author: "Alyna Khan"
-date: "2023-11-07"
-output: html_document
----
+### CMQT Lipids QC 
 
-# Description
 This document performs quality control checks on the cmqt_lipids data sets. Specific checks are determined through a collaborative effort between the CMQT sub-working group, the Phenotype Harmonization Working Group, and the CC. 
 
-# Quailty checks
-## Libraries
-```{r load-libraries}
-# Will not need this code chunk when this is integrated into main_qc markdown doc
-```
+```{r}
+# Read in data
 
-```{r hello3}
-# Include table-specific QC checks
-print("hello world!")
-```
-
-## Read in data
-```{r read-in-data}
 test_df <- read.table(file = '/home/rstudio/primed-file-checks/pheno_qc/test_data/cmqt_lipids.tsv', sep = '\t', header = TRUE)
 ```
 
-## Variable-specific QC limits
-```{r variable-specific-qc-limits}
+### CMQT Lipids QC limits
+```{r}
 # Set biologically implausible values for blood pressure
 
 vars <- c('triglycerides_1')
 min_values <- c(0) 
-min_values <- as.list(setNames(min_values, vars))
 max_values <- c(600)
-max_values <- as.list(setNames(max_values, vars))
+
+df <- data.frame(vars, min_values, max_values)
+
+kable(df, col.names = c('Variable', 'Min Value', 'Max Value'),  caption = "Min and max extreme values for lipids variables")
 ```
 
-## Variable-specific QC checks
-```{r variable-specific-qc}
+### CMQT Lipids QC checks
+```{r}
 # Check for extreme values in dataset
 
 this_table <- as.data.frame(test_df) # for testing
 
-print(head(this_table))
-
-for (var_name in vars) {
+for (i in 1:length(vars)) {
+  var_name = vars[i]
+  
   this_variable <- eval(parse(text=paste0("this_table$", var_name)))
   
-  max <- max_values[[var_name]]
-  min <- min_values[[var_name]]
+  max <- df[i, 3]
+  min <- df[i, 2]
   
   if(sum(this_variable > max) + sum(this_variable < min) > 0) {
     print(paste(sum(this_variable > max), ' samples with ', var_name, '>', max))
