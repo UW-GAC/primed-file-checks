@@ -20,8 +20,9 @@ library(knitr)
 ```{r}
 child_document <- "template_general_qc.Rmd" # the child doc will be the general qc Rmd
 
-grandchild_document_names <- c("cmqt_anthropometry_qc", "cmqt_lipids_qc", "cmqt_blood_pressure_qc", "cmqt_hematology_qc")
+# grandchild_document_names <- c("cmqt_anthropometry_qc", "cmqt_lipids_qc", "cmqt_blood_pressure_qc", "cmqt_hematology_qc")
 
+grandchild_document_names <- params$tables$table_names
 ```
 
 ```{r, results='asis'}
@@ -31,7 +32,7 @@ grandchild_document_names <- c("cmqt_anthropometry_qc", "cmqt_lipids_qc", "cmqt_
 res <- vector(mode = "list", length = length(grandchild_document_names))
 
 for (i in 1:length(grandchild_document_names)) {
-  grandchild_document_name <- grandchild_document_names[i]
+  grandchild_document_name <- paste0(grandchild_document_names[i], "_qc")
   res[[i]] <- knitr::knit_child(child_document, quiet = TRUE, envir = environment())
 }
 
