@@ -5,39 +5,49 @@ This document performs quality control checks on the cmqt_lipids data sets. Spec
 ```{r}
 # Read in data
 
-test_df <- read.table(file = '/home/rstudio/primed-file-checks/pheno_qc/test_data/cmqt_lipids.tsv', sep = '\t', header = TRUE)
+df <- read.table(file = '/home/rstudio/primed-file-checks/pheno_qc/test_data/cmqt_lipids.tsv', sep = '\t', header = TRUE)
 ```
 
-### CMQT Lipids QC limits
 ```{r}
-# Set biologically implausible values for blood pressure
+# Set min and max limits for QC check 
 
 vars <- c('triglycerides_1')
-min_values <- c(0) 
-max_values <- c(600)
 
-df <- data.frame(vars, min_values, max_values)
+# biologically implausible values for blood pressure
+# min_values <- c(0) 
+# max_values <- c(600)
 
-kable(df, col.names = c('Variable', 'Min Value', 'Max Value'),  caption = "Min and max extreme values for lipids variables")
+# min and max values that are mean +/- 4 SD outlier detection
+min_values <- sapply(df[vars], mean) - 4*sapply(df[vars], sd)
+max_values <- sapply(df[vars], mean) + 4*sapply(df[vars], sd)
+
+vars_df <- data.frame(vars)
+vars_df$min_values <- min_values
+vars_df$max_values <- max_values
+vars_df$qc_pass <- c(rep(-1, length(vars)))
+vars_df$qc_fail_min <- c(rep(-1, length(vars)))
+vars_df$qc_fail_max <- c(rep(-1, length(vars)))
+vars_df$qc_null <- c(rep(-1, length(vars)))
 ```
 
-### CMQT Lipids QC checks
 ```{r}
 # Check for extreme values in dataset
 
-this_table <- as.data.frame(test_df) # for testing
+this_table <- as.data.frame(df)
 
 for (i in 1:length(vars)) {
   var_name = vars[i]
   
   this_variable <- eval(parse(text=paste0("this_table$", var_name)))
   
-  max <- df[i, 3]
-  min <- df[i, 2]
+  max <- vars_df[i, 3]
+  min <- vars_df[i, 2]
   
-  if(sum(this_variable > max) + sum(this_variable < min) > 0) {
-    print(paste(sum(this_variable > max), ' samples with ', var_name, '>', max))
-    print(paste(sum(this_variable < min), ' samples with ', var_name, '<', min))
-  }
+  vars_df[c(i),]$qc_pass <- c(sum(this_variable <= max & this_variable >= min))
+  vars_df[c(i),]$qc_fail_min <- c(sum(this_variable < min))
+  vars_df[c(i),]$qc_fail_max <- c(sum(this_variable > max))
+  vars_df[c(i),]$qc_null <- c(sum(sapply(this_variable,is.null)))
 }
+
+kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', 'Pass QC', 'Fail QC Min', 'Fail QC Max', 'Null Values'),  caption = "QC check for lipids variables")
 ```

@@ -5,6 +5,7 @@ library(AnVIL)
 library(readr)
 
 # setwd('/home/rstudio/primed-file-checks/pheno_qc')
+# Rscript run_qc.R --filename data_qc.tsv
 
 # Get parameters
 argp <- arg_parser(description = "data qc") 
