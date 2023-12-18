@@ -1,0 +1,88 @@
+---
+title: "Update workspace"
+output: html_notebook
+---
+
+This notebook moves data from an update workspace to an original workspace.
+
+Load R libraries
+
+```{r}
+library(AnVIL)
+library(dplyr)
+library(readr)
+```
+
+Define workspaces and input table files (copied from validation workflow input)
+
+```{r}
+original_bucket <- avbucket(namespace = "primed-cc-scratch", 
+                            name = "PRIMED_example_genotype_1000G_test")
+update_bucket <- avbucket(namespace = "primed-cc-scratch", 
+                            name = "PRIMED_example_genotype_1000G_test_UPDATE")
+validation_inputs_json <- '{ "sample_set": "gs://fc-7e3a3249-398c-43e9-baf0-1ab8a79bfd15/HapMap_sample_set.tsv", "array_dataset": "gs://fc-7e3a3249-398c-43e9-baf0-1ab8a79bfd15/HapMap_array_dataset.tsv", "array_file": "gs://fc-7e3a3249-398c-43e9-baf0-1ab8a79bfd15/HapMap_array_file.tsv" }'
+```
+
+
+Create new data tables and get vector of files to move
+
+```{r}
+validation_inputs_list <- jsonlite::fromJSON(validation_inputs_json)
+
+files_to_move <- list()
+new_validation_inputs <- list()
+
+for (table in names(validation_inputs_list)) {
+  input_path <- validation_inputs_list[[table]]
+  table_file <- basename(input_path)
+  gsutil_cp(input_path, table_file)
+  dat <- read_tsv(table_file, col_types=cols(.default=col_character()))
+  
+  # get list of files to move
+  files_to_move[[table]] <- lapply(dat, function(c) c[grep(update_bucket, c)]) %>%
+    unlist() %>%
+    unique()
+
+  # update file paths in data tables
+  dat <- dat %>%
+    mutate_all(function(c) sub(update_bucket, original_bucket, c))
+  write_tsv(dat, table_file)
+  out_path <- file.path(original_bucket, "update_workspace_data_tables", table_file)
+  gsutil_cp(table_file, out_path)
+  new_validation_inputs[[table]] <- out_path
+}
+
+files_to_move <- unique(unlist(files_to_move))
+```
+
+Copy files
+
+```{r}
+# do this one file at a time to preserve full path
+for (f in files_to_move) {
+  gsutil_cp(f, sub(update_bucket, original_bucket, f))
+}
+```
+
+Delete files from update workspace
+
+```{r}
+for (f in files_to_move) {
+  gsutil_rm(f)
+}
+```
+
+Create inputs for validation workflow with new data tables
+
+```{r}
+jsonlite::toJSON(new_validation_inputs, auto_unbox=TRUE, unbox=TRUE)
+```
+
+Run validation workflow
+
+Copy notebook and submission directories
+
+```{r}
+gsutil_cp(paste0(update_bucket, "/notebooks/*"), paste0(original_bucket, "/notebooks/"), recursive=TRUE)
+gsutil_cp(paste0(update_bucket, "/submissions/*"), paste0(original_bucket, "/submissions/"), recursive=TRUE)
+```
