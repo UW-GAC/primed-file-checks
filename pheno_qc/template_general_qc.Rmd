@@ -2,7 +2,51 @@
 
 This document performs quality control checks on all cmqt data sets. 
 
-(Will add in general QC checks later)
+```{r}
+# Read in data
+
+df <- read.table(file = '/home/rstudio/primed-file-checks/pheno_qc/test_data/cmqt_anthropometry.tsv', sep = '\t', header = TRUE)
+```
+
+```{r}
+# Set min and max limits for QC check 
+
+vars <- c('age_at_obs')
+
+# min and max values that are outside acceptable range
+min_values <- c(0)
+max_values <- c(99)
+
+vars_df <- data.frame(vars)
+vars_df$min_values <- min_values
+vars_df$max_values <- max_values
+vars_df$qc_pass <- c(rep(-1, length(vars)))
+vars_df$qc_fail_min <- c(rep(-1, length(vars)))
+vars_df$qc_fail_max <- c(rep(-1, length(vars)))
+vars_df$qc_null <- c(rep(-1, length(vars)))
+```
+
+```{r}
+# Check for extreme values in dataset
+
+this_table <- as.data.frame(df)
+
+for (i in 1:length(vars)) {
+  var_name = vars[i]
+  
+  this_variable <- eval(parse(text=paste0("this_table$", var_name)))
+  
+  max <- vars_df[i, 3]
+  min <- vars_df[i, 2]
+  
+  vars_df[c(i),]$qc_pass <- c(sum(this_variable <= max & this_variable >= min))
+  vars_df[c(i),]$qc_fail_min <- c(sum(this_variable < min))
+  vars_df[c(i),]$qc_fail_max <- c(sum(this_variable > max))
+  vars_df[c(i),]$qc_null <- c(sum(sapply(this_variable,is.null)))
+}
+
+kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', 'Pass QC', 'Fail QC Min', 'Fail QC Max', 'Null Values'),  caption = "QC check for general variables")
+```
 
 ```{r}
 # Complete constructing the file name for current table to be QC'd with table-specific checks

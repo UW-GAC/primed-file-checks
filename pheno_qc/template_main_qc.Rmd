@@ -13,6 +13,7 @@ params:
 knitr::opts_chunk$set(echo = FALSE)
 library(dplyr)
 library(knitr)
+library(ggplot2)
 ```
 
 # Main Document 

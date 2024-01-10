@@ -24,4 +24,4 @@ print(table_files$names)
 
 parameters <- list(tables=table_files)
 
-pass <- rmarkdown::render(input = "template_main_qc.Rmd", params=parameters, quiet=TRUE)
+rmarkdown::render(input = "template_main_qc.Rmd", params=parameters, quiet=TRUE)
