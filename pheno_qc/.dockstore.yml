@@ -1,7 +1,7 @@
 version: 1.2
 workflows:
-   - name: hello
+   - name: pheno_qc
      subclass: WDL
-     primaryDescriptorPath: /hello.wdl
+     primaryDescriptorPath: /pheno_qc.wdl
      testParameterFiles:
-         - /hello.json
+         - /pheno_qc.json
