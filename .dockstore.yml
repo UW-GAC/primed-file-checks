@@ -25,4 +25,10 @@ workflows:
      primaryDescriptorPath: /check_vcf_samples.wdl
      testParameterFiles:
          - /check_vcf_samples.json
+  - name: pheno_qc
+     subclass: WDL
+     primaryDescriptorPath: /pheno_qc/pheno_qc.wdl
+     testParameterFiles:
+         - /pheno_qc/pheno_qc.json
+
 
