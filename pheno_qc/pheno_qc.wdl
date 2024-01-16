@@ -16,12 +16,12 @@ workflow pheno_qc {
 
 task run_qc {
     input{
-        File = data_file
+        File data_file
     }
 
     command <<<
         Rscript /usr/local/primed-file-checks/pheno_qc/run_qc.R \
-        --filename ~{data_file} \ 
+        --filename ~{data_file} 
     >>>
 
     output{
