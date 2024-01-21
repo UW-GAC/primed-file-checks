@@ -5,7 +5,8 @@ This document performs quality control checks on all cmqt data sets.
 ```{r}
 # Read in data
 
-df <- read.table(file = '/home/rstudio/primed-file-checks/pheno_qc/test_data/cmqt_anthropometry.tsv', sep = '\t', header = TRUE)
+file_name <- paste0('/home/rstudio/primed-file-checks/pheno_qc/test_data/', grandchild_document_file_name)
+df <- read.table(file_name, sep = '\t', header = TRUE)
 ```
 
 ```{r}
@@ -15,7 +16,7 @@ vars <- c('age_at_obs')
 
 # min and max values that are outside acceptable range
 min_values <- c(0)
-max_values <- c(99)
+max_values <- c(90)
 
 vars_df <- data.frame(vars)
 vars_df$min_values <- min_values
@@ -51,7 +52,7 @@ kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', 'Pass QC', 'F
 ```{r}
 # Complete constructing the file name for current table to be QC'd with table-specific checks
 
-grandchild_document <- paste0(grandchild_document_name, ".Rmd") 
+grandchild_document <- paste0(grandchild_document_table_name, ".Rmd") 
 ```
 
 ```{r child=grandchild_document}

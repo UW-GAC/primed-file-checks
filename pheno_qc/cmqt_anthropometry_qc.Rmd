@@ -5,7 +5,8 @@ This document performs quality control checks on the cmqt_anthropometry data set
 ```{r}
 # Read in data
 
-df <- read.table(file = '/home/rstudio/primed-file-checks/pheno_qc/test_data/cmqt_anthropometry.tsv', sep = '\t', header = TRUE)
+# df <- read.table(file = '/home/rstudio/primed-file-checks/pheno_qc/test_data/cmqt_anthropometry.tsv', sep = '\t', header = TRUE)
+print(file_name)
 ```
 
 ```{r}

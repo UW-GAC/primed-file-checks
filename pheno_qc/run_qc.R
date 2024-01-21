@@ -20,7 +20,7 @@ argv <- parse_args(parser = argp)
 # table_files <- read_tsv(argv$filename, col_names=c("names", "files"), col_types="cc")
 table_files <- read_tsv(argv$filename, col_names=TRUE, col_types="cc")
 message("tables to QC:")
-print(table_files$names)
+print(table_files$table_names)
 
 parameters <- list(tables=table_files)
 
