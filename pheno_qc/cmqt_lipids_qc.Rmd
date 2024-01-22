@@ -3,10 +3,10 @@
 This document performs quality control checks on the cmqt_lipids data sets. Specific checks are determined through a collaborative effort between the CMQT sub-working group, the Phenotype Harmonization Working Group, and the CC. 
 
 ```{r}
-# Read in data
+# check file_name and df passed in 
 
-# df <- read.table(file = '/home/rstudio/primed-file-checks/pheno_qc/test_data/cmqt_lipids.tsv', sep = '\t', header = TRUE)
-print(file_name)
+# head(df)
+# print(file_name)
 ```
 
 ```{r}

@@ -7,6 +7,7 @@ output:
     toc: true
 params: 
   tables: ""
+  path: ""
 ---
 
 ```{r setup, include=FALSE}
@@ -19,14 +20,13 @@ library(ggplot2)
 # Main Document 
 
 ```{r}
-# parameters <- list(tables=table_files)
+# parameters <- list(tables=table_files, path=filepath)
 # table_files is a two column tsv file with (table_names, file_names)
 child_document <- "template_general_qc.Rmd" # the child doc will be the general qc Rmd
 
-# grandchild_document_names <- c("cmqt_anthropometry_qc", "cmqt_lipids_qc", "cmqt_blood_pressure_qc", "cmqt_hematology_qc")
-
 grandchild_document_table_names <- params$tables$table_names
 grandchild_document_file_names <- params$tables$file_names
+path <- params$path 
 ```
 
 ```{r, results='asis'}

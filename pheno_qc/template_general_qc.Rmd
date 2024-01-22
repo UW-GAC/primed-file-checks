@@ -4,8 +4,7 @@ This document performs quality control checks on all cmqt data sets.
 
 ```{r}
 # Read in data
-
-file_name <- paste0('/home/rstudio/primed-file-checks/pheno_qc/test_data/', grandchild_document_file_name)
+file_name <- paste0(path, grandchild_document_file_name)
 df <- read.table(file_name, sep = '\t', header = TRUE)
 ```
 
