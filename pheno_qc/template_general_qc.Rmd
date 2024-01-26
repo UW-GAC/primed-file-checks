@@ -4,8 +4,16 @@ This document performs quality control checks on all cmqt data sets.
 
 ```{r}
 # Read in data
-file_name <- paste0(path, grandchild_document_file_name)
-df <- read.table(file_name, sep = '\t', header = TRUE)
+
+file_name <- grandchild_document_file_name
+print(file_name)
+
+table_pipe <- gsutil_pipe(file_name, "rb")
+df <- read_table(table_pipe)
+
+# file_name <- paste0(bucket, grandchild_document_file_name)
+# file_name <- paste0(path, grandchild_document_file_name)
+# df <- read.table(file_name, sep = '\t', header = TRUE)
 ```
 
 ```{r}

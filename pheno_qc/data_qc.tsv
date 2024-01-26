@@ -1,5 +1,5 @@
 table_names	file_names
-cmqt_hematology	cmqt_hematology.tsv
-cmqt_lipids	cmqt_lipids.tsv
-cmqt_anthropometry	cmqt_anthropometry.tsv
-cmqt_blood_pressure	cmqt_blood_pressure.tsv
+cmqt_hematology	gs://fc-e3b6ff37-761e-4e53-89c0-fb243b8bd8e5/cmqt_hematology.tsv
+cmqt_lipids	gs://fc-e3b6ff37-761e-4e53-89c0-fb243b8bd8e5/cmqt_lipids.tsv
+cmqt_anthropometry	gs://fc-e3b6ff37-761e-4e53-89c0-fb243b8bd8e5/cmqt_anthropometry.tsv
+cmqt_blood_pressure	gs://fc-e3b6ff37-761e-4e53-89c0-fb243b8bd8e5/cmqt_blood_pressure.tsv

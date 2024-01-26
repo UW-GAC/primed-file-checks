@@ -4,8 +4,7 @@ library(AnvilDataModels)
 library(AnVIL)
 library(readr)
 
-# setwd('/home/rstudio/primed-file-checks/pheno_qc')
-# Rscript run_qc.R --filename data_qc.tsv --filepath /home/rstudio/primed-file-checks/pheno_qc/test_data/
+# Rscript run_qc.R --filename data_qc.tsv --filepath /home/rstudio/primed-file-checks/pheno_qc/
 
 # Get parameters
 argp <- arg_parser(description = "data qc") 
@@ -33,6 +32,8 @@ print(table_files$table_names)
 message("filepath:")
 print(filepath)
 
+input <- paste0(filepath, "template_main_qc.Rmd")
+
 parameters <- list(tables=table_files, path = filepath)
 
-rmarkdown::render(input = "template_main_qc.Rmd", params=parameters, quiet=TRUE)
+rmarkdown::render(input = input, params=parameters, quiet=TRUE)
