@@ -3,10 +3,12 @@ version 1.0
 workflow pheno_qc {
     input{
         File data_file
+        String path_to_rmd
     }
 
     call run_qc {
-        input: data_file = data_file
+        input: data_file = data_file,
+               path_to_rmd = path_to_rmd
     }
 
     output{
@@ -17,11 +19,13 @@ workflow pheno_qc {
 task run_qc {
     input{
         File data_file
+        String path_to_rmd
     }
 
     command <<<
         Rscript /usr/local/primed-file-checks/pheno_qc/run_qc.R \
-        --filename ~{data_file} 
+        --filename ~{data_file} \
+        --filepath ~{path_to_rmd}
     >>>
 
     output{
