@@ -4,36 +4,36 @@ library(AnvilDataModels)
 library(AnVIL)
 library(readr)
 
-# Rscript run_qc.R --filename data_qc.tsv --filepath /home/rstudio/primed-file-checks/pheno_qc/
+# Rscript run_qc.R --data_file data_qc.tsv --path_to_rmd /home/rstudio/primed-file-checks/pheno_qc/
 
 # Get parameters
 argp <- arg_parser(description = "data qc") 
 argp <- add_argument(parser = argp, 
-                     arg = "--filename", 
+                     arg = "--data_file", 
                      type = "character", 
                      nargs = 1,
                      help="2-column tsv file with (table name, table tsv file)")
 argp <- add_argument(parser = argp, 
-                     arg = "--filepath", 
+                     arg = "--path_to_rmd", 
                      type = "character", 
                      nargs = 1,
                      help="rmd filepath")
 argv <- parse_args(parser = argp)
 
 # read tables
-table_files <- read_tsv(argv$filename, col_names=TRUE, col_types="cc")
+table_files <- read_tsv(argv$data_file, col_names=TRUE, col_types="cc")
 
 # read filepath 
-filepath <- argv$filepath
+path_to_rmd <- argv$path_to_rmd
 
 message("tables to QC:")
 print(table_files$table_names)
 
-message("filepath:")
-print(filepath)
+message("path to rmd:")
+print(path_to_rmd)
 
-input <- paste0(filepath, "template_main_qc.Rmd")
+input <- paste0(path_to_rmd, "template_main_qc.Rmd")
 
-parameters <- list(tables=table_files, path = filepath)
+parameters <- list(tables=table_files, path = path_to_rmd)
 
 rmarkdown::render(input = input, params=parameters, quiet=TRUE)
