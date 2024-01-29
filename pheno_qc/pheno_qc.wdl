@@ -24,8 +24,8 @@ task run_qc {
 
     command <<<
         Rscript /usr/local/primed-file-checks/pheno_qc/run_qc.R \
-        --filename ~{data_file} \
-        --filepath ~{path_to_rmd}
+        --data_file ~{data_file} \
+        --path_to_rmd ~{path_to_rmd}
     >>>
 
     output{
