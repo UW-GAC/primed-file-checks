@@ -29,7 +29,7 @@ task run_qc {
     >>>
 
     output{
-        File qc_report = "template_main_qc.html"
+        File qc_report = "~{path_to_rmd}/template_main_qc.html"
     }
 
     runtime{
