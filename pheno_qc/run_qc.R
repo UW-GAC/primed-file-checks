@@ -36,7 +36,7 @@ input <- paste0(path_to_rmd, "template_main_qc.Rmd")
 
 parameters <- list(tables=table_files, path = path_to_rmd)
 
-file.copy(file.path(path_to_rmd, "template_main_qc.Rmd"), "qc_report.Rmd")
-rmarkdown::render(input = "qc_report.Rmd", params=parameters, quiet=TRUE)
+rmarkdown::render(input = inupt, params = parameters, quiet=TRUE)
+file.copy(file.path(path_to_rmd, "template_main_qc.html"), "qc_report.html")
 
 # rmarkdown::render(input = input, params=parameters, quiet=TRUE)
