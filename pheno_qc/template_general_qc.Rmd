@@ -6,10 +6,12 @@ This document performs quality control checks on all cmqt data sets.
 # Read in data
 
 file_name <- grandchild_document_file_name
+print("in template_general_qc")
 print(file_name)
 
 # table_pipe <- gsutil_pipe(file_name, "rb")
 # df <- read_table(table_pipe)
+
 df <- read.table(file_name, sep = '\t', header = TRUE)
 ```
 

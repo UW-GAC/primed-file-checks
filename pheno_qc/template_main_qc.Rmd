@@ -29,8 +29,9 @@ child_document <- "template_general_qc.Rmd" # the child doc will be the general 
 grandchild_document_table_names <- params$tables$table_names
 grandchild_document_file_names <- params$tables$file_names
 
-# bucket <- "gs://fc-e3b6ff37-761e-4e53-89c0-fb243b8bd8e5/"
-# path <- paste0(params$path, 'test_data/') 
+print("in template_main_qc")
+print(grandchild_document_table_names)
+print(grandchild_document_file_names)
 ```
 
 ```{r, results='asis'}
@@ -42,6 +43,9 @@ res <- vector(mode = "list", length = length(grandchild_document_table_names))
 for (i in 1:length(grandchild_document_table_names)) {
   grandchild_document_table_name <- paste0(grandchild_document_table_names[i], "_qc")
   grandchild_document_file_name <- grandchild_document_file_names[i]
+  print("running general qc for")
+  print(grandchild_document_table_name)
+  print(grandchild_document_file_name)
   res[[i]] <- knitr::knit_child(child_document, quiet = TRUE, envir = environment())
 }
 
