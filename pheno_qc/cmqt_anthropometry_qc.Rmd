@@ -7,6 +7,8 @@ This document performs quality control checks on the cmqt_anthropometry data set
 
 head(df)
 print(file_name)
+
+knitr::knit_exit()
 ```
 
 ```{r}
