@@ -12,7 +12,8 @@ print(file_name)
 # table_pipe <- gsutil_pipe(file_name, "rb")
 # df <- read_table(table_pipe)
 
-df <- read.table(file_name, sep = '\t', header = TRUE)
+# df <- read_table(file_name, sep = '\t', header = TRUE)
+df <- read_table(file_name)
 ```
 
 ```{r}

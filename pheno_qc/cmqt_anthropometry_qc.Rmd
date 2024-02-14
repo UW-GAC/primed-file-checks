@@ -5,8 +5,8 @@ This document performs quality control checks on the cmqt_anthropometry data set
 ```{r}
 # check file_name and df passed in 
 
-# head(df)
-# print(file_name)
+head(df)
+print(file_name)
 ```
 
 ```{r}
@@ -63,7 +63,10 @@ vars_df <- vars_df %>% add_row(
   vars = 'bmi_consistency', 
   min_values = NULL, 
   max_values = NULL, 
-  qc_pass = sum(this_table$bmi_1 >= this_table$bmi_calculated - bmi_tolerance & this_table$bmi_1 <= this_table$bmi_calculated + bmi_tolerance), 
+  qc_pass = sum(
+    this_table$bmi_1 >= this_table$bmi_calculated - bmi_tolerance 
+    & this_table$bmi_1 <= this_table$bmi_calculated + bmi_tolerance
+    ), 
   qc_fail_min = NULL, 
   qc_fail_max = NULL, 
   qc_null = c(sum(sapply(this_table$bmi_calculated,is.null)))
@@ -71,9 +74,9 @@ vars_df <- vars_df %>% add_row(
 
 kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', 'Pass QC', 'Fail QC Min', 'Fail QC Max', 'Null Values'),  caption = "QC check for anthropometry variables")
 ```
+
 ```{r}
 ggplot(aes(x=bmi_diff), data=this_table) + 
   geom_histogram() + 
   xlab("Difference between reported BMI and calculated BMI")
 ```
-
