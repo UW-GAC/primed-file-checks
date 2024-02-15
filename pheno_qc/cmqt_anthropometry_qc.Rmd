@@ -59,7 +59,8 @@ for (i in 1:length(vars)) {
 bmi_tolerance <- 0 
 
 this_table <- this_table %>% mutate(
-  bmi_calculated = ifelse(!is.na(weight_1) & !is.na(height_1), weight_1 / (height_1/100)^2, NULL),
+  # bmi_calculated = ifelse(!is.na(weight_1) & !is.na(height_1), weight_1 / (height_1/100)^2, NULL),
+  bmi_calculated = weight_1 / (height_1/100)^2,
   bmi_diff = bmi_1 - bmi_calculated
   )
 
@@ -73,7 +74,7 @@ vars_df <- vars_df %>% add_row(
     ),
   qc_fail_min = NULL,
   qc_fail_max = NULL,
-  qc_null = c(sum(sapply(this_table$bmi_calculated,is.null)))
+  qc_null = c(sum(is.null(this_table$bmi_calculated)))
 )
 
 kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', 'Pass QC', 'Fail QC Min', 'Fail QC Max', 'Null Values'),  caption = "QC check for anthropometry variables")
