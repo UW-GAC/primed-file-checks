@@ -76,7 +76,7 @@ kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', 'Pass QC', 'F
 ```
 
 ```{r}
-ggplot(aes(x=bmi_diff), data=this_table) + 
-  geom_histogram() + 
-  xlab("Difference between reported BMI and calculated BMI")
+# ggplot(aes(x=bmi_diff), data=this_table) + 
+#   geom_histogram() + 
+#   xlab("Difference between reported BMI and calculated BMI")
 ```
