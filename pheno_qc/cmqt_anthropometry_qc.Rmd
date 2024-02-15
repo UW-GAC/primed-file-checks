@@ -22,14 +22,6 @@ vars <- c('height_1', 'weight_1', 'bmi_1')
 min_values <- apply(df[vars], 2, mean, na.rm=TRUE) - 4*apply(df[vars], 2, sd, na.rm=TRUE)
 max_values <- apply(df[vars], 2, mean, na.rm=TRUE) + 4*apply(df[vars], 2, sd, na.rm=TRUE)
 
-print(vars)
-print(df[vars])
-print(apply(df[vars], 2, mean, na.rm=TRUE))
-
-print("min and max +/- 4 sd")
-print(min_values)
-print(max_values)
-
 vars_df <- data.frame(vars)
 vars_df$min_values <- min_values
 vars_df$max_values <- max_values
@@ -56,10 +48,10 @@ for (i in 1:length(vars)) {
   max <- vars_df[i, 3]
   min <- vars_df[i, 2]
   
-  vars_df[c(i),]$qc_pass <- c(sum(this_variable <= max & this_variable >= min))
-  vars_df[c(i),]$qc_fail_min <- c(sum(this_variable < min))
-  vars_df[c(i),]$qc_fail_max <- c(sum(this_variable > max))
-  vars_df[c(i),]$qc_null <- c(sum(sapply(this_variable,is.null)))
+  vars_df[c(i),]$qc_pass <- c(sum(this_variable <= max & this_variable >= min, na.rm=TRUE))
+  vars_df[c(i),]$qc_fail_min <- c(sum(this_variable < min, na.rm=TRUE))
+  vars_df[c(i),]$qc_fail_max <- c(sum(this_variable > max, na.rm=TRUE))
+  vars_df[c(i),]$qc_null <- c(sum(apply(this_variable, 2, is.null)))
 }
 
 # Check for errors in BMI calculations 
