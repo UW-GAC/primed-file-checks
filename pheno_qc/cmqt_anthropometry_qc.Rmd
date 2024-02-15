@@ -5,8 +5,8 @@ This document performs quality control checks on the cmqt_anthropometry data set
 ```{r}
 # check file_name and df passed in 
 
-head(df)
-print(file_name)
+# head(df)
+# print(file_name)
 ```
 
 ```{r}
@@ -45,17 +45,8 @@ for (i in 1:length(vars)) {
   
   this_variable <- eval(parse(text=paste0("this_table$", var_name)))
   
-  print("current variable")
-  print(var_name)
-  print(head(this_variable))
-  
   max <- vars_df[i, 3]
   min <- vars_df[i, 2]
-  
-  print("max value")
-  print(max)
-  print("min value")
-  print(min)
   
   vars_df[c(i),]$qc_pass <- c(sum(this_variable <= max & this_variable >= min, na.rm=TRUE))
   vars_df[c(i),]$qc_fail_min <- c(sum(this_variable < min, na.rm=TRUE))
@@ -67,29 +58,29 @@ for (i in 1:length(vars)) {
 
 bmi_tolerance <- 0 
 
-# this_table <- this_table %>% mutate(
-#   bmi_calculated = ifelse(!is.na(weight_1) & !is.na(height_1), weight_1 / (height_1/100)^2, NULL), 
-#   bmi_diff = bmi_1 - bmi_calculated
-#   )
-# 
-# vars_df <- vars_df %>% add_row(
-#   vars = 'bmi_consistency', 
-#   min_values = NULL, 
-#   max_values = NULL, 
-#   qc_pass = sum(
-#     this_table$bmi_1 >= this_table$bmi_calculated - bmi_tolerance 
-#     & this_table$bmi_1 <= this_table$bmi_calculated + bmi_tolerance
-#     ), 
-#   qc_fail_min = NULL, 
-#   qc_fail_max = NULL, 
-#   qc_null = c(sum(sapply(this_table$bmi_calculated,is.null)))
-# )
+this_table <- this_table %>% mutate(
+  bmi_calculated = ifelse(!is.na(weight_1) & !is.na(height_1), weight_1 / (height_1/100)^2, NULL),
+  bmi_diff = bmi_1 - bmi_calculated
+  )
+
+vars_df <- vars_df %>% add_row(
+  vars = 'bmi_consistency',
+  min_values = NULL,
+  max_values = NULL,
+  qc_pass = sum(
+    this_table$bmi_1 >= this_table$bmi_calculated - bmi_tolerance
+    & this_table$bmi_1 <= this_table$bmi_calculated + bmi_tolerance
+    ),
+  qc_fail_min = NULL,
+  qc_fail_max = NULL,
+  qc_null = c(sum(sapply(this_table$bmi_calculated,is.null)))
+)
 
 kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', 'Pass QC', 'Fail QC Min', 'Fail QC Max', 'Null Values'),  caption = "QC check for anthropometry variables")
 ```
 
 ```{r}
-# ggplot(aes(x=bmi_diff), data=this_table) + 
-#   geom_histogram() + 
-#   xlab("Difference between reported BMI and calculated BMI")
+ggplot(aes(x=bmi_diff), data=this_table) +
+  geom_histogram() +
+  xlab("Difference between reported BMI and calculated BMI")
 ```

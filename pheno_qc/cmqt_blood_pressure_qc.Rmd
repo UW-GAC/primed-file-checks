@@ -19,8 +19,8 @@ vars <- c('systolic_bp_1', 'diastolic_bp_1')
 # max_values <- c(270, 150)
 
 # min and max values that are mean +/- 4 SD outlier detection
-min_values <- sapply(df[vars], mean) - 4*sapply(df[vars], sd)
-max_values <- sapply(df[vars], mean) + 4*sapply(df[vars], sd)
+min_values <- apply(df[vars], 2, mean, na.rm=TRUE) - 4*apply(df[vars], 2, sd, na.rm=TRUE)
+max_values <- apply(df[vars], 2, mean, na.rm=TRUE) + 4*apply(df[vars], 2, sd, na.rm=TRUE)
 
 vars_df <- data.frame(vars)
 vars_df$min_values <- min_values
@@ -47,7 +47,7 @@ for (i in 1:length(vars)) {
   vars_df[c(i),]$qc_pass <- c(sum(this_variable <= max & this_variable >= min))
   vars_df[c(i),]$qc_fail_min <- c(sum(this_variable < min))
   vars_df[c(i),]$qc_fail_max <- c(sum(this_variable > max))
-  vars_df[c(i),]$qc_null <- c(sum(sapply(this_variable,is.null)))
+  vars_df[c(i),]$qc_null <- c(sum(is.null(this_variable)))
 }
 
 # Check for systolic blood pressure < diastolic blood pressure 
@@ -59,7 +59,7 @@ vars_df <- vars_df %>% add_row(
   qc_pass = sum(this_table$systolic_bp_1 > this_table$diastolic_bp_1), 
   qc_fail_min = sum(this_table$systolic_bp_1 <= this_table$diastolic_bp_1), 
   qc_fail_max = NULL, 
-  qc_null = c(sum(sapply(this_table$systolic_bp_1 | this_table$diastolic_bp_1,is.na)))
+  qc_null = c(sum(is.na(this_table$systolic_bp_1) | is.na(this_table$diastolic_bp_1)))
 )
 
 kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', 'Pass QC', 'Fail QC Min', 'Fail QC Max', 'Null Values'),  caption = "QC check for blood pressure variables")
