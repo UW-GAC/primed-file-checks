@@ -22,6 +22,10 @@ vars <- c('height_1', 'weight_1', 'bmi_1')
 min_values <- sapply(df[vars], mean) - 4*sapply(df[vars], sd)
 max_values <- sapply(df[vars], mean) + 4*sapply(df[vars], sd)
 
+print(vars)
+print(df[vars])
+print(sapply(df[vars], mean))
+
 print("min and max +/- 4 sd")
 print(min_values)
 print(max_values)
@@ -43,15 +47,14 @@ print(vars_df)
 this_table <- as.data.frame(df) 
 
 print("starting loop")
+print(vars)
 for (i in 1:length(vars)) {
   var_name = vars[i]
   
   this_variable <- eval(parse(text=paste0("this_table$", var_name)))
-  print(this_variable)
+  
   max <- vars_df[i, 3]
-  print(max)
   min <- vars_df[i, 2]
-  print(min)
   
   vars_df[c(i),]$qc_pass <- c(sum(this_variable <= max & this_variable >= min))
   vars_df[c(i),]$qc_fail_min <- c(sum(this_variable < min))
