@@ -19,12 +19,12 @@ vars <- c('height_1', 'weight_1', 'bmi_1')
 # max_values <- c(400, 300, 100)
 
 # min and max values that are mean +/- 4 SD outlier detection
-min_values <- sapply(df[vars], mean) - 4*sapply(df[vars], sd)
-max_values <- sapply(df[vars], mean) + 4*sapply(df[vars], sd)
+min_values <- apply(df[vars], 2, mean, na.rm=TRUE) - 4*apply(df[vars], 2, sd, na.rm=TRUE)
+max_values <- apply(df[vars], 2, mean, na.rm=TRUE) + 4*apply(df[vars], 2, sd, na.rm=TRUE)
 
 print(vars)
 print(df[vars])
-print(sapply(df[vars], mean))
+print(apply(df[vars], 2, mean, na.rm=TRUE))
 
 print("min and max +/- 4 sd")
 print(min_values)
