@@ -60,7 +60,7 @@ for (i in 1:length(vars)) {
   vars_df[c(i),]$qc_pass <- c(sum(this_variable <= max & this_variable >= min, na.rm=TRUE))
   vars_df[c(i),]$qc_fail_min <- c(sum(this_variable < min, na.rm=TRUE))
   vars_df[c(i),]$qc_fail_max <- c(sum(this_variable > max, na.rm=TRUE))
-  vars_df[c(i),]$qc_null <- c(sum(apply(this_variable, 2, is.null)))
+  vars_df[c(i),]$qc_null <- c(sum(is.null(this_variable)))
 }
 
 # Check for errors in BMI calculations 
