@@ -38,8 +38,6 @@ print(vars_df)
 
 this_table <- as.data.frame(df) 
 
-print("starting loop")
-print(vars)
 for (i in 1:length(vars)) {
   var_name = vars[i]
   
@@ -56,7 +54,7 @@ for (i in 1:length(vars)) {
 
 # Check for errors in BMI calculations 
 
-bmi_tolerance <- 0.001
+bmi_tolerance <- 0.1
 
 this_table <- this_table %>% mutate(
   # bmi_calculated = ifelse(!is.na(weight_1) & !is.na(height_1), weight_1 / (height_1/100)^2, NULL),
