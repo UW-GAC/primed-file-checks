@@ -72,9 +72,9 @@ vars_df <- vars_df %>% add_row(
     this_table$bmi_1 >= this_table$bmi_calculated - bmi_tolerance
     & this_table$bmi_1 <= this_table$bmi_calculated + bmi_tolerance
     ),
-  qc_fail_min = sum(this_table$bmi_1 < this_table$bmi_calculated - bmi_tolerance),
-  qc_fail_max = sum(this_table$bmi_1 > this_table$bmi_calculated + bmi_tolerance),
-  qc_null = sum(is.null(this_table$bmi_calculated))
+  qc_fail_min = c(sum(this_table$bmi_1 < this_table$bmi_calculated - bmi_tolerance, na.rm=TRUE)),
+  qc_fail_max = c(sum(this_table$bmi_1 > this_table$bmi_calculated + bmi_tolerance, na.rm=TRUE)),
+  qc_null = c(sum(is.null(this_table$bmi_calculated)))
 )
 
 kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', 'Pass QC', 'Fail QC Min', 'Fail QC Max', 'Null Values'),  caption = "QC check for anthropometry variables")
