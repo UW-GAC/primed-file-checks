@@ -26,19 +26,8 @@ table_files <- read_tsv(argv$data_file, col_names=TRUE, col_types="cc")
 # read filepath 
 path_to_rmd <- argv$path_to_rmd
 
-message("tables to QC:")
-print(table_files$table_names)
-print(table_files$file_names)
-
 gsutil_cp(table_files$file_names, ".")
 table_files$file_names <- paste0(getwd(), "/", basename(table_files$file_names))
-
-message("tables to QC after copying:")
-print(table_files$table_names)
-print(table_files$file_names)
-
-message("path to rmd:")
-print(path_to_rmd)
 
 input <- paste0(path_to_rmd, "template_main_qc.Rmd")
 
