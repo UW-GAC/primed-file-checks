@@ -47,7 +47,7 @@ for (i in 1:length(vars)) {
   vars_df[c(i),]$qc_pass <- c(sum(this_variable <= max & this_variable >= min, na.rm=TRUE))
   vars_df[c(i),]$qc_fail_min <- c(sum(this_variable < min, na.rm=TRUE))
   vars_df[c(i),]$qc_fail_max <- c(sum(this_variable > max, na.rm=TRUE))
-  vars_df[c(i),]$qc_null <- c(sum(is.null(this_variable)))
+  vars_df[c(i),]$qc_null <- c(sum(is.na(this_variable)))
 }
 
 kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', 'Pass QC', 'Fail QC Min', 'Fail QC Max', 'Null Values'),  caption = "QC check for hematology variables")
