@@ -10,7 +10,6 @@ file_name <- grandchild_document_file_name
 # table_pipe <- gsutil_pipe(file_name, "rb")
 # df <- read_table(table_pipe)
 
-# df <- read_table(file_name, sep = '\t', header = TRUE)
 df <- read_table(file_name)
 ```
 
@@ -36,11 +35,13 @@ vars_df$qc_null <- c(rep(-1, length(vars)))
 # Check for extreme values in dataset
 
 this_table <- as.data.frame(df)
+print(nrow(this_table))
 
 for (i in 1:length(vars)) {
   var_name = vars[i]
   
   this_variable <- eval(parse(text=paste0("this_table$", var_name)))
+  print(nrow(this_variable))
   
   max <- vars_df[i, 3]
   min <- vars_df[i, 2]
@@ -48,7 +49,7 @@ for (i in 1:length(vars)) {
   vars_df[c(i),]$qc_pass <- c(sum(this_variable <= max & this_variable >= min))
   vars_df[c(i),]$qc_fail_min <- c(sum(this_variable < min))
   vars_df[c(i),]$qc_fail_max <- c(sum(this_variable > max))
-  vars_df[c(i),]$qc_null <- c(sum(sapply(this_variable,is.null)))
+  vars_df[c(i),]$qc_null <- c(sum(is.null(this_variable)))
 }
 
 kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', 'Pass QC', 'Fail QC Min', 'Fail QC Max', 'Null Values'),  caption = "QC check for general variables")

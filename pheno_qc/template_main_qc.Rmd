@@ -23,7 +23,6 @@ library(ggplot2)
 # parameters <- list(tables=table_files, path=filepath)
 # table_files is a two column tsv file with (table_names, file_names)
 
-
 child_document <- "template_general_qc.Rmd" # the child doc will be the general qc Rmd
 
 grandchild_document_table_names <- params$tables$table_names
@@ -39,9 +38,6 @@ res <- vector(mode = "list", length = length(grandchild_document_table_names))
 for (i in 1:length(grandchild_document_table_names)) {
   grandchild_document_table_name <- paste0(grandchild_document_table_names[i], "_qc")
   grandchild_document_file_name <- grandchild_document_file_names[i]
-  print("running general qc for")
-  print(grandchild_document_table_name)
-  print(grandchild_document_file_name)
   res[[i]] <- knitr::knit_child(child_document, quiet = TRUE, envir = environment())
 }
 

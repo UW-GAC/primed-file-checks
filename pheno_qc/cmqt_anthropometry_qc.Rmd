@@ -29,13 +29,10 @@ vars_df$qc_pass <- c(rep(-1, length(vars)))
 vars_df$qc_fail_min <- c(rep(-1, length(vars)))
 vars_df$qc_fail_max <- c(rep(-1, length(vars)))
 vars_df$qc_null <- c(rep(-1, length(vars)))
-
-print(vars_df)
 ```
 
 ```{r}
 # Check for extreme values in dataset
-
 this_table <- as.data.frame(df) 
 
 for (i in 1:length(vars)) {
@@ -45,14 +42,14 @@ for (i in 1:length(vars)) {
   
   max <- vars_df[i, 3]
   min <- vars_df[i, 2]
-  
-  this_table %>% summarise(
+  print(var_name)
+  print (this_table %>% summarise(
     n = n(), 
-    qc_pass = n(var_name <= max & var_name >= min),
-    qc_fail_min = n(var_name < min),
-    qc_fail_max = n(var_name > max), 
-    qc_null = n(is.null(var_name))
-  )
+    qc_pass = sum(var_name <= max & var_name >= min),
+    qc_fail_min = sum(var_name < min),
+    qc_fail_max = sum(var_name > max), 
+    qc_null = sum(is.null(var_name))
+  ))
   
   vars_df[c(i),]$qc_pass <- c(sum(this_variable <= max & this_variable >= min, na.rm=TRUE))
   vars_df[c(i),]$qc_fail_min <- c(sum(this_variable < min, na.rm=TRUE))
