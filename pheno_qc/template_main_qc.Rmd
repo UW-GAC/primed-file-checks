@@ -17,8 +17,6 @@ library(knitr)
 library(ggplot2)
 ```
 
-# Main Document 
-
 ```{r}
 # parameters <- list(tables=table_files, path=filepath)
 # table_files is a two column tsv file with (table_names, file_names)

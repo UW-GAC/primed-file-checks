@@ -35,13 +35,11 @@ vars_df$qc_null <- c(rep(-1, length(vars)))
 # Check for extreme values in dataset
 
 this_table <- as.data.frame(df)
-print(nrow(this_table))
 
 for (i in 1:length(vars)) {
   var_name = vars[i]
   
   this_variable <- eval(parse(text=paste0("this_table$", var_name)))
-  print(nrow(this_variable))
   
   max <- vars_df[i, 3]
   min <- vars_df[i, 2]
