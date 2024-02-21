@@ -1,4 +1,4 @@
-## General QC checks 
+`r paste("## General QC Checks for ", grandchild_document_table_name)`
 
 This document performs quality control checks on all cmqt data sets. 
 
@@ -58,7 +58,7 @@ kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', 'Pass QC', 'F
 ```{r}
 # Complete constructing the file name for current table to be QC'd with table-specific checks
 
-grandchild_document <- paste0(grandchild_document_table_name, ".Rmd") 
+grandchild_document <- paste0(grandchild_document_table_name, "_qc.Rmd") 
 ```
 
 ```{r child=grandchild_document}

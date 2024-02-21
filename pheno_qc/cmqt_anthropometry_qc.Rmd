@@ -1,4 +1,4 @@
-### CMQT Anthropometry QC 
+### CMQT Anthropometry QC
 
 This document performs quality control checks on the cmqt_anthropometry data sets. Specific checks are determined through a collaborative effort between the CMQT sub-working group, the Phenotype Harmonization Working Group, and the CC. 
 
