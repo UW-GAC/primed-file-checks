@@ -17,7 +17,7 @@ library(knitr)
 library(ggplot2)
 ```
 
-```{r}
+```{r params}
 # parameters <- list(tables=table_files, path=filepath)
 # table_files is a two column tsv file with (table_names, file_names)
 
@@ -27,7 +27,7 @@ grandchild_document_table_names <- params$tables$table_names
 grandchild_document_file_names <- params$tables$file_names
 ```
 
-```{r, results='asis'}
+```{r call_child_rmd, results='asis'}
 # Call child document for general QC check 
 # This chunk will loop through the list of table names to be QC'd 
 
