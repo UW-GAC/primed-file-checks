@@ -59,7 +59,7 @@ kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', 'Pass QC', 'F
 grandchild_document <- paste0(grandchild_document_table_name, "_qc.Rmd") 
 ```
 
-```{r, results='asis'}
-res <- knitr::knit_child(grandchild_document, quiet = TRUE)
-cat(res, sep = '\n')
+```{r}
+knitr::asis_output(knitr::knit_child(grandchild_document, quiet=TRUE))
+# knitr::knit_child(grandchild_document, quiet = TRUE)
 ```
