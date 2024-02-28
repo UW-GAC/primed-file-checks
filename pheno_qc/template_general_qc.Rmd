@@ -17,7 +17,7 @@ file_name <- grandchild_document_file_name
 
 df <- read_table(file_name, 
                  col_types = cols(subject_id="c"), 
-                 guess_max=Inf, 
+                 guess_max=100000, 
                  show_col_types=TRUE)
 ```
 
