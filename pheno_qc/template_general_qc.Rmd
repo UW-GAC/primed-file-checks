@@ -15,7 +15,10 @@ file_name <- grandchild_document_file_name
 # table_pipe <- gsutil_pipe(file_name, "rb")
 # df <- read_table(table_pipe)
 
-df <- read_table(file_name)
+df <- read_table(file_name, 
+                 col_types = cols(subject_id="c"), 
+                 guess_max=Inf, 
+                 show_col_types=TRUE)
 ```
 
 ```{r}
