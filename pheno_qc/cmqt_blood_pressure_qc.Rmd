@@ -1,6 +1,17 @@
-### CMQT Blood Pressure QC
-
-This document performs quality control checks on the cmqt_blood_pressure data sets. Specific checks are determined through a collaborative effort between the CMQT sub-working group, the Phenotype Harmonization Working Group, and the CC. 
+CMQT Blood Pressure Specific Variables checked: 
+- systolic_bp_1
+  - Min Value: -4SD outlier
+  - Min Value: +4SD outlier 
+- diastolic_bp_1
+  - Min Value: -4SD outlier
+  - Min Value: +4SD outlier 
+- bp_consistency: Is systolic > diastolic 
+  - Min Value: NA
+  - Min Value: NA
+  - Pass QC: number of samples with systolic > diastolic
+  - Fail QC Min: number of samples without systolic > diastolic
+  - Fail QC Max: NA
+  - Null Values: number of samples with null values for systolic_bp_1 or diastolic_bp_1
 
 ```{r}
 # check file_name and df passed in 

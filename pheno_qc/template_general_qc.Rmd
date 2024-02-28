@@ -1,6 +1,11 @@
-`r paste("## General QC Checks for ", grandchild_document_table_name)`
+`r paste("## QC Checks for ", grandchild_document_table_name)`
 
-This document performs quality control checks on all cmqt data sets. 
+This section has QC checks for the `r grandchild_document_table_name` table. 
+
+General Variables for QC: 
+- age: 
+  - Min Value: 0
+  - Max Value: 90
 
 ```{r}
 # Read in data

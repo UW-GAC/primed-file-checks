@@ -17,6 +17,16 @@ library(knitr)
 library(ggplot2)
 ```
 
+This document performs QC checks on PRIMED phenotypes. Specific checks are determined through a collaborative effort between PRIMED WGs and the CC. The QC report is formatted as follows: 
+
+  - Variable: name of variable  
+  - Min Value: minimum threshold for QC
+  - Max Value: maximum threshold for QC
+  - Pass QC: number of samples within the set min and max
+  - Fail QC Min: number of samples with variables under min value
+  - Fail QC Max: number of samples with variables under max value
+  - Null Values: number of samples with null values for this variable 
+
 ```{r params}
 # parameters <- list(tables=table_files, path=filepath)
 # table_files is a two column tsv file with (table_names, file_names)

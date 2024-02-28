@@ -1,7 +1,17 @@
-### CMQT Hematology QC 
-
-This document performs quality control checks on the cmqt_hematology data sets. Specific checks are determined through a collaborative effort between the CMQT sub-working group, the Phenotype Harmonization Working Group, and the CC. 
-
+CMQT Hematology Specific Variables checked: 
+- wbc_1
+  - Min Value: -4SD outlier
+  - Min Value: +4SD outlier
+- hemoglobin_1
+  - Min Value: -4SD outlier
+  - Min Value: +4SD outlier
+- hematocrit_1
+  - Min Value: -4SD outlier
+  - Min Value: +4SD outlier
+- platelet_count_1
+  - Min Value: -4SD outlier
+  - Min Value: +4SD outlier
+  
 ```{r}
 # check file_name and df passed in 
 

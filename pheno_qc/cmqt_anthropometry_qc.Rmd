@@ -1,6 +1,20 @@
-### CMQT Anthropometry QC
-
-This document performs quality control checks on the cmqt_anthropometry data sets. Specific checks are determined through a collaborative effort between the CMQT sub-working group, the Phenotype Harmonization Working Group, and the CC. 
+CMQT Anthropometry Specific Variables checked: 
+- height_1
+  - Min Value: -4SD outlier
+  - Min Value: +4SD outlier
+- weight_1
+  - Min Value: -4SD outlier
+  - Min Value: +4SD outlier
+- bmi_1
+  - Min Value: -4SD outlier
+  - Min Value: +4SD outlier
+- bmi_consistency: Difference between reported BMI and calculated BMI
+  - Min Value: NA
+  - Min Value: NA
+  - Pass QC: number of samples with reported BMI within a tolerance level of `r bmi_tolerance` of calculated BMI
+  - Fail QC Min: number of samples with reported BMI difference less than (calculated BMI - `r bmi_tolerance`)
+  - Fail QC Max: number of samples with reported BMI difference greater than (calculated BMI + `r bmi_tolerance`)
+  - Null Values: number of samples with null values for height_1 or weight_1
 
 ```{r}
 # check file_name and df passed in 
