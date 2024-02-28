@@ -48,7 +48,7 @@ for (i in 1:length(vars)) {
 }
 ```
 
-CMQT Lipids Specific Variables checked: 
+CMQT Lipids Specific Variables: 
 
 - triglycerides_1
   - Min Value: -4SD outlier

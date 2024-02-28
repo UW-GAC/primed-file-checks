@@ -48,7 +48,7 @@ for (i in 1:length(vars)) {
 }
 ```
 
-CMQT Hematology Specific Variables checked: 
+CMQT Hematology Specific Variables: 
 
 - wbc_1
   - Min Value: -4SD outlier

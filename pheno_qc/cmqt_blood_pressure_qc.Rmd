@@ -60,7 +60,7 @@ vars_df <- vars_df %>% add_row(
 )
 ```
 
-CMQT Blood Pressure Specific Variables checked: 
+CMQT Blood Pressure Specific Variables: 
 
 - systolic_bp_1
   - Min Value: -4SD outlier

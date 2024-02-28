@@ -2,12 +2,6 @@
 
 This section has QC checks for the `r grandchild_document_table_name` table. 
 
-General Variables for QC: 
-
-- age: 
-  - Min Value: 0
-  - Max Value: 90
-
 ```{r}
 # Read in data
 
@@ -58,7 +52,15 @@ for (i in 1:length(vars)) {
   vars_df[c(i),]$qc_fail_max <- c(sum(this_variable > max))
   vars_df[c(i),]$qc_null <- c(sum(is.null(this_variable)))
 }
+```
 
+General Variables: 
+
+- age: 
+  - Min Value: 0
+  - Max Value: 90
+
+```{r}
 kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', 'Pass QC', 'Fail QC Min', 'Fail QC Max', 'Null Values'),  caption = "QC check for general variables")
 ```
 
