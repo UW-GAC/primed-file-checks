@@ -79,6 +79,7 @@ vars_df <- vars_df %>% add_row(
 ```
 
 CMQT Anthropometry Specific Variables checked: 
+
 - height_1
   - Min Value: -4SD outlier
   - Min Value: +4SD outlier
