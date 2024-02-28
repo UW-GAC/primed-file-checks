@@ -91,9 +91,9 @@ CMQT Anthropometry Specific Variables checked:
 - bmi_consistency: Difference between reported BMI and calculated BMI
   - Min Value: NA
   - Min Value: NA
-  - Pass QC: number of samples with reported BMI within a tolerance level of `r bmi_tolerance` of calculated BMI
-  - Fail QC Min: number of samples with reported BMI difference less than (calculated BMI - `r bmi_tolerance`)
-  - Fail QC Max: number of samples with reported BMI difference greater than (calculated BMI + `r bmi_tolerance`)
+  - Pass QC: number of samples with reported BMI within a tolerance level of 0.1 of calculated BMI
+  - Fail QC Min: number of samples with reported BMI difference less than (calculated BMI - 0.1)
+  - Fail QC Max: number of samples with reported BMI difference greater than (calculated BMI + 0.1)
   - Null Values: number of samples with null values for height_1 or weight_1
 
 ```{r}
