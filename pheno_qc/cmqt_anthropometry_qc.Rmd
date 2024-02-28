@@ -1,20 +1,3 @@
-CMQT Anthropometry Specific Variables checked: 
-- height_1
-  - Min Value: -4SD outlier
-  - Min Value: +4SD outlier
-- weight_1
-  - Min Value: -4SD outlier
-  - Min Value: +4SD outlier
-- bmi_1
-  - Min Value: -4SD outlier
-  - Min Value: +4SD outlier
-- bmi_consistency: Difference between reported BMI and calculated BMI
-  - Min Value: NA
-  - Min Value: NA
-  - Pass QC: number of samples with reported BMI within a tolerance level of `r bmi_tolerance` of calculated BMI
-  - Fail QC Min: number of samples with reported BMI difference less than (calculated BMI - `r bmi_tolerance`)
-  - Fail QC Max: number of samples with reported BMI difference greater than (calculated BMI + `r bmi_tolerance`)
-  - Null Values: number of samples with null values for height_1 or weight_1
 
 ```{r}
 # check file_name and df passed in 
@@ -23,9 +6,11 @@ CMQT Anthropometry Specific Variables checked:
 # print(file_name)
 
 # file_name <- 'gs://fc-secure-0285a1eb-c88a-4ea6-b970-ec5e092784ea/uploaded_data_prevent/aric_cmqt_anthropometry.tsv'
-
 # table_pipe <- gsutil_pipe(file_name, "rb")
-# df <- read_table(table_pipe)
+# df <- read_table(table_pipe, 
+#                  col_types = cols(subject_id="c"), 
+#                  guess_max=Inf, 
+#                  show_col_types=TRUE)
 ```
 
 ```{r}
@@ -91,7 +76,27 @@ vars_df <- vars_df %>% add_row(
   qc_fail_max = c(sum(this_table$bmi_1 > this_table$bmi_calculated + bmi_tolerance, na.rm=TRUE)),
   qc_null = c(sum(is.na(this_table$bmi_calculated)))
 )
+```
 
+CMQT Anthropometry Specific Variables checked: 
+- height_1
+  - Min Value: -4SD outlier
+  - Min Value: +4SD outlier
+- weight_1
+  - Min Value: -4SD outlier
+  - Min Value: +4SD outlier
+- bmi_1
+  - Min Value: -4SD outlier
+  - Min Value: +4SD outlier
+- bmi_consistency: Difference between reported BMI and calculated BMI
+  - Min Value: NA
+  - Min Value: NA
+  - Pass QC: number of samples with reported BMI within a tolerance level of `r bmi_tolerance` of calculated BMI
+  - Fail QC Min: number of samples with reported BMI difference less than (calculated BMI - `r bmi_tolerance`)
+  - Fail QC Max: number of samples with reported BMI difference greater than (calculated BMI + `r bmi_tolerance`)
+  - Null Values: number of samples with null values for height_1 or weight_1
+
+```{r}
 kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', 'Pass QC', 'Fail QC Min', 'Fail QC Max', 'Null Values'),  caption = "QC check for anthropometry variables")
 ```
 

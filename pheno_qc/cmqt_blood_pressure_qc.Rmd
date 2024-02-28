@@ -1,17 +1,3 @@
-CMQT Blood Pressure Specific Variables checked: 
-- systolic_bp_1
-  - Min Value: -4SD outlier
-  - Min Value: +4SD outlier 
-- diastolic_bp_1
-  - Min Value: -4SD outlier
-  - Min Value: +4SD outlier 
-- bp_consistency: Is systolic > diastolic 
-  - Min Value: NA
-  - Min Value: NA
-  - Pass QC: number of samples with systolic > diastolic
-  - Fail QC Min: number of samples without systolic > diastolic
-  - Fail QC Max: NA
-  - Null Values: number of samples with null values for systolic_bp_1 or diastolic_bp_1
 
 ```{r}
 # check file_name and df passed in 
@@ -72,6 +58,23 @@ vars_df <- vars_df %>% add_row(
   qc_fail_max = NULL, 
   qc_null = c(sum(is.na(this_table$systolic_bp_1) | is.na(this_table$diastolic_bp_1)))
 )
+```
 
+CMQT Blood Pressure Specific Variables checked: 
+- systolic_bp_1
+  - Min Value: -4SD outlier
+  - Min Value: +4SD outlier 
+- diastolic_bp_1
+  - Min Value: -4SD outlier
+  - Min Value: +4SD outlier 
+- bp_consistency: Is systolic > diastolic 
+  - Min Value: NA
+  - Min Value: NA
+  - Pass QC: number of samples with systolic > diastolic
+  - Fail QC Min: number of samples without systolic > diastolic
+  - Fail QC Max: NA
+  - Null Values: number of samples with null values for systolic_bp_1 or diastolic_bp_1
+  
+```{r}
 kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', 'Pass QC', 'Fail QC Min', 'Fail QC Max', 'Null Values'),  caption = "QC check for blood pressure variables")
 ```

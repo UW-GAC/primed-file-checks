@@ -1,17 +1,4 @@
-CMQT Hematology Specific Variables checked: 
-- wbc_1
-  - Min Value: -4SD outlier
-  - Min Value: +4SD outlier
-- hemoglobin_1
-  - Min Value: -4SD outlier
-  - Min Value: +4SD outlier
-- hematocrit_1
-  - Min Value: -4SD outlier
-  - Min Value: +4SD outlier
-- platelet_count_1
-  - Min Value: -4SD outlier
-  - Min Value: +4SD outlier
-  
+
 ```{r}
 # check file_name and df passed in 
 
@@ -59,6 +46,22 @@ for (i in 1:length(vars)) {
   vars_df[c(i),]$qc_fail_max <- c(sum(this_variable > max, na.rm=TRUE))
   vars_df[c(i),]$qc_null <- c(sum(is.na(this_variable)))
 }
+```
 
+CMQT Hematology Specific Variables checked: 
+- wbc_1
+  - Min Value: -4SD outlier
+  - Min Value: +4SD outlier
+- hemoglobin_1
+  - Min Value: -4SD outlier
+  - Min Value: +4SD outlier
+- hematocrit_1
+  - Min Value: -4SD outlier
+  - Min Value: +4SD outlier
+- platelet_count_1
+  - Min Value: -4SD outlier
+  - Min Value: +4SD outlier
+  
+```{r}
 kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', 'Pass QC', 'Fail QC Min', 'Fail QC Max', 'Null Values'),  caption = "QC check for hematology variables")
 ```
