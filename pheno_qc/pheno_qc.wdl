@@ -30,6 +30,6 @@ task run_qc {
     }
 
     runtime{
-        docker: "uwgac/primed-file-checks:pheno_qc"
+        docker: "uwgac/primed-file-checks:0.5.0"
     }
 }
