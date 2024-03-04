@@ -4,7 +4,7 @@ workflows:
      subclass: WDL
      primaryDescriptorPath: /validate_phenotype_model.wdl
      testParameterFiles:
-         - /validate_phnotype_model.json
+         - /validate_phenotype_model.json
    - name: validate_genotype_model
      subclass: WDL
      primaryDescriptorPath: /validate_genotype_model.wdl
@@ -25,4 +25,10 @@ workflows:
      primaryDescriptorPath: /check_vcf_samples.wdl
      testParameterFiles:
          - /check_vcf_samples.json
+   - name: pheno_qc
+     subclass: WDL
+     primaryDescriptorPath: /pheno_qc/pheno_qc.wdl
+     testParameterFiles:
+         - /pheno_qc/pheno_qc.json
+
 

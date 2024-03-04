@@ -1,0 +1,22 @@
+This document is a template R markdown file for table-specific QC checks. Please set the child document name based on the table name (e.g., "cqmt_lipids_qc.Rmd"). 
+
+# Description
+<Provide a description of table>
+
+Example: This document performs quality control checks on the cmqt_lipids data sets. Specific checks are determined through a collaborative effort between the CMQT sub-working group, the Phenotype Harmonization Working Group, and the CC. 
+
+# Quailty checks
+## Libraries
+```{r load-libraries}
+# Will not need this code chunk when this is integrated into main_qc markdown doc
+```
+
+## Read in data
+```{r read-in-data}
+# Do we want to read in the specific table here? E.g., table_names passed inherited and this chunk identifies the relevant data table
+```
+
+## Variable-specific QC checks
+```{r variable-specific-qc}
+
+```

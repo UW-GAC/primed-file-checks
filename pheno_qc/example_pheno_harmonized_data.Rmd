@@ -1,0 +1,64 @@
+---
+title: Adding your phenotype data file to the harmonized data table
+author: Alyna Khan
+date: 
+---
+# Elements needed to prepare your harmonized data table
+Both harmonized and unharmonized phenotype data tables can be imported into your AnVIL workspace. To import harmonized data, you must create a harmonized data table. There are 6 elements needed to prepare your harmonized data table:
+* domain: refers to the phenotype domain that your harmonized data file belongs to (e.g., cvd_cad)
+* md5sum: refers to the md5sum value associated with your data file
+* file_path: refers to the google bucket ID of your harmonized data file
+* file_readme_path: refers to the google bucket ID of your README file
+* n_subjects: refers to the number of subjects in your phenotype data file
+* n_rows: refers to the number of rows in your phenotype data file. Do not count the header as a row.
+
+# Install and load R packages
+```{r libraries}
+#remotes::install_github("UW-GAC/AnvilDataModels", upgrade=FALSE)
+library(AnVIL)
+library(AnvilDataModels)
+library(tidyverse)
+```
+
+# Prepare your harmonized data table
+To access files in the source workspace, you will need the source workspace google bucket ID. With the ID, you can list all the files in your source workspace.
+```{r get_buckets}
+# Get your source google bucket ID
+bucket <- "gs://fc-995e5705-8dcb-410b-987e-c05b47d0c580"
+
+# List the files in your source bucket
+gsutil_ls(bucket)
+
+# Get the google bucket ID for your data file
+prefix_cad_data <- "cvd_cad"
+cad_data_file <- paste0(bucket, "/", prefix_cad_data, ".txt")
+
+# Check that the bucket ID for your data file is in your source bucket file list
+cad_data_file %in% gsutil_ls(bucket)
+```
+
+Get the bucket ID for the harmonized data table.
+```{r read_data}
+bucket <-"gs://fc-995e5705-8dcb-410b-987e-c05b47d0c580" # In this case, source_bucket and harmonized table bucket are the same
+prefix <- "TEST_harmonized_phenotype_table"
+harmonized_table_file <- paste0(bucket, "/", prefix, ".tsv")
+harmonized_table_file %in% gsutil_ls(bucket)
+harmonized_table_pipe <- gsutil_pipe(harmonized_table_file, "rb")
+harmonized_table <- read_table(harmonized_table_pipe)
+```
+
+```{r add-pheno-file}
+# Add a row for the new phenotype data file
+harmonized_table_added_file <- add_row(harmonized_table, domain="cvd_cad", file_path=cad_data_file, file_readme_path = "readme", n_subjects=7, n_rows=7, md5sum="1fa255d535cf40fc1e8d4a55155a6657")
+```
+
+# Write tables as files to workspace bucket
+Add your harmonized table to the workspace using the workspace bucket ID
+```{r create-table-file}
+outfile <- "TEST_harmonized_phenotype_table_4.tsv"
+write_tsv(harmonized_table_added_file, outfile)
+gsutil_cp(outfile, bucket)
+```
+
+# Check tables against data model
+Once you've added your phenotype harmonized data table, you can run the validation workflow to check the table against the data model. 

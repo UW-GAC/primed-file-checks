@@ -1,0 +1,76 @@
+`r paste("## QC Checks for ", grandchild_document_table_name)`
+
+This section has QC checks for the `r grandchild_document_table_name` table. 
+
+```{r}
+# Read in data
+
+file_name <- grandchild_document_file_name
+
+# table_pipe <- gsutil_pipe(file_name, "rb")
+# df <- read_table(table_pipe)
+
+df <- read_table(file_name, 
+                 col_types = cols(subject_id="c"), 
+                 guess_max=100000, 
+                 show_col_types=TRUE)
+```
+
+```{r}
+# Set min and max limits for QC check 
+
+vars <- c('age_at_obs')
+
+# min and max values that are outside acceptable range
+min_values <- c(0)
+max_values <- c(90)
+
+vars_df <- data.frame(vars)
+vars_df$min_values <- min_values
+vars_df$max_values <- max_values
+vars_df$qc_pass <- c(rep(-1, length(vars)))
+vars_df$qc_fail_min <- c(rep(-1, length(vars)))
+vars_df$qc_fail_max <- c(rep(-1, length(vars)))
+vars_df$qc_null <- c(rep(-1, length(vars)))
+```
+
+```{r}
+# Check for extreme values in dataset
+
+this_table <- as.data.frame(df)
+
+for (i in 1:length(vars)) {
+  var_name = vars[i]
+  
+  this_variable <- eval(parse(text=paste0("this_table$", var_name)))
+  
+  max <- vars_df[i, 3]
+  min <- vars_df[i, 2]
+  
+  vars_df[c(i),]$qc_pass <- c(sum(this_variable <= max & this_variable >= min))
+  vars_df[c(i),]$qc_fail_min <- c(sum(this_variable < min))
+  vars_df[c(i),]$qc_fail_max <- c(sum(this_variable > max))
+  vars_df[c(i),]$qc_null <- c(sum(is.null(this_variable)))
+}
+```
+
+General Variables: 
+
+- age: 
+  - Min Value: 0
+  - Max Value: 90
+
+```{r}
+kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', 'Pass QC', 'Fail QC Min', 'Fail QC Max', 'Null Values'),  caption = "QC check for general variables")
+```
+
+```{r}
+# Complete constructing the file name for current table to be QC'd with table-specific checks
+
+grandchild_document <- paste0(grandchild_document_table_name, "_qc.Rmd") 
+```
+
+```{r}
+knitr::asis_output(knitr::knit_child(grandchild_document, quiet=TRUE))
+# knitr::knit_child(grandchild_document, quiet = TRUE)
+```
