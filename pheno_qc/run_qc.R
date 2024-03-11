@@ -23,6 +23,16 @@ argv <- parse_args(parser = argp)
 # read tables
 table_files <- read_tsv(argv$data_file, col_names=TRUE, col_types="cc")
 
+if("domain" %in% colnames(table_files)){
+  table_files$table_names = table_files$domain
+}
+
+if("file_path" %in% colnames(table_files)){
+  table_files$file_names = table_files$file_path
+}
+
+table_files <- table_files %>% select(table_names, file_names)
+
 # read filepath 
 path_to_rmd <- argv$path_to_rmd
 
