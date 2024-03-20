@@ -153,7 +153,7 @@ task select_md5_files {
           files[[t]] <- dat[['file_path']]; \
           md5[[t]] <- dat[['md5sum']]; \
         }; \
-        if (length(files) > 0) { \
+        if (length(unlist(files)) > 0) { \
           writeLines(unlist(files), 'file.txt'); \
           writeLines(unlist(md5), 'md5sum.txt'); \
         } else { \
@@ -194,7 +194,7 @@ task select_vcf_files {
           ids[[t]] <- dat[[sub('_file', '_dataset_id', t)]]; \
           datasets[[t]] <- rep(sub('_file', '', t), nrow(dat)); \
         }; \
-        if (length(files) > 0) { \
+        if (length(unlist(files)) > 0) { \
           writeLines(unlist(files), 'file.txt'); \
           writeLines(unlist(ids), 'id.txt'); \
           writeLines(unlist(datasets), 'dataset.txt'); \
