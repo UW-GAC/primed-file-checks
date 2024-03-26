@@ -56,6 +56,6 @@ kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', "Mean", "Medi
 
 ```{r}
 ggplot(aes(x=bp_consistency), data=this_table) +
-  geom_histogram() +
+  geom_bar() +
   xlab("bp_consistency")
 ```
