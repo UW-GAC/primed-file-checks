@@ -63,8 +63,8 @@ for (i in 1:length(vars)) {
   
   this_variable <- eval(parse(text=paste0("this_table$", var_name)))
   
-  max <- vars_df[i, 3]
-  min <- vars_df[i, 2]
+  max <- age_df[i, 3]
+  min <- age_df[i, 2]
   
   age_df[c(i),]$qc_pass <- c(sum(this_variable <= max & this_variable >= min))
   age_df[c(i),]$qc_fail_min <- c(sum(this_variable < min))
