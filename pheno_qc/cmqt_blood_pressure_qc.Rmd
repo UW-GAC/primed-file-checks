@@ -40,15 +40,6 @@ vars_df$qc_null <- c(sum(is.na(this_table$systolic_bp_1) | is.na(this_table$dias
 # )
 ```
 
-General Variables: 
-
-- age: 
-  - QC Min: 0
-  - QC Max: 90
-- r vars
-  - QC Min: -4SD outlier
-  - QC Min: +4SD outlier
-  
 CMQT Blood Pressure Specific Variables: 
 
 - bp_consistency: Is systolic > diastolic 
