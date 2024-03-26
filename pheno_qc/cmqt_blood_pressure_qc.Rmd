@@ -8,17 +8,21 @@
 
 ```{r}
 # Check for systolic blood pressure < diastolic blood pressure
+# 
+# this_table <- this_table %>% mutate(
+#   bp_consistency = systolic_bp_1 > diastolic_bp_1
+#   )
 
 vars_df <- data.frame(c("bp_consistency"))
-vars_df$min <- NULL
-vars_df$max <- NULL
-vars_df$mean <- NULL
-vars_df$median <- NULL
-vars_df$qc_min <- NULL
-vars_df$qc_max <- NULL
-vars_df$qc_pass <- sum(this_table$systolic_bp_1 > this_table$diastolic_bp_1, na.rm=TRUE )
+vars_df$min <- min(this_table$systolic_bp_1 > this_table$diastolic_bp_1, na.rm=TRUE)
+vars_df$max <- max(this_table$systolic_bp_1 > this_table$diastolic_bp_1, na.rm=TRUE)
+vars_df$mean <- mean(this_table$systolic_bp_1 > this_table$diastolic_bp_1, na.rm=TRUE)
+vars_df$median <- median(this_table$systolic_bp_1 > this_table$diastolic_bp_1, na.rm=TRUE)
+vars_df$qc_min <- 1
+vars_df$qc_max <- 1
+vars_df$qc_pass <- sum(this_table$systolic_bp_1 > this_table$diastolic_bp_1, na.rm=TRUE)
 vars_df$qc_fail_min <- sum(this_table$systolic_bp_1 <= this_table$diastolic_bp_1, na.rm=TRUE)
-vars_df$qc_fail_max <- NULL
+vars_df$qc_fail_max <- 0
 vars_df$qc_null <- c(sum(is.na(this_table$systolic_bp_1) | is.na(this_table$diastolic_bp_1)))
 
 # vars_df <- vars_df %>% add_row(
@@ -48,8 +52,8 @@ General Variables:
 CMQT Blood Pressure Specific Variables: 
 
 - bp_consistency: Is systolic > diastolic 
-  - QC Min: NA
-  - QC Min: NA
+  - QC Min: 1 (TRUE)
+  - QC Max: 1 (TRUE)
   - Pass QC: number of samples with systolic > diastolic
   - Fail QC Min: number of samples without systolic > diastolic
   - Fail QC Max: NA
