@@ -128,7 +128,7 @@ General Variables:
 - age: 
   - QC Min: 0
   - QC Max: 90
-- r vars
+- `r vars`:
   - QC Min: -4SD outlier
   - QC Min: +4SD outlier
   
