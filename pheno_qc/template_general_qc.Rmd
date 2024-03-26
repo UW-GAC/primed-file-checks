@@ -146,7 +146,6 @@ for(var in vars) {
 }
 ```
 
-
 ```{r}
 # Complete constructing the file name for current table to be QC'd with table-specific checks
 

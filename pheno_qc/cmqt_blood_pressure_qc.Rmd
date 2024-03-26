@@ -53,3 +53,9 @@ CMQT Blood Pressure Specific Variables:
 ```{r}
 kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', "Mean", "Median", "QC Min", "QC Max", 'Pass QC', 'Fail QC Min', 'Fail QC Max', 'Null Values'))
 ```
+
+```{r}
+ggplot(aes(x=bp_consistency), data=this_table) +
+  geom_histogram() +
+  xlab("bp_consistency")
+```
