@@ -75,7 +75,6 @@ for (i in 1:length(vars)) {
 
 ```{r}
 # General checks for all variables in table 
-# Set min and max limits for QC check 
 
 vars <- colnames(df)
 vars <- vars[vars != "subject_id" & vars != "age_at_obs"]
@@ -122,6 +121,19 @@ for (i in 1:length(vars)) {
   vars_df[c(i),]$qc_fail_max <- c(sum(this_variable > max, na.rm=TRUE))
   vars_df[c(i),]$qc_null <- c(sum(is.na(this_variable)))
 }
+```
+
+General Variables: 
+
+- age: 
+  - QC Min: 0
+  - QC Max: 90
+- r vars
+  - QC Min: -4SD outlier
+  - QC Min: +4SD outlier
+  
+```{r}
+kable(rbind(age_df, vars_df), col.names = c('Variable', 'Min Value', 'Max Value', "Mean", "Median", "QC Min", "QC Max", 'Pass QC', 'Fail QC Min', 'Fail QC Max', 'Null Values'))
 ```
 
 ```{r}

@@ -23,37 +23,44 @@ this_table <- this_table %>% mutate(
   bmi_diff = bmi_1 - bmi_calculated
   )
 
-vars_df <- vars_df %>% add_row(
-  vars = 'bmi_consistency',
-  min = min(this_table$bmi_calculated - bmi_tolerance, na.rm=TRUE), 
-  max = max(this_table$bmi_calculated - bmi_tolerance, na.rm=TRUE), 
-  mean = mean(this_table$bmi_calculated - bmi_tolerance, na.rm=TRUE), 
-  median = median(this_table$bmi_calculated - bmi_tolerance, na.rm=TRUE), 
-  qc_min = bmi_tolerance * -1,
-  qc_max = bmi_tolerance * 1,
-  qc_pass = sum(
+vars_df <- data.frame(c("bmi_consistency"))
+vars_df$min <- round(min(this_table$bmi_1 - this_table$bmi_calculated, na.rm=TRUE), 2)
+vars_df$max <- round(max(this_table$bmi_1 - this_table$bmi_calculated, na.rm=TRUE), 2)
+vars_df$mean <- round(mean(this_table$bmi_1 - this_table$bmi_calculated, na.rm=TRUE), 2)
+vars_df$median <- round(median(this_table$bmi_1 - this_table$bmi_calculated, na.rm=TRUE), 2)
+vars_df$qc_min <- bmi_tolerance * -1
+vars_df$qc_max <- bmi_tolerance * 1
+vars_df$qc_pass <- sum(
     this_table$bmi_1 >= this_table$bmi_calculated - bmi_tolerance
     & this_table$bmi_1 <= this_table$bmi_calculated + bmi_tolerance, 
     na.rm=TRUE
-    ),
-  qc_fail_min = c(sum(this_table$bmi_1 < this_table$bmi_calculated - bmi_tolerance, na.rm=TRUE)),
-  qc_fail_max = c(sum(this_table$bmi_1 > this_table$bmi_calculated + bmi_tolerance, na.rm=TRUE)),
-  qc_null = c(sum(is.na(this_table$bmi_calculated)))
-)
+    )
+vars_df$qc_fail_min <- c(sum(this_table$bmi_1 < this_table$bmi_calculated - bmi_tolerance, na.rm=TRUE))
+vars_df$qc_fail_max <- c(sum(this_table$bmi_1 > this_table$bmi_calculated + bmi_tolerance, na.rm=TRUE))
+vars_df$qc_null <- c(sum(is.na(this_table$bmi_calculated)))
+
+# vars_df <- vars_df %>% add_row(
+#   vars = 'bmi_consistency',
+#   min = min(this_table$bmi_calculated - bmi_tolerance, na.rm=TRUE), 
+#   max = max(this_table$bmi_calculated - bmi_tolerance, na.rm=TRUE), 
+#   mean = mean(this_table$bmi_calculated - bmi_tolerance, na.rm=TRUE), 
+#   median = median(this_table$bmi_calculated - bmi_tolerance, na.rm=TRUE), 
+#   qc_min = bmi_tolerance * -1,
+#   qc_max = bmi_tolerance * 1,
+#   qc_pass = sum(
+#     this_table$bmi_1 >= this_table$bmi_calculated - bmi_tolerance
+#     & this_table$bmi_1 <= this_table$bmi_calculated + bmi_tolerance, 
+#     na.rm=TRUE
+#     ),
+#   qc_fail_min = c(sum(this_table$bmi_1 < this_table$bmi_calculated - bmi_tolerance, na.rm=TRUE)),
+#   qc_fail_max = c(sum(this_table$bmi_1 > this_table$bmi_calculated + bmi_tolerance, na.rm=TRUE)),
+#   qc_null = c(sum(is.na(this_table$bmi_calculated)))
+# )
 ```
-
-General Variables: 
-
-- age: 
-  - QC Min: 0
-  - QC Max: 90
-- r vars
-  - QC Min: -4SD outlier
-  - QC Min: +4SD outlier
 
 CMQT Anthropometry Specific Variables: 
 
-- bmi_consistency: Difference between reported BMI and calculated BMI
+- bmi_consistency: Difference between reported BMI and calculated BMI (reported - calculated)
   - QC Min: NA
   - QC Max: NA
   - Pass QC: number of samples with reported BMI within a tolerance level of 0.1 of calculated BMI
@@ -62,7 +69,7 @@ CMQT Anthropometry Specific Variables:
   - Null Values: number of samples with null values for height_1 or weight_1
 
 ```{r}
-kable(rbind(age_df, vars_df), col.names = c('Variable', 'Min Value', 'Max Value', "Mean", "Median", "QC Min", "QC Max", 'Pass QC', 'Fail QC Min', 'Fail QC Max', 'Null Values'))
+kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', "Mean", "Median", "QC Min", "QC Max", 'Pass QC', 'Fail QC Min', 'Fail QC Max', 'Null Values'))
 ```
 
 ```{r}

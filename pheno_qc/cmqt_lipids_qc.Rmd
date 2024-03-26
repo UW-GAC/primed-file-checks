@@ -5,16 +5,3 @@
 # head(df)
 # print(file_name)
 ```
-
-General Variables: 
-
-- age: 
-  - QC Min: 0
-  - QC Max: 90
-- r vars
-  - QC Min: -4SD outlier
-  - QC Min: +4SD outlier
-  
-```{r}
-kable(rbind(age_df, vars_df), col.names = c('Variable', 'Min Value', 'Max Value', "Mean", "Median", "QC Min", "QC Max", 'Pass QC', 'Fail QC Min', 'Fail QC Max', 'Null Values'))
-```
