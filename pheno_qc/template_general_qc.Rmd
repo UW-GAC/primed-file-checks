@@ -43,6 +43,10 @@ for(i in 1:length(df)){
     }
   }
 }
+
+continuous_vars <- continuous_vars[continuous_vars != "subject_id"]
+binary_vars <- binary_vars[binary_vars != "subject_id"]
+categorical_vars <- categorical_vars[categorical_vars != "subject_id"]
 ```
 
 
@@ -95,7 +99,6 @@ for (i in 1:length(vars)) {
 ```{r}
 # General checks for all continuous variables in table 
 
-continuous_vars <- continuous_vars[continuous_vars != "subject_id"]
 vars <- continuous_vars[continuous_vars != "subject_id" & continuous_vars != "age_at_obs"]
 
 # Summary statistics 
