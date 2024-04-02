@@ -171,7 +171,7 @@ Categorical Variables: `r categorical_vars`
 ```{r, results='asis'}
 # Bar charts of binary and categorical variable with table
 for(var in c(binary_vars, categorical_vars)) {
-  print (
+  print ( 
     ggplot(aes_string(x=var), data=df) +
       geom_bar() +
       xlab(var)

@@ -16,7 +16,7 @@
 ```{r}
 # Check for errors in BMI calculations 
 
-bmi_tolerance <- 0.1
+bmi_tolerance <- 0.1 
 
 this_table <- df %>% mutate(
   bmi_calculated = weight_1 / (height_1/100)^2,
