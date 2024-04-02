@@ -9,7 +9,7 @@
 ```{r}
 # Check for systolic blood pressure < diastolic blood pressure
 
-this_table <- this_table %>% mutate(
+this_table <- df %>% mutate(
   bp_consistency = systolic_bp_1 > diastolic_bp_1
   )
 

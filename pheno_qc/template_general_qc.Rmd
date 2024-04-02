@@ -5,26 +5,47 @@ This section has QC checks for the `r grandchild_document_table_name` table.
 ```{r}
 # Read in data
 
-file_name <- grandchild_document_file_name
+# file_name <- grandchild_document_file_name
+# 
+# df <- read_table(file_name, 
+#                  col_types = cols(subject_id="c"), 
+#                  guess_max=100000, 
+#                  show_col_types=TRUE)
 
-df <- read_table(file_name, 
-                 col_types = cols(subject_id="c"), 
-                 guess_max=100000, 
-                 show_col_types=TRUE)
 
-df$visit <- as.double(sub("visit_", "", df$visit))
 
 # for testing locally 
 
-# file_name <- 'gs://fc-secure-0285a1eb-c88a-4ea6-b970-ec5e092784ea/uploaded_data_prevent/aric_cmqt_anthropometry.tsv'
-# table_pipe <- gsutil_pipe(file_name, "rb")
-# df <- read_table(table_pipe,
-#                  col_types = cols(subject_id="c"),
-#                  guess_max=100000,
-#                  show_col_types=TRUE)
-# 
-# df$visit <- as.double(sub("visit_", "", df$visit))
+# file_name <- 'gs://fc-secure-0285a1eb-c88a-4ea6-b970-ec5e092784ea/uploaded_data_prevent/aric_cmqt_blood_pressure.tsv'
+file_name <- as.character(grandchild_document_file_name)
+table_pipe <- gsutil_pipe(file_name, "rb")
+df <- read_table(table_pipe)
 ```
+
+```{r}
+# Separate variable into binary, categorical, and continuous 
+
+categorical_vars <- c()
+binary_vars <- c()
+continuous_vars <- c()
+
+for(i in 1:length(df)){
+  if(typeof(df[[i]]) == "character") {
+    # if column type is character, variable is categorical 
+    categorical_vars <- c(categorical_vars, colnames(df[i]))
+  } else if(typeof(df[[i]]) == "double") {
+    if(all(sapply(df[i], function(x) x %in% c(0, 1, NA)))) { 
+      # if column type is double and has only 0,1 values, it is binary 
+      binary_vars <- c(binary_vars, colnames(df[i]))
+    } else {
+      # if column type is double and has more than just 0,1 values, it is continuous  
+      continuous_vars <- c(continuous_vars, colnames(df[i]))
+    }
+  }
+}
+```
+
+
 ```{r}
 # Age specific check 
 
@@ -54,14 +75,12 @@ age_df$qc_null <- c(rep(-1, length(vars)))
 ```
 
 ```{r}
-# Check for extreme values in dataset
-
-this_table <- as.data.frame(df)
+# Check for extreme values in age
 
 for (i in 1:length(vars)) {
   var_name = vars[i]
   
-  this_variable <- eval(parse(text=paste0("this_table$", var_name)))
+  this_variable <- eval(parse(text=paste0("df$", var_name)))
   
   max <- age_df[i, 3]
   min <- age_df[i, 2]
@@ -74,10 +93,10 @@ for (i in 1:length(vars)) {
 ```
 
 ```{r}
-# General checks for all variables in table 
+# General checks for all continuous variables in table 
 
-vars <- colnames(df)
-vars <- vars[vars != "subject_id" & vars != "age_at_obs"]
+continuous_vars <- continuous_vars[continuous_vars != "subject_id"]
+vars <- continuous_vars[continuous_vars != "subject_id" & continuous_vars != "age_at_obs"]
 
 # Summary statistics 
 min <- apply(df[vars], 2, min, na.rm=TRUE)
@@ -104,14 +123,12 @@ vars_df$qc_null <- c(rep(-1, length(vars)))
 ```
 
 ```{r}
-# Check for extreme values in dataset
-
-this_table <- as.data.frame(df)
+# Check for extreme values in all continuous variables 
 
 for (i in 1:length(vars)) {
   var_name = vars[i]
   
-  this_variable <- eval(parse(text=paste0("this_table$", var_name)))
+  this_variable <- eval(parse(text=paste0("df$", var_name)))
   
   max <- vars_df[i, 7]
   min <- vars_df[i, 6]
@@ -123,12 +140,12 @@ for (i in 1:length(vars)) {
 }
 ```
 
-General Variables: 
+Continuous Variables: 
 
 - age: 
   - QC Min: 0
   - QC Max: 90
-- `r vars`:
+- `r continuous_vars`:
   - QC Min: -4SD outlier
   - QC Min: +4SD outlier
   
@@ -137,13 +154,55 @@ kable(rbind(age_df, vars_df), col.names = c('Variable', 'Min Value', 'Max Value'
 ```
 
 ```{r}
-for(var in vars) {
+# Histogram of continuous variables 
+for(var in continuous_vars) {
   print (
-    ggplot(aes_string(x=var), data=this_table) +
-      geom_histogram() +
+    ggplot(aes_string(x=var), data=df) +
+      geom_histogram(bins=30) +
       xlab(var)
   )
 }
+```
+
+Binary Variables: `r binary_vars`
+
+Categorical Variables: `r categorical_vars`
+
+```{r, results='asis'}
+# Bar charts of binary and categorical variable with table
+for(var in c(binary_vars, categorical_vars)) {
+  print (
+    ggplot(aes_string(x=var), data=df) +
+      geom_bar() +
+      xlab(var)
+  )
+  
+  this_table <- df %>% group_by (
+      .data[[var]] 
+      ) %>% summarise(
+        count = n()
+      )
+  print(kable(this_table, col.names = c(var, "count")))
+}
+```
+
+Number of unique measurements for each person: 
+
+```{r}
+# Table with number of timepoints and participants for each variable 
+
+this_table <- df %>% group_by(
+  subject_id
+) %>% summarise(
+  count = n()
+) %>% ungroup(
+) %>% group_by(
+  num_timepoints = count
+) %>% summarise(
+  num_participants = n()
+)
+
+kable(this_table)
 ```
 
 ```{r}
