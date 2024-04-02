@@ -175,7 +175,7 @@ for(var in c(binary_vars, categorical_vars)) {
     ggplot(aes_string(x=var), data=df) +
       geom_bar() +
       xlab(var)
-  )
+  ) 
   
   this_table <- df %>% group_by (
       .data[[var]] 
