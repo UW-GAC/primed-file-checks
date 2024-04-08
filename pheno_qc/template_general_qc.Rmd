@@ -5,7 +5,7 @@ This section has QC checks for the `r grandchild_document_table_name` table.
 ```{r}
 # Read in data
 
-file_name <- grandchild_document_file_name
+# file_name <- grandchild_document_file_name
 
 df <- read_table(file_name,
                  col_types = cols(subject_id="c"),
@@ -158,10 +158,15 @@ kable(rbind(age_df, vars_df), col.names = c('Variable', 'Min Value', 'Max Value'
 
 ```{r}
 # Histogram of continuous variables 
+
+vars_df <- as.data.frame(rbind(age_df, vars_df)[,-1], row.names = rbind(age_df, vars_df)[,1])
+
 for(var in continuous_vars) {
   print (
     ggplot(aes_string(x=var), data=df) +
       geom_histogram(bins=30) +
+      geom_vline(xintercept = vars_df[var, "qc_min"], color = "blue") + 
+      geom_vline(xintercept = vars_df[var, "qc_max"], color = "blue") + 
       xlab(var)
   )
 }
