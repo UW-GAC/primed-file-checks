@@ -6,7 +6,6 @@ This section has QC checks for the `r grandchild_document_table_name` table.
 # Read in data
 
 file_name <- grandchild_document_file_name
-
 df <- read_table(file_name,
                  col_types = cols(subject_id="c"),
                  guess_max=100000,
