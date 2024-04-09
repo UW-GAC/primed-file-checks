@@ -1,6 +1,7 @@
 version 1.0
 
 import "https://raw.githubusercontent.com/UW-GAC/anvil-util-workflows/main/check_md5.wdl" as md5
+import "pheno_qc/pheno_qc.wdl" as qc
 
 workflow validate_phenotype_model {
     input {
@@ -44,6 +45,10 @@ workflow validate_phenotype_model {
                     md5_check = md5check.md5_check
             }
         }
+
+        call qc.run_qc {
+            input: data_file = select_first([validate.harmonized_table, ""])
+        }
     }
 
     output {
@@ -51,6 +56,7 @@ workflow validate_phenotype_model {
         Array[File]? tables = validate.tables
         String? md5_check_summary = summarize_md5_check.summary
         File? md5_check_details = summarize_md5_check.details
+        File? qc_report = run_qc.qc_report
     }
 
      meta {
@@ -103,6 +109,7 @@ task validate {
     output {
         File validation_report = "data_model_validation.html"
         Array[File]? tables = glob("output_*_table.tsv")
+        File? harmonized_table = "output_phenotype_harmonized_table.tsv"
     }
 
     runtime {
