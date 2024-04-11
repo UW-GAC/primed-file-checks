@@ -52,7 +52,8 @@ categorical_vars <- categorical_vars[categorical_vars != "subject_id"]
 ```{r}
 # General checks for all continuous variables in table 
 
-vars <- continuous_vars[continuous_vars != "subject_id" & continuous_vars != "age_at_obs"]
+# vars <- continuous_vars[continuous_vars != "subject_id" & continuous_vars != "age_at_obs"]
+vars <- continuous_vars
 
 # Summary statistics 
 min <- apply(df[vars], 2, min, na.rm=TRUE)
@@ -97,58 +98,55 @@ for (i in 1:length(vars)) {
 ```
 
 ```{r}
-# Age specific check 
-
-if('age_at_obs' %in% colnames(df)){
-  vars <- c('age_at_obs')
-  
-  # Summary statistics 
-  min <- apply(df[vars], 2, min, na.rm=TRUE)
-  max <- apply(df[vars], 2, max, na.rm=TRUE)
-  mean <- apply(df[vars], 2, mean, na.rm=TRUE)
-  med <- apply(df[vars], 2, median, na.rm=TRUE)
-  
-  # QC min and max values that are outside acceptable range
-  qc_min <- c(0)
-  qc_max <- c(90)
-  
-  age_df <- data.frame(vars)
-  age_df$min <- round(min, 2)
-  age_df$max <- round(max, 2)
-  age_df$mean <- round(mean, 2)
-  age_df$median <- round(med, 2)
-  age_df$qc_min <- round(qc_min, 2) 
-  age_df$qc_max <- round(qc_max, 2)
-  age_df$qc_pass <- c(rep(-1, length(vars)))
-  age_df$qc_fail_min <- c(rep(-1, length(vars)))
-  age_df$qc_fail_max <- c(rep(-1, length(vars)))
-  age_df$qc_null <- c(rep(-1, length(vars)))
-  
-  # Check for extreme values in age
-  
-  for (i in 1:length(vars)) {
-    var_name = vars[i]
-    
-    this_variable <- eval(parse(text=paste0("df$", var_name)))
-    
-    max <- age_df[i, 3]
-    min <- age_df[i, 2]
-    
-    age_df[c(i),]$qc_pass <- c(sum(this_variable <= max & this_variable >= min))
-    age_df[c(i),]$qc_fail_min <- c(sum(this_variable < min))
-    age_df[c(i),]$qc_fail_max <- c(sum(this_variable > max))
-    age_df[c(i),]$qc_null <- c(sum(is.null(this_variable)))
-  }
-  
-  vars_df <- rbind(age_df, vars_df)
-}
+# # Age specific check 
+# 
+# if('age_at_obs' %in% colnames(df)){
+#   vars <- c('age_at_obs')
+#   
+#   # Summary statistics 
+#   min <- apply(df[vars], 2, min, na.rm=TRUE)
+#   max <- apply(df[vars], 2, max, na.rm=TRUE)
+#   mean <- apply(df[vars], 2, mean, na.rm=TRUE)
+#   med <- apply(df[vars], 2, median, na.rm=TRUE)
+#   
+#   # QC min and max values that are outside acceptable range
+#   qc_min <- c(0)
+#   qc_max <- c(90)
+#   
+#   age_df <- data.frame(vars)
+#   age_df$min <- round(min, 2)
+#   age_df$max <- round(max, 2)
+#   age_df$mean <- round(mean, 2)
+#   age_df$median <- round(med, 2)
+#   age_df$qc_min <- round(qc_min, 2) 
+#   age_df$qc_max <- round(qc_max, 2)
+#   age_df$qc_pass <- c(rep(-1, length(vars)))
+#   age_df$qc_fail_min <- c(rep(-1, length(vars)))
+#   age_df$qc_fail_max <- c(rep(-1, length(vars)))
+#   age_df$qc_null <- c(rep(-1, length(vars)))
+#   
+#   # Check for extreme values in age
+#   
+#   for (i in 1:length(vars)) {
+#     var_name = vars[i]
+#     
+#     this_variable <- eval(parse(text=paste0("df$", var_name)))
+#     
+#     max <- age_df[i, 3]
+#     min <- age_df[i, 2]
+#     
+#     age_df[c(i),]$qc_pass <- c(sum(this_variable <= max & this_variable >= min))
+#     age_df[c(i),]$qc_fail_min <- c(sum(this_variable < min))
+#     age_df[c(i),]$qc_fail_max <- c(sum(this_variable > max))
+#     age_df[c(i),]$qc_null <- c(sum(is.null(this_variable)))
+#   }
+#   
+#   vars_df <- rbind(age_df, vars_df)
+# }
 ```
 
 Continuous Variables: 
 
-- age: 
-  - QC Min: 0
-  - QC Max: 90
 - `r continuous_vars`:
   - QC Min: -4SD outlier
   - QC Min: +4SD outlier
