@@ -29,7 +29,9 @@ This document performs QC checks on PRIMED phenotypes. Specific checks are deter
   - Pass QC: number of samples within the set min and max
   - Fail QC Min: number of samples with variables under min value
   - Fail QC Max: number of samples with variables over max value
-  - Null Values: number of samples with null values for this variable 
+  - Null Values: number of samples with null values for this variable
+  
+Plots of the distribution of variables are included with blue lines indicating the QC Min and QC Max thresholds for continutous variables. 
 
 ```{r params}
 # parameters <- list(tables=table_files, path=filepath)
