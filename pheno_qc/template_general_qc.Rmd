@@ -15,7 +15,7 @@ df <- read_table(file_name,
 
 # for testing locally 
 
-# file_name <- 'gs://fc-secure-0285a1eb-c88a-4ea6-b970-ec5e092784ea/uploaded_data_prevent/aric_cmqt_blood_pressure.tsv'
+# grandchild_document_file_name <- 'gs://fc-secure-0285a1eb-c88a-4ea6-b970-ec5e092784ea/uploaded_data_prevent/aric_cmqt_lipids.tsv'
 # file_name <- as.character(grandchild_document_file_name)
 # table_pipe <- gsutil_pipe(file_name, "rb")
 # df <- read_table(table_pipe)
@@ -46,53 +46,6 @@ for(i in 1:length(df)){
 continuous_vars <- continuous_vars[continuous_vars != "subject_id"]
 binary_vars <- binary_vars[binary_vars != "subject_id"]
 categorical_vars <- categorical_vars[categorical_vars != "subject_id"]
-```
-
-
-```{r}
-# Age specific check 
-
-vars <- c('age_at_obs')
-
-# Summary statistics 
-min <- apply(df[vars], 2, min, na.rm=TRUE)
-max <- apply(df[vars], 2, max, na.rm=TRUE)
-mean <- apply(df[vars], 2, mean, na.rm=TRUE)
-med <- apply(df[vars], 2, median, na.rm=TRUE)
-
-# QC min and max values that are outside acceptable range
-qc_min <- c(0)
-qc_max <- c(90)
-
-age_df <- data.frame(vars)
-age_df$min <- round(min, 2)
-age_df$max <- round(max, 2)
-age_df$mean <- round(mean, 2)
-age_df$median <- round(med, 2)
-age_df$qc_min <- round(qc_min, 2) 
-age_df$qc_max <- round(qc_max, 2)
-age_df$qc_pass <- c(rep(-1, length(vars)))
-age_df$qc_fail_min <- c(rep(-1, length(vars)))
-age_df$qc_fail_max <- c(rep(-1, length(vars)))
-age_df$qc_null <- c(rep(-1, length(vars)))
-```
-
-```{r}
-# Check for extreme values in age
-
-for (i in 1:length(vars)) {
-  var_name = vars[i]
-  
-  this_variable <- eval(parse(text=paste0("df$", var_name)))
-  
-  max <- age_df[i, 3]
-  min <- age_df[i, 2]
-  
-  age_df[c(i),]$qc_pass <- c(sum(this_variable <= max & this_variable >= min))
-  age_df[c(i),]$qc_fail_min <- c(sum(this_variable < min))
-  age_df[c(i),]$qc_fail_max <- c(sum(this_variable > max))
-  age_df[c(i),]$qc_null <- c(sum(is.null(this_variable)))
-}
 ```
 
 ```{r}
@@ -142,6 +95,54 @@ for (i in 1:length(vars)) {
 }
 ```
 
+```{r}
+# Age specific check 
+
+if('age_at_obs' %in% colnames(df)){
+  vars <- c('age_at_obs')
+  
+  # Summary statistics 
+  min <- apply(df[vars], 2, min, na.rm=TRUE)
+  max <- apply(df[vars], 2, max, na.rm=TRUE)
+  mean <- apply(df[vars], 2, mean, na.rm=TRUE)
+  med <- apply(df[vars], 2, median, na.rm=TRUE)
+  
+  # QC min and max values that are outside acceptable range
+  qc_min <- c(0)
+  qc_max <- c(90)
+  
+  age_df <- data.frame(vars)
+  age_df$min <- round(min, 2)
+  age_df$max <- round(max, 2)
+  age_df$mean <- round(mean, 2)
+  age_df$median <- round(med, 2)
+  age_df$qc_min <- round(qc_min, 2) 
+  age_df$qc_max <- round(qc_max, 2)
+  age_df$qc_pass <- c(rep(-1, length(vars)))
+  age_df$qc_fail_min <- c(rep(-1, length(vars)))
+  age_df$qc_fail_max <- c(rep(-1, length(vars)))
+  age_df$qc_null <- c(rep(-1, length(vars)))
+  
+  # Check for extreme values in age
+  
+  for (i in 1:length(vars)) {
+    var_name = vars[i]
+    
+    this_variable <- eval(parse(text=paste0("df$", var_name)))
+    
+    max <- age_df[i, 3]
+    min <- age_df[i, 2]
+    
+    age_df[c(i),]$qc_pass <- c(sum(this_variable <= max & this_variable >= min))
+    age_df[c(i),]$qc_fail_min <- c(sum(this_variable < min))
+    age_df[c(i),]$qc_fail_max <- c(sum(this_variable > max))
+    age_df[c(i),]$qc_null <- c(sum(is.null(this_variable)))
+  }
+  
+  vars_df <- rbind(age_df, vars_df)
+}
+```
+
 Continuous Variables: 
 
 - age: 
@@ -152,13 +153,13 @@ Continuous Variables:
   - QC Min: +4SD outlier
   
 ```{r}
-kable(rbind(age_df, vars_df), col.names = c('Variable', 'Min Value', 'Max Value', "Mean", "Median", "QC Min", "QC Max", 'Pass QC', 'Fail QC Min', 'Fail QC Max', 'Null Values'))
+kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', "Mean", "Median", "QC Min", "QC Max", 'Pass QC', 'Fail QC Min', 'Fail QC Max', 'Null Values'))
 ```
 
 ```{r}
 # Histogram of continuous variables 
 
-vars_df <- as.data.frame(rbind(age_df, vars_df)[,-1], row.names = rbind(age_df, vars_df)[,1])
+vars_df <- as.data.frame(vars_df[,-1], row.names = vars_df[,1])
 
 for(var in continuous_vars) {
   print (
