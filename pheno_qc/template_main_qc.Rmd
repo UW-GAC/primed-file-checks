@@ -50,6 +50,7 @@ res <- vector(mode = "list", length = length(grandchild_document_table_names))
 for (i in 1:length(grandchild_document_table_names)) {
   grandchild_document_table_name <- grandchild_document_table_names[i]
   grandchild_document_file_name <- grandchild_document_file_names[i]
+  
   res[[i]] <- knitr::knit_child(child_document, quiet = TRUE, envir = environment())
 }
 
