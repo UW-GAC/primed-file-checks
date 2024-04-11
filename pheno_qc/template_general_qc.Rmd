@@ -5,21 +5,21 @@ This section has QC checks for the `r grandchild_document_table_name` table.
 ```{r}
 # Read in data
 
-# file_name <- grandchild_document_file_name
-# df <- read_table(file_name,
-#                  col_types = cols(subject_id="c"),
-#                  guess_max=100000,
-#                  show_col_types=TRUE)
+file_name <- grandchild_document_file_name
+df <- read_table(file_name,
+                 col_types = cols(subject_id="c"),
+                 guess_max=100000,
+                 show_col_types=TRUE)
 
 
 
 # for testing locally 
 
 # grandchild_document_file_name <- 'gs://fc-secure-0285a1eb-c88a-4ea6-b970-ec5e092784ea/uploaded_data_prevent/aric_cmqt_lipids.tsv'
-file_name <- as.character(grandchild_document_file_name)
-table_pipe <- gsutil_pipe(file_name, "rb")
-df <- read_table(table_pipe)
-close(table_pipe)
+# file_name <- as.character(grandchild_document_file_name)
+# table_pipe <- gsutil_pipe(file_name, "rb")
+# df <- read_table(table_pipe)
+# close(table_pipe)
 ```
 
 ```{r}
