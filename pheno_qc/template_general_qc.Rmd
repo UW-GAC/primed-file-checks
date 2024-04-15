@@ -219,16 +219,15 @@ this_grandchild_document <- paste0(grandchild_document_table_name, "_qc.Rmd")
 ```
 
 ```{r}
-# grandchild_documents <- c(
-#   "cmqt_anthropometry_qc.Rmd",
-#   "cmqt_lipids_qc.Rmd", 
-#   "cmqt_hematology_qc.Rmd", 
-#   "cmqt_blood_pressure_qc.Rmd"
-# )
-# 
-# if(this_grandchild_document %in% c(grandchild_documents)) {
-#   knitr::asis_output(knitr::knit_child(this_grandchild_document, quiet=TRUE))
-# } else {
-#   knitr::knit()
-# }
+grandchild_documents <- c(
+  "cmqt_anthropometry_qc.Rmd",
+  "cmqt_lipids_qc.Rmd",
+  "cmqt_hematology_qc.Rmd",
+  "cmqt_blood_pressure_qc.Rmd"
+)
+
+if(this_grandchild_document %in% c(grandchild_documents)) {
+  knitr::asis_output(knitr::knit_child(this_grandchild_document, quiet=TRUE))
+} else {
+}
 ```
