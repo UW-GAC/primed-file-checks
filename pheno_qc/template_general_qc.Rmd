@@ -5,7 +5,7 @@ This section has QC checks for the `r grandchild_document_table_name` table.
 ```{r}
 # Read in data
 
-file_name <- grandchild_document_file_name
+# file_name <- grandchild_document_file_name
 df <- read_table(file_name,
                  col_types = cols(subject_id="c"),
                  guess_max=100000,
@@ -15,7 +15,7 @@ df <- read_table(file_name,
 
 # for testing locally 
 
-# grandchild_document_file_name <- 'gs://fc-secure-0285a1eb-c88a-4ea6-b970-ec5e092784ea/uploaded_data_prevent/aric_cmqt_lipids.tsv'
+# grandchild_document_file_name <- 'gs://fc-secure-0285a1eb-c88a-4ea6-b970-ec5e092784ea/uploaded_data_prevent/aric_cmqt_glycemic.tsv'
 # file_name <- as.character(grandchild_document_file_name)
 # table_pipe <- gsutil_pipe(file_name, "rb")
 # df <- read_table(table_pipe)
@@ -149,7 +149,7 @@ Continuous Variables:
 
 - `r continuous_vars`:
   - QC Min: -4SD outlier
-  - QC Min: +4SD outlier
+  - QC Max: +4SD outlier
   
 ```{r}
 kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', "Mean", "Median", "QC Min", "QC Max", 'Pass QC', 'Fail QC Min', 'Fail QC Max', 'Null Values'))
@@ -215,10 +215,20 @@ kable(this_table)
 ```{r}
 # Complete constructing the file name for current table to be QC'd with table-specific checks
 
-grandchild_document <- paste0(grandchild_document_table_name, "_qc.Rmd") 
+this_grandchild_document <- paste0(grandchild_document_table_name, "_qc.Rmd") 
 ```
 
 ```{r}
-knitr::asis_output(knitr::knit_child(grandchild_document, quiet=TRUE))
-# knitr::knit_child(grandchild_document, quiet = TRUE)
+# grandchild_documents <- c(
+#   "cmqt_anthropometry_qc.Rmd",
+#   "cmqt_lipids_qc.Rmd", 
+#   "cmqt_hematology_qc.Rmd", 
+#   "cmqt_blood_pressure_qc.Rmd"
+# )
+# 
+# if(this_grandchild_document %in% c(grandchild_documents)) {
+#   knitr::asis_output(knitr::knit_child(this_grandchild_document, quiet=TRUE))
+# } else {
+#   knitr::knit()
+# }
 ```
