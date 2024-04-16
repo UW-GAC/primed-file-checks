@@ -5,7 +5,7 @@ This section has QC checks for the `r grandchild_document_table_name` table.
 ```{r}
 # Read in data
 
-# file_name <- grandchild_document_file_name
+file_name <- grandchild_document_file_name
 df <- read_table(file_name,
                  col_types = cols(subject_id="c"),
                  guess_max=100000,
@@ -228,6 +228,5 @@ grandchild_documents <- c(
 
 if(this_grandchild_document %in% c(grandchild_documents)) {
   knitr::asis_output(knitr::knit_child(this_grandchild_document, quiet=TRUE))
-} else {
 }
 ```
