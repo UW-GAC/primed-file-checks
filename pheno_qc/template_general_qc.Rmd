@@ -5,21 +5,21 @@ This section has QC checks for the `r grandchild_document_table_name` table.
 ```{r}
 # Read in data
 
-file_name <- grandchild_document_file_name
-df <- read_table(file_name,
-                 col_types = cols(subject_id="c"),
-                 guess_max=100000,
-                 show_col_types=TRUE)
+# file_name <- grandchild_document_file_name
+# df <- read_table(file_name,
+                 # col_types = cols(subject_id="c"),
+                 # guess_max=100000,
+                 # show_col_types=TRUE)
 
 
 
 # for testing locally 
 
 # grandchild_document_file_name <- 'gs://fc-secure-0285a1eb-c88a-4ea6-b970-ec5e092784ea/uploaded_data_prevent/aric_cmqt_glycemic.tsv'
-# file_name <- as.character(grandchild_document_file_name)
-# table_pipe <- gsutil_pipe(file_name, "rb")
-# df <- read_table(table_pipe)
-# close(table_pipe)
+file_name <- as.character(grandchild_document_file_name)
+table_pipe <- gsutil_pipe(file_name, "rb")
+df <- read_table(table_pipe)
+close(table_pipe)
 ```
 
 ```{r}
@@ -215,18 +215,20 @@ kable(this_table)
 ```{r}
 # Complete constructing the file name for current table to be QC'd with table-specific checks
 
-this_grandchild_document <- paste0(grandchild_document_table_name, "_qc.Rmd") 
+grandchild_specific_checks <- c(
+  "cmqt_anthropometry",
+  # "cmqt_lipids",
+  # "cmqt_hematology",
+  "cmqt_blood_pressure"
+)
+
+if(grandchild_document_table_name %in% c(grandchild_specific_checks)) {
+  this_grandchild_document <- paste0(grandchild_document_table_name, "_qc.Rmd")
+} else{
+  this_grandchild_document <- "qc.Rmd"
+}
 ```
 
 ```{r}
-grandchild_documents <- c(
-  "cmqt_anthropometry_qc.Rmd",
-  "cmqt_lipids_qc.Rmd",
-  "cmqt_hematology_qc.Rmd",
-  "cmqt_blood_pressure_qc.Rmd"
-)
-
-if(this_grandchild_document %in% c(grandchild_documents)) {
-  knitr::asis_output(knitr::knit_child(this_grandchild_document, quiet=TRUE))
-}
+knitr::asis_output(knitr::knit_child(this_grandchild_document, quiet=TRUE))
 ```
