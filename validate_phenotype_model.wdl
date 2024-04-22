@@ -26,6 +26,7 @@ workflow validate_phenotype_model {
 
     # need this because validate_data_model.tables is optional but input to select_md5_files is required
     Array[File] val_tables = select_first([validate.tables, ""])
+    String harmonized_table = select_first([validate.harmonized_table, ""])
 
     if (defined(validate.tables)) {
         call select_md5_files {
@@ -47,7 +48,14 @@ workflow validate_phenotype_model {
         }
 
         call qc.run_qc {
-            input: data_file = select_first([validate.harmonized_table, ""])
+            input: data_file = harmonized_table
+        }
+
+        call add_qc_report_to_table {
+            input: harmonized_table = harmonized_table,
+                qc_report_path = run_qc.qc_report,
+                workspace_name = workspace_name,
+                workspace_namespace = workspace_namespace
         }
     }
 
@@ -149,6 +157,29 @@ task select_md5_files {
         Array[String] files_to_check = read_lines("file.txt")
         Array[String] md5sum_to_check = read_lines("md5sum.txt")
     }
+
+    runtime {
+        docker: "us.gcr.io/broad-dsp-gcr-public/anvil-rstudio-bioconductor:3.17.0"
+    }
+}
+
+
+task add_qc_report_to_table {
+    input {
+        File harmonized_table
+        String qc_report_path
+        String workspace_name
+        String workspace_namespace
+    }
+
+    command <<<
+        Rscript -e "\
+        phen <- readr::read_tsv('~{harmonized_table}'); \
+        phen <- dplyr::select(phen, phenotype_harmonized_id); \
+        phen <- dplyr::mutate(phen, qc_report='~{qc_report_path}'); \
+        AnVIL::avtable_import(phen, namespace='~{workspace_namespace}', name='~{workspace_name}'); \
+        "
+    >>>
 
     runtime {
         docker: "us.gcr.io/broad-dsp-gcr-public/anvil-rstudio-bioconductor:3.17.0"
