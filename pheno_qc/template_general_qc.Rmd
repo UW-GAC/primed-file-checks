@@ -173,7 +173,7 @@ if(length(vars) > 0) {
   
   for(var in continuous_vars) {
     print (
-      ggplot(aes_string(x=var), data=df) +
+      ggplot(aes(x=.data[[var]]), data=df) +
         geom_histogram(bins=30) +
         geom_vline(xintercept = vars_df[var, "qc_min"], color = "blue") + 
         geom_vline(xintercept = vars_df[var, "qc_max"], color = "blue") + 
@@ -191,7 +191,7 @@ Categorical Variables: `r categorical_vars`
 # Bar charts of binary and categorical variable with table
 for(var in c(binary_vars, categorical_vars)) {
   print ( 
-    ggplot(aes_string(x=var), data=df) +
+    ggplot(aes(x=.data[[var]]), data=df) +
       geom_bar() +
       xlab(var)
   ) 

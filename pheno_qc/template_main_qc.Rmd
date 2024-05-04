@@ -41,8 +41,6 @@ child_document <- "template_general_qc.Rmd" # the child doc will be the general 
 
 grandchild_document_table_names <- params$tables$table_names
 grandchild_document_file_names <- params$tables$file_names
-
-print(paste0("Table name params in template_main_qc: ", grandchild_document_table_names))
 ```
 
 ```{r call_child_rmd, results='asis'}
