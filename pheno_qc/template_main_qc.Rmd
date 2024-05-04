@@ -51,15 +51,11 @@ print(paste0("Table name params in template_main_qc: ", grandchild_document_tabl
 
 res <- vector(mode = "list", length = length(grandchild_document_table_names))
 
-for (i in 1:length(grandchild_document_table_names)) {
-  grandchild_document_table_name <- grandchild_document_table_names[i]
-  grandchild_document_file_name <- grandchild_document_file_names[i]
+for (j in 1:length(grandchild_document_table_names)) {
+  grandchild_document_table_name <- grandchild_document_table_names[j]
+  grandchild_document_file_name <- grandchild_document_file_names[j]
   
-  print(paste0("template_main_qc starting qc check for table: ", grandchild_document_table_name))
-  print(paste0("template_main_qc starting qc check for file: ", grandchild_document_file_name))
-  print(paste0("i = ", i))
-  
-  res[[i]] <- knitr::knit_child(child_document, quiet = TRUE, envir = environment())
+  res[[j]] <- knitr::knit_child(child_document, quiet = TRUE, envir = environment())
 }
 
 cat(unlist(res), sep = '\n')
