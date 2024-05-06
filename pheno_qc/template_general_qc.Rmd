@@ -189,19 +189,22 @@ Categorical Variables: `r categorical_vars`
 
 ```{r, results='asis'}
 # Bar charts of binary and categorical variable with table
-for(var in c(binary_vars, categorical_vars)) {
-  print ( 
-    ggplot(aes(x=.data[[var]]), data=df) +
-      geom_bar() +
-      xlab(var)
-  ) 
-  
-  this_table <- df %>% group_by (
-      .data[[var]] 
-      ) %>% summarise(
-        count = n()
-      )
-  print(kable(this_table, col.names = c(var, "count")))
+
+if(length(c(binary_vars, categorical_vars)) > 0) {
+  for(var in c(binary_vars, categorical_vars)) {
+    print ( 
+      ggplot(aes(x=.data[[var]]), data=df) +
+        geom_bar() +
+        xlab(var)
+    ) 
+    
+    this_table <- df %>% group_by (
+        .data[[var]] 
+        ) %>% summarise(
+          count = n()
+        )
+    print(kable(this_table, col.names = c(var, "count")))
+  }
 }
 ```
 
