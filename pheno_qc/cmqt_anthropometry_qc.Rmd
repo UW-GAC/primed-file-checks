@@ -4,13 +4,6 @@
 
 # head(df)
 # print(file_name)
-
-# file_name <- 'gs://fc-secure-0285a1eb-c88a-4ea6-b970-ec5e092784ea/uploaded_data_prevent/aric_cmqt_anthropometry.tsv'
-# table_pipe <- gsutil_pipe(file_name, "rb")
-# df <- read_table(table_pipe, 
-#                  col_types = cols(subject_id="c"), 
-#                  guess_max=Inf, 
-#                  show_col_types=TRUE)
 ```
 
 ```{r}
@@ -38,24 +31,6 @@ vars_df$qc_pass <- sum(
 vars_df$qc_fail_min <- c(sum(this_table$bmi_1 < this_table$bmi_calculated - bmi_tolerance, na.rm=TRUE))
 vars_df$qc_fail_max <- c(sum(this_table$bmi_1 > this_table$bmi_calculated + bmi_tolerance, na.rm=TRUE))
 vars_df$qc_null <- c(sum(is.na(this_table$bmi_calculated)))
-
-# vars_df <- vars_df %>% add_row(
-#   vars = 'bmi_consistency',
-#   min = min(this_table$bmi_calculated - bmi_tolerance, na.rm=TRUE), 
-#   max = max(this_table$bmi_calculated - bmi_tolerance, na.rm=TRUE), 
-#   mean = mean(this_table$bmi_calculated - bmi_tolerance, na.rm=TRUE), 
-#   median = median(this_table$bmi_calculated - bmi_tolerance, na.rm=TRUE), 
-#   qc_min = bmi_tolerance * -1,
-#   qc_max = bmi_tolerance * 1,
-#   qc_pass = sum(
-#     this_table$bmi_1 >= this_table$bmi_calculated - bmi_tolerance
-#     & this_table$bmi_1 <= this_table$bmi_calculated + bmi_tolerance, 
-#     na.rm=TRUE
-#     ),
-#   qc_fail_min = c(sum(this_table$bmi_1 < this_table$bmi_calculated - bmi_tolerance, na.rm=TRUE)),
-#   qc_fail_max = c(sum(this_table$bmi_1 > this_table$bmi_calculated + bmi_tolerance, na.rm=TRUE)),
-#   qc_null = c(sum(is.na(this_table$bmi_calculated)))
-# )
 ```
 
 CMQT Anthropometry Specific Variables: 
@@ -74,6 +49,6 @@ kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', "Mean", "Medi
 
 ```{r}
 ggplot(aes(x=bmi_diff), data=this_table) +
-  geom_histogram() +
+  geom_histogram(bins = 15) +
   xlab("Difference between reported BMI and calculated BMI")
 ```

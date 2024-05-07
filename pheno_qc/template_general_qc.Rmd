@@ -5,24 +5,24 @@ This section has QC checks for the `r grandchild_document_table_name` table.
 ```{r}
 # Read in data
 
-file_name <- grandchild_document_file_name
-df <- read_tsv(file_name,
-                 col_types = cols(subject_id="c"),
-                 guess_max=100000,
-                 show_col_types=TRUE)
+# file_name <- grandchild_document_file_name
+# df <- read_tsv(file_name,
+#                  col_types = cols(subject_id="c"),
+#                  guess_max=100000,
+#                  show_col_types=TRUE)
 
 
 
 # for testing locally 
 
 # grandchild_document_file_name <- 'gs://fc-e3b6ff37-761e-4e53-89c0-fb243b8bd8e5/test_data/population_descriptor.tsv'
-# file_name <- as.character(grandchild_document_file_name)
-# table_pipe <- gsutil_pipe(file_name, "rb")
-# df <- read_tsv(table_pipe,
-#                  col_types = cols(subject_id="c"),
-#                  guess_max=100000,
-#                  show_col_types=TRUE)
-# close(table_pipe)
+file_name <- as.character(grandchild_document_file_name)
+table_pipe <- gsutil_pipe(file_name, "rb")
+df <- read_tsv(table_pipe,
+                 col_types = cols(subject_id="c"),
+                 guess_max=100000,
+                 show_col_types=TRUE)
+close(table_pipe)
 ```
 
 ```{r}
@@ -39,6 +39,7 @@ for(i in 1:length(df)){
   } else if(typeof(df[[i]]) == "double") {
     if(all(sapply(df[i], function(x) x %in% c(0, 1, NA)))) { 
       # if column type is double and has only 0,1 values, it is binary 
+      df[[i]] <- as.character(df[[i]])
       binary_vars <- c(binary_vars, colnames(df[i]))
     } else {
       # if column type is double and has more than just 0,1 values, it is continuous  
@@ -152,11 +153,12 @@ if(length(vars) > 0) {
 # }
 ```
 
-Continuous Variables: 
+Continuous Variables: `r continuous_vars`
 
-- `r continuous_vars`:
-  - QC Min: -4SD outlier
-  - QC Max: +4SD outlier
+`r if(length(continuous_vars)>0) {
+  "- QC Min: -4SD outlier \n - QC Max: +4SD outlier"
+}`
+
   
 ```{r}
 if(length(vars) > 0) {
@@ -219,12 +221,12 @@ this_table <- df %>% group_by(
   count = n()
 ) %>% ungroup(
 ) %>% group_by(
-  num_timepoints = count
+  num_timepoints = as.character(count)
 ) %>% summarise(
   num_participants = n()
 )
 
-kable(this_table)
+kable(this_table, col.names = c("num_timepoints", "num_participants"))
 ```
 
 ```{r}
