@@ -4,8 +4,6 @@ library(AnvilDataModels)
 library(AnVIL)
 library(readr)
 
-# Rscript run_qc.R --data_file data_qc.tsv --path_to_rmd /home/rstudio/primed-file-checks/pheno_qc/
-
 # Get parameters
 argp <- arg_parser(description = "data qc") 
 argp <- add_argument(parser = argp, 
@@ -15,6 +13,11 @@ argp <- add_argument(parser = argp,
                      help="2-column tsv file with (table name, table tsv file)")
 argp <- add_argument(parser = argp, 
                      arg = "--path_to_rmd", 
+                     type = "character", 
+                     nargs = 1,
+                     help="rmd filepath")
+argp <- add_argument(parser = argp, 
+                     arg = "--workspace_name", 
                      type = "character", 
                      nargs = 1,
                      help="rmd filepath")
@@ -35,6 +38,9 @@ table_files <- table_files %>% select(table_names, file_names)
 
 # read filepath 
 path_to_rmd <- argv$path_to_rmd
+
+# read workspace_name 
+workspace_name <- argv$workspace_name
 
 gsutil_cp(table_files$file_names, ".")
 table_files$file_names <- paste0(getwd(), "/", basename(table_files$file_names))
