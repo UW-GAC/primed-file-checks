@@ -1,6 +1,6 @@
 ---
 title: "PRIMED QC Report"
-author: "PRIMED CC"
+author: "Workspace: `r params$workspace_name`"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output: 
   html_document:
@@ -17,8 +17,6 @@ library(dplyr)
 library(knitr)
 library(ggplot2)
 ```
-
-Workspace: `r params$workspace_name`
 
 This document performs QC checks on PRIMED phenotypes. Specific checks are determined through a collaborative effort between PRIMED WGs and the CC. The QC report is formatted as follows: 
 
