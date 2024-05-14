@@ -2,7 +2,7 @@
 
 This section has QC checks for the `r grandchild_document_table_name` table. 
 
-File name: `r grandchild_document_file_name`
+File name: `r basename(grandchild_document_file_name)`
 
 ```{r}
 # Read in data
