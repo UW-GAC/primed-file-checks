@@ -18,7 +18,7 @@ library(knitr)
 library(ggplot2)
 ```
 
-Workspace name: `r params$workspace_name`
+Workspace: `r params$workspace_name`
 
 This document performs QC checks on PRIMED phenotypes. Specific checks are determined through a collaborative effort between PRIMED WGs and the CC. The QC report is formatted as follows: 
 

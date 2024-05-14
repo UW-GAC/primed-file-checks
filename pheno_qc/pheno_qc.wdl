@@ -3,7 +3,7 @@ version 1.0
 workflow pheno_qc {
     input{
         File data_file
-        String workspace_name
+        String? workspace_name
     }
 
     call run_qc {
@@ -19,14 +19,14 @@ workflow pheno_qc {
 task run_qc {
     input{
         File data_file
-        String workspace_name
+        String workspace_name = ""
     }
 
     command <<<
         Rscript /usr/local/primed-file-checks/pheno_qc/run_qc.R \
         --data_file ~{data_file} \
-        --path_to_rmd /usr/local/primed-file-checks/pheno_qc/
-        --workspace_name workspace_name 
+        --path_to_rmd /usr/local/primed-file-checks/pheno_qc/ \
+        --workspace_name ~{workspace_name}
     >>>
 
     output{

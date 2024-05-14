@@ -48,7 +48,8 @@ workflow validate_phenotype_model {
         }
 
         call qc.run_qc {
-            input: data_file = harmonized_table
+            input: data_file = harmonized_table,
+                workspace_name = workspace_name
         }
 
         if (import_tables) {

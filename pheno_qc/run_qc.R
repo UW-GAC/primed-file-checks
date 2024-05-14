@@ -20,7 +20,8 @@ argp <- add_argument(parser = argp,
                      arg = "--workspace_name", 
                      type = "character", 
                      nargs = 1,
-                     help="rmd filepath")
+                     default = "",
+                     help="workspace name to print in report")
 argv <- parse_args(parser = argp)
 
 # read tables
@@ -47,9 +48,7 @@ table_files$file_names <- paste0(getwd(), "/", basename(table_files$file_names))
 
 input <- paste0(path_to_rmd, "template_main_qc.Rmd")
 
-parameters <- list(tables=table_files, path = path_to_rmd)
+parameters <- list(tables = table_files, path = path_to_rmd, workspace_name = workspace_name)
 
 rmarkdown::render(input = input, params = parameters, quiet=TRUE)
 file.copy(file.path(path_to_rmd, "template_main_qc.html"), "qc_report.html")
-
-# rmarkdown::render(input = input, params=parameters, quiet=TRUE)
