@@ -62,8 +62,8 @@ cmqt_hematology <- tibble(
 )
 
 # setwd("~/Downloads/primed-file-checks/pheno_qc")
-write_tsv(subject, "test_data/subject.tsv")
-write_tsv(cmqt_anthropometry, "test_data/cmqt_anthropometry.tsv")
-write_tsv(cmqt_lipids, "test_data/cmqt_lipids.tsv")
-write_tsv(cmqt_blood_pressure, "test_data/cmqt_blood_pressure.tsv")
-write_tsv(cmqt_hematology, "test_data/cmqt_hematology.tsv")
+write_tsv(subject, "subject.tsv")
+write_tsv(cmqt_anthropometry, "cmqt_anthropometry.tsv")
+write_tsv(cmqt_lipids, "cmqt_lipids.tsv")
+write_tsv(cmqt_blood_pressure, "cmqt_blood_pressure.tsv")
+write_tsv(cmqt_hematology, "cmqt_hematology.tsv")
