@@ -1,0 +1,6 @@
+table_names	file_names
+cmqt_glycemic	gs://fc-secure-0285a1eb-c88a-4ea6-b970-ec5e092784ea/uploaded_data_prevent/aric_cmqt_glycemic.tsv
+cmqt_lipids	gs://fc-secure-0285a1eb-c88a-4ea6-b970-ec5e092784ea/uploaded_data_prevent/aric_cmqt_lipids.tsv
+cmqt_blood_pressure	gs://fc-secure-0285a1eb-c88a-4ea6-b970-ec5e092784ea/uploaded_data_prevent/aric_cmqt_blood_pressure.tsv
+cmqt_hematology	gs://fc-secure-0285a1eb-c88a-4ea6-b970-ec5e092784ea/uploaded_data_prevent/aric_cmqt_hematology.tsv
+cmqt_anthropometry	gs://fc-secure-0285a1eb-c88a-4ea6-b970-ec5e092784ea/uploaded_data_prevent/aric_cmqt_anthropometry.tsv

@@ -7,75 +7,43 @@
 ```
 
 ```{r}
-# Set min and max limits for QC check 
+# Check for systolic blood pressure < diastolic blood pressure (binary)
 
-vars <- c('systolic_bp_1', 'diastolic_bp_1')
-
-# biologically implausible values for blood pressure
-# min_values <- c(70, 50)
-# max_values <- c(270, 150)
-
-# min and max values that are mean +/- 4 SD outlier detection
-min_values <- apply(df[vars], 2, mean, na.rm=TRUE) - 4*apply(df[vars], 2, sd, na.rm=TRUE)
-max_values <- apply(df[vars], 2, mean, na.rm=TRUE) + 4*apply(df[vars], 2, sd, na.rm=TRUE)
-
-vars_df <- data.frame(vars)
-vars_df$min_values <- min_values
-vars_df$max_values <- max_values
-vars_df$qc_pass <- c(rep(-1, length(vars)))
-vars_df$qc_fail_min <- c(rep(-1, length(vars)))
-vars_df$qc_fail_max <- c(rep(-1, length(vars)))
-vars_df$qc_null <- c(rep(-1, length(vars)))
-```
-
-```{r}
-# Check for extreme values in dataset
-
-this_table <- as.data.frame(df) 
-
-for (i in 1:length(vars)) {
-  var_name = vars[i]
-  
-  this_variable <- eval(parse(text=paste0("this_table$", var_name)))
-  
-  max <- vars_df[i, 3]
-  min <- vars_df[i, 2]
-  
-  vars_df[c(i),]$qc_pass <- c(sum(this_variable <= max & this_variable >= min, na.rm=TRUE))
-  vars_df[c(i),]$qc_fail_min <- c(sum(this_variable < min, na.rm=TRUE))
-  vars_df[c(i),]$qc_fail_max <- c(sum(this_variable > max, na.rm=TRUE))
-  vars_df[c(i),]$qc_null <- c(sum(is.na(this_variable)))
-}
-
-# Check for systolic blood pressure < diastolic blood pressure 
-
-vars_df <- vars_df %>% add_row(
-  vars = 'bp_consistency', 
-  min_values = NULL, 
-  max_values = NULL, 
-  qc_pass = sum(this_table$systolic_bp_1 > this_table$diastolic_bp_1, na.rm=TRUE ), 
-  qc_fail_min = sum(this_table$systolic_bp_1 <= this_table$diastolic_bp_1, na.rm=TRUE), 
-  qc_fail_max = NULL, 
-  qc_null = c(sum(is.na(this_table$systolic_bp_1) | is.na(this_table$diastolic_bp_1)))
-)
+this_table <- df %>% mutate(
+  bp_consistency = systolic_bp_1 > diastolic_bp_1
+  )
+# 
+# vars_df <- data.frame(c("bp_consistency"))
+# vars_df$min <- min(this_table$bp_consistency, na.rm=TRUE)
+# vars_df$max <- max(this_table$bp_consistency, na.rm=TRUE)
+# vars_df$mean <- mean(this_table$bp_consistency, na.rm=TRUE)
+# vars_df$median <- median(this_table$bp_consistency, na.rm=TRUE)
+# vars_df$qc_min <- 1
+# vars_df$qc_max <- 1
+# vars_df$qc_pass <- sum(this_table$bp_consistency, na.rm=TRUE)
+# vars_df$qc_fail_min <- sum(!this_table$bp_consistency, na.rm=TRUE)
+# vars_df$qc_fail_max <- 0
+# vars_df$qc_null <- c(sum(is.na(this_table$systolic_bp_1) | is.na(this_table$diastolic_bp_1)))
 ```
 
 CMQT Blood Pressure Specific Variables: 
 
-- systolic_bp_1
-  - Min Value: -4SD outlier
-  - Min Value: +4SD outlier 
-- diastolic_bp_1
-  - Min Value: -4SD outlier
-  - Min Value: +4SD outlier 
 - bp_consistency: Is systolic > diastolic 
-  - Min Value: NA
-  - Min Value: NA
-  - Pass QC: number of samples with systolic > diastolic
-  - Fail QC Min: number of samples without systolic > diastolic
-  - Fail QC Max: NA
-  - Null Values: number of samples with null values for systolic_bp_1 or diastolic_bp_1
+  <!-- - QC Min: 1 (TRUE) -->
+  <!-- - QC Max: 1 (TRUE) -->
+  <!-- - Pass QC: number of samples with systolic > diastolic -->
+  <!-- - Fail QC Min: number of samples without systolic > diastolic -->
+  <!-- - Fail QC Max: NA -->
+  <!-- - Null Values: number of samples with null values for systolic_bp_1 or diastolic_bp_1 -->
   
 ```{r}
-kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', 'Pass QC', 'Fail QC Min', 'Fail QC Max', 'Null Values'),  caption = "QC check for blood pressure variables")
+# kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', "Mean", "Median", "QC Min", "QC Max", 'Pass QC', 'Fail QC Min', 'Fail QC Max', 'Null Values'))
+```
+
+```{r}
+ggplot(aes(x=bp_consistency), data=this_table) +
+  geom_bar() +
+  xlab("bp_consistency")
+
+(kable(this_table %>% group_by(bp_consistency) %>% summarise(count = n())))
 ```

@@ -4,105 +4,51 @@
 
 # head(df)
 # print(file_name)
-
-# file_name <- 'gs://fc-secure-0285a1eb-c88a-4ea6-b970-ec5e092784ea/uploaded_data_prevent/aric_cmqt_anthropometry.tsv'
-# table_pipe <- gsutil_pipe(file_name, "rb")
-# df <- read_table(table_pipe, 
-#                  col_types = cols(subject_id="c"), 
-#                  guess_max=Inf, 
-#                  show_col_types=TRUE)
 ```
 
 ```{r}
-# Set min and max limits for QC check 
-
-vars <- c('height_1', 'weight_1', 'bmi_1')
-
-# min and max values that are biologically implausible 
-# min_values <- c(0, 0, 0)
-# max_values <- c(400, 300, 100)
-
-# min and max values that are mean +/- 4 SD outlier detection
-min_values <- apply(df[vars], 2, mean, na.rm=TRUE) - 4*apply(df[vars], 2, sd, na.rm=TRUE)
-max_values <- apply(df[vars], 2, mean, na.rm=TRUE) + 4*apply(df[vars], 2, sd, na.rm=TRUE)
-
-vars_df <- data.frame(vars)
-vars_df$min_values <- min_values
-vars_df$max_values <- max_values
-vars_df$qc_pass <- c(rep(-1, length(vars)))
-vars_df$qc_fail_min <- c(rep(-1, length(vars)))
-vars_df$qc_fail_max <- c(rep(-1, length(vars)))
-vars_df$qc_null <- c(rep(-1, length(vars)))
-```
-
-```{r}
-# Check for extreme values in dataset
-this_table <- as.data.frame(df) 
-
-for (i in 1:length(vars)) {
-  var_name = vars[i]
-  
-  this_variable <- eval(parse(text=paste0("this_table$", var_name)))
-  
-  max <- vars_df[i, 3]
-  min <- vars_df[i, 2]
-  
-  vars_df[c(i),]$qc_pass <- c(sum(this_variable <= max & this_variable >= min, na.rm=TRUE))
-  vars_df[c(i),]$qc_fail_min <- c(sum(this_variable < min, na.rm=TRUE))
-  vars_df[c(i),]$qc_fail_max <- c(sum(this_variable > max, na.rm=TRUE))
-  vars_df[c(i),]$qc_null <- c(sum(is.na(this_variable)))
-}
-
 # Check for errors in BMI calculations 
 
-bmi_tolerance <- 0.1
+bmi_tolerance <- 0.1 
 
-this_table <- this_table %>% mutate(
-  # bmi_calculated = ifelse(!is.na(weight_1) & !is.na(height_1), weight_1 / (height_1/100)^2, NULL),
+this_table <- df %>% mutate(
   bmi_calculated = weight_1 / (height_1/100)^2,
   bmi_diff = bmi_1 - bmi_calculated
   )
 
-vars_df <- vars_df %>% add_row(
-  vars = 'bmi_consistency',
-  min_values = bmi_tolerance * -1,
-  max_values = bmi_tolerance * 1,
-  qc_pass = sum(
+vars_df <- data.frame(c("bmi_consistency"))
+vars_df$min <- round(min(this_table$bmi_1 - this_table$bmi_calculated, na.rm=TRUE), 2)
+vars_df$max <- round(max(this_table$bmi_1 - this_table$bmi_calculated, na.rm=TRUE), 2)
+vars_df$mean <- round(mean(this_table$bmi_1 - this_table$bmi_calculated, na.rm=TRUE), 2)
+vars_df$median <- round(median(this_table$bmi_1 - this_table$bmi_calculated, na.rm=TRUE), 2)
+vars_df$qc_min <- bmi_tolerance * -1
+vars_df$qc_max <- bmi_tolerance * 1
+vars_df$qc_pass <- sum(
     this_table$bmi_1 >= this_table$bmi_calculated - bmi_tolerance
     & this_table$bmi_1 <= this_table$bmi_calculated + bmi_tolerance, 
     na.rm=TRUE
-    ),
-  qc_fail_min = c(sum(this_table$bmi_1 < this_table$bmi_calculated - bmi_tolerance, na.rm=TRUE)),
-  qc_fail_max = c(sum(this_table$bmi_1 > this_table$bmi_calculated + bmi_tolerance, na.rm=TRUE)),
-  qc_null = c(sum(is.na(this_table$bmi_calculated)))
-)
+    )
+vars_df$qc_fail_min <- c(sum(this_table$bmi_1 < this_table$bmi_calculated - bmi_tolerance, na.rm=TRUE))
+vars_df$qc_fail_max <- c(sum(this_table$bmi_1 > this_table$bmi_calculated + bmi_tolerance, na.rm=TRUE))
+vars_df$qc_null <- c(sum(is.na(this_table$bmi_calculated)))
 ```
 
 CMQT Anthropometry Specific Variables: 
 
-- height_1
-  - Min Value: -4SD outlier
-  - Min Value: +4SD outlier
-- weight_1
-  - Min Value: -4SD outlier
-  - Min Value: +4SD outlier
-- bmi_1
-  - Min Value: -4SD outlier
-  - Min Value: +4SD outlier
-- bmi_consistency: Difference between reported BMI and calculated BMI
-  - Min Value: NA
-  - Min Value: NA
+- bmi_consistency: Difference between reported BMI and calculated BMI (reported - calculated)
+  - QC Min: NA
+  - QC Max: NA
   - Pass QC: number of samples with reported BMI within a tolerance level of 0.1 of calculated BMI
   - Fail QC Min: number of samples with reported BMI difference less than (calculated BMI - 0.1)
   - Fail QC Max: number of samples with reported BMI difference greater than (calculated BMI + 0.1)
   - Null Values: number of samples with null values for height_1 or weight_1
 
 ```{r}
-kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', 'Pass QC', 'Fail QC Min', 'Fail QC Max', 'Null Values'),  caption = "QC check for anthropometry variables")
+kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', "Mean", "Median", "QC Min", "QC Max", 'Pass QC', 'Fail QC Min', 'Fail QC Max', 'Null Values'))
 ```
 
 ```{r}
 ggplot(aes(x=bmi_diff), data=this_table) +
-  geom_histogram() +
+  geom_histogram(bins = 15) +
   xlab("Difference between reported BMI and calculated BMI")
 ```

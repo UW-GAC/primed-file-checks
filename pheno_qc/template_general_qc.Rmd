@@ -1,76 +1,256 @@
 `r paste("## QC Checks for ", grandchild_document_table_name)`
 
-This section has QC checks for the `r grandchild_document_table_name` table. 
+This section has QC checks for the `r grandchild_document_table_name` table.
+
+File name:
+```{r, results="asis"}
+cat(paste0("`", basename(grandchild_document_file_name), "`"))
+```
 
 ```{r}
 # Read in data
 
 file_name <- grandchild_document_file_name
-
-# table_pipe <- gsutil_pipe(file_name, "rb")
-# df <- read_table(table_pipe)
-
-df <- read_table(file_name, 
-                 col_types = cols(subject_id="c"), 
-                 guess_max=100000, 
+df <- read_tsv(file_name,
+                 col_types = cols(subject_id="c"),
+                 guess_max=100000,
                  show_col_types=TRUE)
+
+
+
+# for testing locally
+
+# grandchild_document_file_name <- 'gs://fc-e3b6ff37-761e-4e53-89c0-fb243b8bd8e5/test_data/population_descriptor.tsv'
+# file_name <- as.character(grandchild_document_file_name)
+# table_pipe <- gsutil_pipe(file_name, "rb")
+# df <- read_tsv(table_pipe,
+#                  col_types = cols(subject_id="c"),
+#                  guess_max=100000,
+#                  show_col_types=TRUE)
+# close(table_pipe)
 ```
 
 ```{r}
-# Set min and max limits for QC check 
+# Separate variable into binary, categorical, and continuous
 
-vars <- c('age_at_obs')
+categorical_vars <- c()
+binary_vars <- c()
+continuous_vars <- c()
 
-# min and max values that are outside acceptable range
-min_values <- c(0)
-max_values <- c(90)
+for(i in 1:length(df)){
+  if(typeof(df[[i]]) == "character") {
+    # if column type is character, variable is categorical
+    categorical_vars <- c(categorical_vars, colnames(df[i]))
+  } else if(typeof(df[[i]]) == "double") {
+    if(all(sapply(df[i], function(x) x %in% c(0, 1, NA)))) {
+      # if column type is double and has only 0,1 values, it is binary
+      df[[i]] <- as.character(df[[i]])
+      binary_vars <- c(binary_vars, colnames(df[i]))
+    } else {
+      # if column type is double and has more than just 0,1 values, it is continuous
+      continuous_vars <- c(continuous_vars, colnames(df[i]))
+    }
+  }
+}
 
-vars_df <- data.frame(vars)
-vars_df$min_values <- min_values
-vars_df$max_values <- max_values
-vars_df$qc_pass <- c(rep(-1, length(vars)))
-vars_df$qc_fail_min <- c(rep(-1, length(vars)))
-vars_df$qc_fail_max <- c(rep(-1, length(vars)))
-vars_df$qc_null <- c(rep(-1, length(vars)))
+continuous_vars <- continuous_vars[continuous_vars != "subject_id"]
+binary_vars <- binary_vars[binary_vars != "subject_id"]
+categorical_vars <- categorical_vars[categorical_vars != "subject_id"]
 ```
 
 ```{r}
-# Check for extreme values in dataset
+# General checks for all continuous variables in table
 
-this_table <- as.data.frame(df)
+vars <- continuous_vars
 
-for (i in 1:length(vars)) {
-  var_name = vars[i]
-  
-  this_variable <- eval(parse(text=paste0("this_table$", var_name)))
-  
-  max <- vars_df[i, 3]
-  min <- vars_df[i, 2]
-  
-  vars_df[c(i),]$qc_pass <- c(sum(this_variable <= max & this_variable >= min))
-  vars_df[c(i),]$qc_fail_min <- c(sum(this_variable < min))
-  vars_df[c(i),]$qc_fail_max <- c(sum(this_variable > max))
-  vars_df[c(i),]$qc_null <- c(sum(is.null(this_variable)))
+if(length(vars) > 0) {
+
+  # Summary statistics
+  min <- apply(df[vars], 2, min, na.rm=TRUE)
+  max <- apply(df[vars], 2, max, na.rm=TRUE)
+  mean <- apply(df[vars], 2, mean, na.rm=TRUE)
+  med <- apply(df[vars], 2, median, na.rm=TRUE)
+
+
+  # QC min and max values that are mean +/- 4 SD outlier detection
+  qc_min <- apply(df[vars], 2, mean, na.rm=TRUE) - 4*apply(df[vars], 2, sd, na.rm=TRUE)
+  qc_max <- apply(df[vars], 2, mean, na.rm=TRUE) + 4*apply(df[vars], 2, sd, na.rm=TRUE)
+
+  vars_df <- data.frame(vars)
+  vars_df$min <- round(min, 2)
+  vars_df$max <- round(max, 2)
+  vars_df$mean <- round(mean, 2)
+  vars_df$median <- round(med, 2)
+  vars_df$qc_min <- round(qc_min, 2)
+  vars_df$qc_max <- round(qc_max, 2)
+  vars_df$qc_pass <- c(rep(-1, length(vars)))
+  vars_df$qc_fail_min <- c(rep(-1, length(vars)))
+  vars_df$qc_fail_max <- c(rep(-1, length(vars)))
+  vars_df$qc_null <- c(rep(-1, length(vars)))
 }
 ```
 
-General Variables: 
+```{r}
+# Check for extreme values in all continuous variables
 
-- age: 
-  - Min Value: 0
-  - Max Value: 90
+if(length(vars) > 0) {
+  for (i in 1:length(vars)) {
+    var_name = vars[i]
+
+    this_variable <- eval(parse(text=paste0("df$", var_name)))
+
+    max <- vars_df[i, 7]
+    min <- vars_df[i, 6]
+
+    vars_df[c(i),]$qc_pass <- c(sum(this_variable <= max & this_variable >= min, na.rm=TRUE))
+    vars_df[c(i),]$qc_fail_min <- c(sum(this_variable < min, na.rm=TRUE))
+    vars_df[c(i),]$qc_fail_max <- c(sum(this_variable > max, na.rm=TRUE))
+    vars_df[c(i),]$qc_null <- c(sum(is.na(this_variable)))
+  }
+}
+```
 
 ```{r}
-kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', 'Pass QC', 'Fail QC Min', 'Fail QC Max', 'Null Values'),  caption = "QC check for general variables")
+# # Age specific check
+#
+# if('age_at_obs' %in% colnames(df)){
+#   vars <- c('age_at_obs')
+#
+#   # Summary statistics
+#   min <- apply(df[vars], 2, min, na.rm=TRUE)
+#   max <- apply(df[vars], 2, max, na.rm=TRUE)
+#   mean <- apply(df[vars], 2, mean, na.rm=TRUE)
+#   med <- apply(df[vars], 2, median, na.rm=TRUE)
+#
+#   # QC min and max values that are outside acceptable range
+#   qc_min <- c(0)
+#   qc_max <- c(90)
+#
+#   age_df <- data.frame(vars)
+#   age_df$min <- round(min, 2)
+#   age_df$max <- round(max, 2)
+#   age_df$mean <- round(mean, 2)
+#   age_df$median <- round(med, 2)
+#   age_df$qc_min <- round(qc_min, 2)
+#   age_df$qc_max <- round(qc_max, 2)
+#   age_df$qc_pass <- c(rep(-1, length(vars)))
+#   age_df$qc_fail_min <- c(rep(-1, length(vars)))
+#   age_df$qc_fail_max <- c(rep(-1, length(vars)))
+#   age_df$qc_null <- c(rep(-1, length(vars)))
+#
+#   # Check for extreme values in age
+#
+#   for (i in 1:length(vars)) {
+#     var_name = vars[i]
+#
+#     this_variable <- eval(parse(text=paste0("df$", var_name)))
+#
+#     max <- age_df[i, 3]
+#     min <- age_df[i, 2]
+#
+#     age_df[c(i),]$qc_pass <- c(sum(this_variable <= max & this_variable >= min))
+#     age_df[c(i),]$qc_fail_min <- c(sum(this_variable < min))
+#     age_df[c(i),]$qc_fail_max <- c(sum(this_variable > max))
+#     age_df[c(i),]$qc_null <- c(sum(is.null(this_variable)))
+#   }
+#
+#   vars_df <- rbind(age_df, vars_df)
+# }
+```
+
+Continuous Variables: `r continuous_vars`
+
+`r if(length(continuous_vars)>0) {
+  "- QC Min: -4SD outlier \n - QC Max: +4SD outlier"
+}`
+
+
+```{r}
+if(length(vars) > 0) {
+  kable(vars_df, col.names = c('Variable', 'Min Value', 'Max Value', "Mean", "Median", "QC Min", "QC Max", 'Pass QC', 'Fail QC Min', 'Fail QC Max', 'Null Values'))
+}
+```
+
+```{r}
+# Histogram of continuous variables
+
+if(length(vars) > 0) {
+
+  vars_df <- as.data.frame(vars_df[,-1], row.names = vars_df[,1])
+
+  for(var in continuous_vars) {
+    print (
+      ggplot(aes(x=.data[[var]]), data=df) +
+        geom_histogram(bins=30) +
+        geom_vline(xintercept = vars_df[var, "qc_min"], color = "blue") +
+        geom_vline(xintercept = vars_df[var, "qc_max"], color = "blue") +
+        xlab(var)
+    )
+  }
+}
+```
+
+Binary Variables: `r binary_vars`
+
+Categorical Variables: `r categorical_vars`
+
+```{r, results='asis'}
+# Bar charts of binary and categorical variable with table
+
+if(length(c(binary_vars, categorical_vars)) > 0) {
+  for(var in c(binary_vars, categorical_vars)) {
+    print (
+      ggplot(aes(x=.data[[var]]), data=df) +
+        geom_bar() +
+        xlab(var)
+    )
+
+    this_table <- df %>% group_by (
+        .data[[var]]
+        ) %>% summarise(
+          count = n()
+        )
+    print(kable(this_table, col.names = c(var, "count")))
+  }
+}
+```
+
+Number of unique measurements for each person:
+
+```{r}
+# Table with number of timepoints and participants for each variable
+
+this_table <- df %>% group_by(
+  subject_id
+) %>% summarise(
+  count = n()
+) %>% ungroup(
+) %>% group_by(
+  num_timepoints = as.character(count)
+) %>% summarise(
+  num_participants = n()
+)
+
+kable(this_table, col.names = c("num_timepoints", "num_participants"))
 ```
 
 ```{r}
 # Complete constructing the file name for current table to be QC'd with table-specific checks
 
-grandchild_document <- paste0(grandchild_document_table_name, "_qc.Rmd") 
+grandchild_specific_checks <- c(
+  "cmqt_anthropometry",
+  # "cmqt_lipids",
+  # "cmqt_hematology",
+  "cmqt_blood_pressure"
+)
+
+if(grandchild_document_table_name %in% c(grandchild_specific_checks)) {
+  this_grandchild_document <- paste0(grandchild_document_table_name, "_qc.Rmd")
+} else{
+  this_grandchild_document <- "qc.Rmd"
+}
 ```
 
 ```{r}
-knitr::asis_output(knitr::knit_child(grandchild_document, quiet=TRUE))
-# knitr::knit_child(grandchild_document, quiet = TRUE)
+knitr::asis_output(knitr::knit_child(this_grandchild_document, quiet=TRUE))
 ```

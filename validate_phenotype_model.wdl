@@ -1,6 +1,7 @@
 version 1.0
 
 import "https://raw.githubusercontent.com/UW-GAC/anvil-util-workflows/main/check_md5.wdl" as md5
+import "pheno_qc/pheno_qc.wdl" as qc
 
 workflow validate_phenotype_model {
     input {
@@ -25,6 +26,7 @@ workflow validate_phenotype_model {
 
     # need this because validate_data_model.tables is optional but input to select_md5_files is required
     Array[File] val_tables = select_first([validate.tables, ""])
+    String harmonized_table = select_first([validate.harmonized_table, ""])
 
     if (defined(validate.tables)) {
         call select_md5_files {
@@ -44,6 +46,20 @@ workflow validate_phenotype_model {
                     md5_check = md5check.md5_check
             }
         }
+
+        call qc.run_qc {
+            input: data_file = harmonized_table,
+                workspace_name = workspace_name
+        }
+
+        if (import_tables) {
+            call add_qc_report_to_table {
+                input: harmonized_table = harmonized_table,
+                    qc_report_path = run_qc.qc_report,
+                    workspace_name = workspace_name,
+                    workspace_namespace = workspace_namespace
+            }
+        }
     }
 
     output {
@@ -51,6 +67,7 @@ workflow validate_phenotype_model {
         Array[File]? tables = validate.tables
         String? md5_check_summary = summarize_md5_check.summary
         File? md5_check_details = summarize_md5_check.details
+        File? qc_report = run_qc.qc_report
     }
 
      meta {
@@ -103,10 +120,11 @@ task validate {
     output {
         File validation_report = "data_model_validation.html"
         Array[File]? tables = glob("output_*_table.tsv")
+        File? harmonized_table = "output_phenotype_harmonized_table.tsv"
     }
 
     runtime {
-        docker: "uwgac/primed-file-checks:0.4.6"
+        docker: "uwgac/primed-file-checks:0.5.1"
     }
 }
 
@@ -142,6 +160,29 @@ task select_md5_files {
         Array[String] files_to_check = read_lines("file.txt")
         Array[String] md5sum_to_check = read_lines("md5sum.txt")
     }
+
+    runtime {
+        docker: "us.gcr.io/broad-dsp-gcr-public/anvil-rstudio-bioconductor:3.17.0"
+    }
+}
+
+
+task add_qc_report_to_table {
+    input {
+        File harmonized_table
+        String qc_report_path
+        String workspace_name
+        String workspace_namespace
+    }
+
+    command <<<
+        Rscript -e "\
+        phen <- readr::read_tsv('~{harmonized_table}'); \
+        phen <- dplyr::select(phen, phenotype_harmonized_id); \
+        phen <- dplyr::mutate(phen, qc_report='~{qc_report_path}'); \
+        AnVIL::avtable_import(phen, namespace='~{workspace_namespace}', name='~{workspace_name}'); \
+        "
+    >>>
 
     runtime {
         docker: "us.gcr.io/broad-dsp-gcr-public/anvil-rstudio-bioconductor:3.17.0"

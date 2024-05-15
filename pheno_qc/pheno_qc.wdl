@@ -3,10 +3,12 @@ version 1.0
 workflow pheno_qc {
     input{
         File data_file
+        String? workspace_name
     }
 
     call run_qc {
-        input: data_file = data_file
+        input: data_file = data_file, 
+                workspace_name = workspace_name
     }
 
     output{
@@ -17,12 +19,14 @@ workflow pheno_qc {
 task run_qc {
     input{
         File data_file
+        String workspace_name = ""
     }
 
     command <<<
         Rscript /usr/local/primed-file-checks/pheno_qc/run_qc.R \
         --data_file ~{data_file} \
-        --path_to_rmd /usr/local/primed-file-checks/pheno_qc/
+        --path_to_rmd /usr/local/primed-file-checks/pheno_qc/ \
+        --workspace_name ~{workspace_name}
     >>>
 
     output{
@@ -30,6 +34,6 @@ task run_qc {
     }
 
     runtime{
-        docker: "uwgac/primed-file-checks:pheno_qc"
+        docker: "uwgac/primed-file-checks:0.5.1"
     }
 }
