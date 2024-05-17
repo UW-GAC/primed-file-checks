@@ -12,7 +12,6 @@ workflow validate_genotype_model {
         Boolean overwrite = false
         Boolean import_tables = false
         Int? hash_id_nchar
-        Int? vcf_disk_gb
     }
 
     call validate {
@@ -60,8 +59,7 @@ workflow validate_genotype_model {
                         dataset_id = pair.left.right,
                         dataset_type = pair.right,
                         workspace_name = workspace_name,
-                        workspace_namespace = workspace_namespace,
-                        disk_gb = vcf_disk_gb
+                        workspace_namespace = workspace_namespace
                 }
             }
 
