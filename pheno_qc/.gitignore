@@ -1,0 +1,4 @@
+# Files produced when rendering the submit_qc_reports.Rmd file.
+*.html
+qc_report_data_file_*.tsv
+qc_report_submission.tsv
