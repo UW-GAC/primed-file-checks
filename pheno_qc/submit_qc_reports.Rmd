@@ -21,7 +21,7 @@ submit <- FALSE
 
 Get the list of workspaces from the primed_inventory workspace.
 
-```{r}
+```{r get-workspace-list}
 x <- avtable(
   "phenotype_inventory",
   namespace="primed-cc",
@@ -32,7 +32,7 @@ x
 
 ## Figure out which need qc reports
 
-```{r}
+```{r identify-datasets-needing-qc-reports}
 x <- x %>%
   # In case qc_report is not a column yet.
   bind_rows(tibble(qc_report=character())) %>%
@@ -41,7 +41,7 @@ x <- x %>%
 
 # Split up phenotype files by workspace
 
-```{r}
+```{r split-pheno-files-by-workspace}
 x_list <- x %>%
   group_by(workspace_namespace, workspace_name) %>%
   group_split()
@@ -52,7 +52,7 @@ x_list <- x %>%
 
 ## Pull workflow config
 
-```{r}
+```{r update-workflow-config}
   # Update workflow config.
   workflow <- file.path(avworkspace_namespace(), "pheno_qc")
   avworkflow(workflow)
@@ -62,7 +62,7 @@ x_list <- x %>%
 
 ## Prepare inputs and submit for each workspace
 
-```{r, results="asis"}
+```{r submit-workflow, results="asis"}
 submission_list <- list()
 for (i in 1:length(x_list)) {
   rows <- x_list[[i]] %>%
@@ -130,11 +130,12 @@ for (i in 1:length(x_list)) {
 
 ## Write out submission id file
 
-```{r}
+```{r print-submissions}
+submissions %>% kable()
+```
+
+```{r write-submission-id-file}
 submissions <- bind_rows(submission_list)
 write_tsv(submissions, "qc_report_submission.tsv")
 ```
 
-```{r}
-submissions %>% kable()
-```
