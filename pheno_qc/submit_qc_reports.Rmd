@@ -8,12 +8,13 @@ editor_options:
 
 ```{r}
 # Make sure to install the branch of the AnVIL package that has the submission id in the output.
-# remotes::install_github("Bioconductor/AnVIL@workflow_run_submissionId")
+# AnVIL package version >= 1.17.2
+# remotes::install_github("Bioconductor/AnVIL")
 library(AnVIL)
 library(tidyverse)
 library(knitr)
 
-submit <- TRUE
+submit <- FALSE
 ```
 
 # Get list of workspaces
@@ -53,7 +54,7 @@ x_list <- x %>%
 
 ```{r}
   # Update workflow config.
-  workflow <- "primed-adrienne/pheno_qc"
+  workflow <- file.path(avworkspace_namespace(), "pheno_qc")
   avworkflow(workflow)
   config <- avworkflow_configuration_get()
   config  
