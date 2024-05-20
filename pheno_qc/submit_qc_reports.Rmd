@@ -131,16 +131,15 @@ for (i in 1:length(x_list)) {
     
   }
 }
+
 ```
 
 ## Write out submission id file
 
-```{r print-submissions}
-submissions %>% kable()
+```{r save-submissions}
+if (submit) {
+  submissions <- bind_rows(submission_list)
+  submissions %>% kable()
+  write_tsv(submissions, "qc_report_submission.tsv")
+}
 ```
-
-```{r write-submission-id-file}
-submissions <- bind_rows(submission_list)
-write_tsv(submissions, "qc_report_submission.tsv")
-```
-
