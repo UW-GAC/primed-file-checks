@@ -4,6 +4,8 @@ author: "Adrienne Stilp"
 date: "`r lubridate::today()`"
 editor_options: 
   chunk_output_type: console
+params:
+  submit: FALSE
 ---
 
 ```{r}
@@ -14,7 +16,7 @@ library(AnVIL)
 library(tidyverse)
 library(knitr)
 
-submit <- FALSE
+submit <- params$submit
 ```
 
 # Get list of workspaces
