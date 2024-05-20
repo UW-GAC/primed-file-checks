@@ -9,6 +9,9 @@ params:
 ---
 
 ```{r}
+# Before submitting, import the pheno_qc workflow to the workspace.
+# Make sure to select "inputs defined by file paths" and save.
+
 # Make sure to install the branch of the AnVIL package that has the submission id in the output.
 # AnVIL package version >= 1.17.2
 # remotes::install_github("Bioconductor/AnVIL")
