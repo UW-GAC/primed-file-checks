@@ -1,5 +1,5 @@
 ---
-title: "Add QC reports to the phenotype_harmonized tables"
+title: "Run QC reports for datasets that don't have them yet"
 author: "Adrienne Stilp"
 date: "`r lubridate::today()`"
 editor_options: 
@@ -42,6 +42,9 @@ x <- x %>%
   # In case qc_report is not a column yet.
   bind_rows(tibble(qc_report=character())) %>%
   filter(is.na(qc_report))
+
+# Save the output.
+write_tsv(x, "qc_report_datasets.tsv")
 ```
 
 # Split up phenotype files by workspace
