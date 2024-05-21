@@ -2,3 +2,4 @@
 *.html
 qc_report_data_file_*.tsv
 qc_report_submission.tsv
+qc_report_datasets.tsv
