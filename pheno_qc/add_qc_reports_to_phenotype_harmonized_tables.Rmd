@@ -1,0 +1,118 @@
+---
+title: "Add QC reports to the phenotype_harmonized tables"
+author: "Adrienne Stilp"
+date: "`r lubridate::today()`"
+output:
+  html_document:
+    toc: true
+editor_options: 
+  chunk_output_type: console
+params:
+  update: FALSE
+---
+
+```{r}
+# Before rendering, render the submit_qc_reports.Rmd file and wait for the submitted jobs to finish.
+
+# Make sure to install the branch of the AnVIL package that has the submission id in the output.
+# AnVIL package version >= 1.17.2
+# remotes::install_github("Bioconductor/AnVIL")
+library(AnVIL)
+library(tidyverse)
+library(knitr)
+library(glue)
+
+update <- params$update
+```
+
+# Read in the output files
+
+```{r read-datasets-table}
+datasets <- read_tsv("qc_report_datasets.tsv")
+datasets %>% kable()
+```
+
+```{r read-submissions-file}
+submissions <- read_tsv("qc_report_submission.tsv")
+submissions %>% kable()
+```
+
+# (Optional) Modify for testing
+
+```{r}
+# submissions <- submissions[4,]
+# submissions$qc_data_workspace_namespace <- "primed-cc-scratch"
+# submissions$qc_data_workspace_name <- "ARIC_pheno_qc_testing"
+# 
+# datasets$workspace_namespace[datasets$workspace_namespace == "primed-data-prevent-1"] <- "primed-cc-scratch"
+# datasets$workspace_name[datasets$workspace_name == "PRIMED_ARIC_DBGAP_PHS000280_V8_P2_HMB-IRB"] <- "ARIC_pheno_qc_testing"
+```
+
+# Move the files
+
+```{r copy-submission-and-update-table, results="asis"}
+for (i in seq_along(submissions$submission_id)) {
+
+  submission_id <- submissions$submission_id[i]
+  cat(glue("\n\n## {submission_id}\n\n"))
+  
+  data_workspace_namespace <- submissions$qc_data_workspace_namespace[i]
+  data_workspace_name <- submissions$qc_data_workspace_name[i]
+
+  cat(glue("\n\n* data workspace: `{data_workspace_namespace}/{data_workspace_name}`\n\n"))
+
+  # Current submission directory.
+  this_bucket <- avbucket()
+  data_bucket <- avbucket(namespace=data_workspace_namespace, name=data_workspace_name)
+  
+  # Get the path to the QC report.
+  in_qc_report_file <- avworkflow_files(submissionId=submission_id) %>%
+    filter(file == "qc_report.html") %>%
+    pull(path)
+  
+  out_qc_report_file <- file.path(
+    data_bucket,
+    "uploaded_data_cc",
+    "auto_generated_qc_reports",
+    glue::glue("qc_report_{today}.html", today=lubridate::today())
+  )
+
+  gsutil_cp_cmd <- glue::glue("gsutil -u terra-fe86abfa cp -r {in_qc_report_file} {out_qc_report_file}")
+  
+  cat(glue("\n\n* copying from: `{in_qc_report_file}`\n\n"))
+  cat(glue("\n\n* copying to: `{out_qc_report_file}`\n\n"))
+  cat(glue("\n\n* gsutil command:\n\n```\n{gsutil_cp_cmd}\n```"))
+
+  # Prepare the update to the phenotype_harmonized data table.
+  x <- datasets %>%
+    filter(
+      workspace_namespace == data_workspace_namespace,
+      workspace_name == data_workspace_name
+    ) %>%
+    select(
+      phenotype_harmonized_id=phenotype_inventory_id,
+      qc_report
+    ) %>%
+    mutate(
+      qc_report=out_qc_report_file
+    )
+  cat("\n\n### Updates to the data table\n\n")
+  x %>% kable %>% print()
+
+  # Make the updates.
+  if (update) {
+    cat("\n\n### Copying qc report and updating phentoype_harmonized data table\n\n")
+    
+    # Copy the qc report.
+    system(gsutil_cp_cmd)
+
+    # Make sure the QC report exists in the data bucket.
+    # I think this fails if you can't specify a project?
+    # gsutil_stat(qc_report_path)
+    
+    # Update the data table.
+    avtable_import(x, namespace=data_workspace_namespace, name=data_workspace_name)
+  }
+    
+}
+```

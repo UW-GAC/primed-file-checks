@@ -1,0 +1,148 @@
+---
+title: "Run QC reports for datasets that don't have them yet"
+author: "Adrienne Stilp"
+date: "`r lubridate::today()`"
+editor_options: 
+  chunk_output_type: console
+params:
+  submit: FALSE
+---
+
+```{r}
+# Before submitting, import the pheno_qc workflow to the workspace.
+# Make sure to select "inputs defined by file paths" and save.
+
+# Make sure to install the branch of the AnVIL package that has the submission id in the output.
+# AnVIL package version >= 1.17.2
+# remotes::install_github("Bioconductor/AnVIL")
+library(AnVIL)
+library(tidyverse)
+library(knitr)
+
+submit <- params$submit
+```
+
+# Get list of workspaces
+
+Get the list of workspaces from the primed_inventory workspace.
+
+```{r get-workspace-list}
+x <- avtable(
+  "phenotype_inventory",
+  namespace="primed-cc",
+  name="primed_inventory"
+)
+x
+```
+
+## Figure out which need qc reports
+
+```{r identify-datasets-needing-qc-reports}
+x <- x %>%
+  # In case qc_report is not a column yet.
+  bind_rows(tibble(qc_report=character())) %>%
+  filter(is.na(qc_report))
+
+# Save the output.
+write_tsv(x, "qc_report_datasets.tsv")
+```
+
+# Split up phenotype files by workspace
+
+```{r split-pheno-files-by-workspace}
+x_list <- x %>%
+  group_by(workspace_namespace, workspace_name) %>%
+  group_split()
+```
+
+
+# Submit all jobs and write out submission file
+
+## Pull workflow config
+
+```{r update-workflow-config}
+  # Update workflow config.
+  workflow <- file.path(avworkspace_namespace(), "pheno_qc")
+  avworkflow(workflow)
+  config <- avworkflow_configuration_get()
+  config  
+```
+
+## Prepare inputs and submit for each workspace
+
+```{r submit-workflow, results="asis"}
+submission_list <- list()
+for (i in 1:length(x_list)) {
+  rows <- x_list[[i]] %>%
+  select(
+    phenotype_harmonized_id=phenotype_inventory_id,
+    table_names=domain,
+    file_names=file_path,
+    workspace_namespace,
+    workspace_name
+  )
+  workspace_namespace = unique(rows$workspace_namespace)
+  workspace_name = unique(rows$workspace_name)
+  
+  cat(glue::glue("\n\n### {workspace_namespace}/{workspace_name}\n\n"))
+  
+  rows %>% kable() %>% print()
+  
+  filename = glue::glue("qc_report_data_file_{workspace_namespace}_{workspace_name}.tsv")
+  write_tsv(rows, file=filename)
+  bucket_file <- file.path(avbucket(), filename)
+  gsutil_cp(filename, bucket_file) 
+    
+  # Prepare inputs.
+  attributes <- c(
+    "data_file" = glue::glue("\"{bucket_file}\""),
+    "workspace_name"= glue::glue("\"{workspace_name}\"")
+  )
+  # Prefix the inputs with the workflow name
+  names(attributes) <- sprintf("%s.%s", basename(workflow), names(attributes))
+  
+  inputs <- avworkflow_configuration_inputs(config)
+  # Set inputs in the configuration input object.
+  inputs <- inputs %>%
+    mutate(attribute = attributes[name]) %>%
+    mutate(attribute = ifelse(is.na(attribute), "", attribute))
+  inputs %>% kable() %>% print()
+  
+  # Set workflow configuration.
+  new_config <- avworkflow_configuration_update(config, inputs)
+  new_config
+  
+  # Set the new inputs.
+  avworkflow_configuration_set(new_config, dry=FALSE)
+  # Submit workflow and save submission id.
+  if (submit) {
+    # NULL is the entityName - we are operating on files in the workspace instead of on a data table.
+    # Unfortunately this returns the config, not the submission id.
+    # Make sure to set useCallCache to FALSE!
+    output <- avworkflow_run(new_config, NULL, useCallCache=FALSE, dry=FALSE)
+    
+    # Get the submission id. We have to call avworkflow_jobs() and pull the first.
+    # This is *likely* to be the submissionId but not guaranteed.
+    # See Issue on bioconductor AnVIL github: https://github.com/Bioconductor/AnVIL/issues/102
+    # This is fixed in a branch!
+    job_id <- output$LastSubmissionId
+    submission_list[[i]] <- tibble(
+      submission_id = output$LastSubmissionId,
+      qc_data_workspace_namespace=workspace_namespace,
+      qc_data_workspace_name=workspace_name
+    )
+    
+  }
+}
+
+```
+
+## Write out submission id file
+
+```{r save-submissions}
+if (submit) {
+  submissions <- bind_rows(submission_list)
+  submissions %>% kable()
+  write_tsv(submissions, "qc_report_submission.tsv")
+}
+```
