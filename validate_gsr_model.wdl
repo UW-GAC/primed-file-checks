@@ -67,7 +67,6 @@ workflow validate_gsr_model {
 
 task validate {
     input {
-        Map[String, File] table_files
         String model_url
         String workspace_name
         String workspace_namespace
