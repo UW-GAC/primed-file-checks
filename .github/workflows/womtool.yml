@@ -26,7 +26,7 @@ jobs:
       matrix:
         wdl-file: ["validate_gsr_model.wdl"]
 
-    name: "Run womtool: ${{ matrix.wdl_file }}"
+    name: "Run womtool: ${{ matrix.wdl-file }}"
 
     steps:
 
@@ -36,4 +36,4 @@ jobs:
       - name: Run womtool
         uses: UW-GAC/womtool-action@main
         with:
-            wdl-file: ${{ matrix.wdl_file }}
+            wdl-file: ${{ matrix.wdl-file }}
