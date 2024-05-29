@@ -34,7 +34,12 @@ jobs:
       - name: Detect WDL files
         id: detect-wdl-files
         run: |
-          echo "::set-output name=wdl-file::$(find . -name '*.wdl' -type f -print0 | xargs -0)"
+          # Find the WDL files
+          wdl_files=`find . -name "*.wdl" -type f -print0 | xargs -0`
+          # Add double quotes and replace spaces with commas.
+          wdl_files=\"${wdl_files// /\",\"}\"
+
+          echo "matrix={\"wdl-file\":[$wdl_files]" >> $GITHUB_OUTPUT
 
       - name: Show WDL files
         run: echo "${{ steps.detect-wdl-files.outputs.wdl-file }}"
