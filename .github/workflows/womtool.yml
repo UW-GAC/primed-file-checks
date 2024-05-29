@@ -20,19 +20,31 @@ concurrency:
 
 jobs:
 
+  detect-wdl-files:
+    runs-on: ubuntu-latest
+    name: "Detect WDL files"
+    outputs:
+        matrix: ${{ steps.detect-wdl-files.outputs.wdl-file }}
+
+    steps:
+
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+
+      - name: Detect WDL files
+        id: detect-wdl-files
+        run: |
+          echo "::set-output name=wdl-file::$(find . -name '*.wdl' -type f -print0 | xargs -0)"
+
+      - name: Show WDL files
+        run: echo "${{ steps.detect-wdl-files.outputs.wdl-file }}"
+
   run-womtool:
+    needs: detect-wdl-files
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        wdl-file: [
-            ./gsr_data_report.wdl,
-            ./check_vcf_samples.wdl,
-            ./pheno_qc/pheno_qc.wdl,
-            ./validate_genotype_model.wdl,
-            ./validate_gsr_model.wdl,
-            ./validate_phenotype_model.wdl,
-        ]
+      matrix: ${{ fromJSON(needs.detect-wdl-files.outputs.matrix) }}
 
     name: "Run womtool: ${{ matrix.wdl-file }}"
 
