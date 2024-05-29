@@ -42,7 +42,7 @@ jobs:
           echo "matrix={\"wdl-file\":[$wdl_files]" >> $GITHUB_OUTPUT
 
       - name: Show WDL files
-        run: echo "${{ steps.detect-wdl-files.outputs.wdl-file }}"
+        run: echo "${{ steps.detect-wdl-files.outputs.matrix }}"
 
   run-womtool:
     needs: detect-wdl-files
