@@ -29,7 +29,7 @@ jobs:
             ./gsr_data_report.wdl,
             ./check_vcf_samples.wdl,
             ./pheno_qc/pheno_qc.wdl,
-            ./validate_genotype_model.wdl
+            ./validate_genotype_model.wdl,
             ./validate_gsr_model.wdl,
             ./validate_phenotype_model.wdl,
         ]
