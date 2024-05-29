@@ -23,6 +23,7 @@ jobs:
   run-womtool:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         wdl-file: [
             ./gsr_data_report.wdl,
