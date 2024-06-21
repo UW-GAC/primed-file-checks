@@ -26,7 +26,7 @@ analysis_files <- table_files %>%
     separate(names, into=c("type", "table"), sep="_") %>%
     pivot_wider(names_from=table, values_from=files)
 
-if (nrow(analysis_files == 0)) stop("no valid analysis/file table pairs found")
+if (nrow(analysis_files) == 0) stop("no valid analysis/file table pairs found")
 for (i in 1:nrow(analysis_files)) {
     type <- analysis_files$type[i]
     analysis_table_name <- paste0(type, "_analysis")
