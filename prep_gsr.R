@@ -47,14 +47,17 @@ for (i in 1:nrow(analysis_files)) {
     analysis <- transpose_fv(fv)
     
     # add analysis_id
+    analysis_id_name <- paste0(analysis_table_name, "_id")
     analysis_id <- hash_id(paste(analysis, collapse=""), nchar=argv$hash_id_nchar)
-    analysis <- bind_cols(analysis_id=analysis_id, analysis)
+    analysis <- bind_cols(as_tibble(setNames(list(analysis_id), analysis_id_name)), analysis)
     
     # read file table
     file <- read_tsv(analysis_files$file[i], col_types=cols(.default=col_character()))
     
     # add analysis_id
-    file <- bind_cols(analysis_id=analysis$analysis_id, file)
+    file <- analysis %>%
+        select(!!analysis_id_name) %>%
+        bind_cols(file)
     
     # add file_id 
     file <- add_auto_columns(file, table_name=file_table_name, model=model,
