@@ -4,12 +4,14 @@ workflow gsr_data_report {
     input {
         File data_file
         String dd_url
+        String dd_table_name
         File analysis_file
     }
 
     call validate_data {
         input: data_file = data_file,
                dd_url = dd_url,
+               dd_table_name = dd_table_name,
                analysis_file = analysis_file
     }
 
@@ -28,6 +30,7 @@ task validate_data {
     input {
         File data_file
         String dd_url
+        String dd_table_name
         File analysis_file
     }
 
@@ -35,6 +38,7 @@ task validate_data {
         Rscript /usr/local/primed-file-checks/gsr_data_report.R \
             --data_file ~{data_file} \
             --dd_file ~{dd_url} \
+            --dd_table_name ~{dd_table_name} \
             --analysis_file ~{analysis_file} \
             --stop_on_fail
     >>>

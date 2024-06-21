@@ -36,10 +36,10 @@ workflow validate_gsr_model {
             md5_check = md5check.md5_check
     }
 
-    scatter (f in validate.data_files) {
+    scatter (pair in zip(validate.data_files, validate.analysis_files)) {
         call gsr.validate_data {
-            input: data_file = f,
-                analysis_file = validate.analysis_file,
+            input: data_file = pair.left,
+                analysis_file = pair.right,
                 dd_url = model_url
         }
     }
@@ -52,7 +52,7 @@ workflow validate_gsr_model {
 
     output {
         File validation_report = validate.validation_report
-        Array[File] tables = [validate.analysis_file, validate.gsr_file]
+        Array[File] tables = flatten([validate.analysis_file, validate.gsr_file])
         String? md5_check_summary = summarize_md5_check.summary
         File? md5_check_details = summarize_md5_check.details
         String? data_report_summary = summarize_data_check.summary
@@ -106,8 +106,9 @@ task validate {
 
     output {
         File validation_report = "data_model_validation.html"
-        File analysis_file = "output_analysis_table.tsv"
-        File gsr_file = "output_gsr_file_table.tsv"
+        Array[File] analysis_file = glob("output_*_analysis_table.tsv")
+        Array[File] gsr_file = glob("output_*_file_table.tsv")
+        Array[File] analysis_files = read_lines("analysis_files.txt")
         Array[File] data_files = read_lines("data_files.txt")
         Array[String] md5sum = read_lines("md5sum.txt")
     }

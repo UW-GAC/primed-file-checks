@@ -4,10 +4,10 @@
     "version": "0",
     "tables": [
     {
-        "table": "analysis",
+        "table": "gsr_analysis",
         "columns": [
         {
-            "column": "analysis_id",
+            "column": "gsr_analysis_id",
             "primary_key": true,
             "description": "unique identifier for a gwas in primed",
             "data_type": "string"
@@ -100,10 +100,10 @@
                 
             },
             {
-                "column": "analysis_id",
+                "column": "gsr_analysis_id",
                 "required": true,
                 "data_type": "string",
-                "references": "> analysis.analysis_id"
+                "references": "> gsr_analysis.gsr_analysis_id"
             },
             {
                 "column": "chromosome",
