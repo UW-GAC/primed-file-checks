@@ -1,7 +1,8 @@
 library(argparser)
 library(AnvilDataModels)
-library(dplyr)
 library(readr)
+library(dplyr)
+library(tidyr)
 
 argp <- arg_parser("report")
 argp <- add_argument(argp, "--table_files", help="2-column tsv file with (table name, table tsv file)")
