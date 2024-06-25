@@ -135,4 +135,8 @@ task select_gsr_files {
         Array[File] data_files = read_lines("data_files.txt")
         Array[String] md5sum = read_lines("md5sum.txt")
     }
+
+    runtime {
+        docker: "uwgac/primed-file-checks:0.5.1-1"
+    }
 }
