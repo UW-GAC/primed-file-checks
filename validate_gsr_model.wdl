@@ -40,7 +40,7 @@ workflow validate_gsr_model {
             call gsr.validate_data {
                 input: data_file = f,
                     analysis_file = pair.left,
-                    dd_table_name = sub(basename(pair.left, "_table.tsv"), "output_", ""),
+                    dd_table_name = sub(basename(pair.left, "_analysis_table.tsv"), "output_", "") + "_files_dd",
                     dd_url = model_url
             }
         }
