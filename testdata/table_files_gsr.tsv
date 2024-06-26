@@ -1,2 +1,2 @@
-analysis	testdata/gsr_analysis_table.tsv
-gsr_file	testdata/gsr_file.tsv
+association_analysis	testdata/gsr_analysis_table.tsv
+association_file	testdata/gsr_file.tsv

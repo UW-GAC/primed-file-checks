@@ -24,35 +24,42 @@ workflow validate_gsr_model {
                import_tables = import_tables
     }
 
-    scatter (pair in zip(validate.data_files, validate.md5sum)) {
-        call md5.md5check {
-            input: file = pair.left,
-                md5sum = pair.right
+    scatter (pair in zip(validate.analysis_tables, validate.file_tables)) {
+        call select_gsr_files {
+            input: file_table = pair.right
+        }
+
+        scatter (data_pair in zip(select_gsr_files.data_files, select_gsr_files.md5sum)) {
+            call md5.md5check {
+                input: file = data_pair.left,
+                    md5sum = data_pair.right
+            }
+        }
+
+        scatter (f in select_gsr_files.data_files) {
+            call gsr.validate_data {
+                input: data_file = f,
+                    analysis_file = pair.left,
+                    dd_table_name = sub(basename(pair.left, "_analysis_table.tsv"), "output_", "") + "_files_dd",
+                    dd_url = model_url
+            }
         }
     }
 
     call md5.summarize_md5_check {
-        input: file = validate.data_files,
-            md5_check = md5check.md5_check
-    }
-
-    scatter (f in validate.data_files) {
-        call gsr.validate_data {
-            input: data_file = f,
-                analysis_file = validate.analysis_file,
-                dd_url = model_url
-        }
+        input: file = flatten(select_gsr_files.data_files),
+            md5_check = flatten(md5check.md5_check)
     }
 
     call gsr.summarize_data_check {
-        input: file = validate.data_files,
-            data_check = validate_data.pass_checks,
-            validation_report = validate_data.validation_report
+        input: file = flatten(select_gsr_files.data_files),
+            data_check = flatten(validate_data.pass_checks),
+            validation_report = flatten(validate_data.validation_report)
     }
 
     output {
         File validation_report = validate.validation_report
-        Array[File] tables = [validate.analysis_file, validate.gsr_file]
+        Array[File] tables = flatten([validate.analysis_tables, validate.file_tables])
         String? md5_check_summary = summarize_md5_check.summary
         File? md5_check_details = summarize_md5_check.details
         String? data_report_summary = summarize_data_check.summary
@@ -100,19 +107,36 @@ task validate {
             --workspace_name ~{workspace_name} \
             --workspace_namespace ~{workspace_namespace}
         fi
-        Rscript /usr/local/primed-file-checks/select_gsr_files.R \
-            --table_files output_tables.tsv
     >>>
 
     output {
         File validation_report = "data_model_validation.html"
-        File analysis_file = "output_analysis_table.tsv"
-        File gsr_file = "output_gsr_file_table.tsv"
+        Array[File] analysis_tables = glob("output_*_analysis_table.tsv")
+        Array[File] file_tables = glob("output_*_file_table.tsv")
+    }
+
+    runtime {
+        docker: "uwgac/primed-file-checks:0.5.1-1"
+    }
+}
+
+
+task select_gsr_files {
+    input {
+        File file_table
+    }
+
+    command <<<
+        Rscript /usr/local/primed-file-checks/select_gsr_files.R \
+            --file_table ~{file_table}
+    >>>
+
+    output {
         Array[File] data_files = read_lines("data_files.txt")
         Array[String] md5sum = read_lines("md5sum.txt")
     }
 
     runtime {
-        docker: "uwgac/primed-file-checks:0.5.1"
+        docker: "uwgac/primed-file-checks:0.5.1-1"
     }
 }

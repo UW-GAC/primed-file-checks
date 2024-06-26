@@ -5,17 +5,19 @@ library(readr)
 argp <- arg_parser("report")
 argp <- add_argument(argp, "--data_file", help="tsv file with data")
 argp <- add_argument(argp, "--dd_file", help="json file with GSR data dictionary")
+argp <- add_argument(argp, "--dd_table_name", help="name of data dictionary table in dd_file")
 argp <- add_argument(argp, "--analysis_file", help="tsv file with analysis table")
 argp <- add_argument(argp, "--stop_on_fail", flag=TRUE, help="return an error code if data_file does not pass checks")
 argv <- parse_args(argp)
 
 # argv <- list(data_file="testdata/gsr_chr1.tsv",
 #              dd_file="testdata/gsr_data_model.json",
+#              dd_table_name="gsr_files_dd",
 #              analysis_file="output_analysis_table.tsv")
 
 # read data model
 dd <- json_to_dm(argv$dd_file)
-dd_table_name <- "gsr_files_dd"
+dd_table_name <- argv$dd_table_name
 stopifnot(dd_table_name %in% names(dd))
 
 # read 1000 rows for checking data against expected type
