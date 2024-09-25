@@ -47,17 +47,19 @@ workflow validate_phenotype_model {
             }
         }
 
-        call qc.run_qc {
-            input: data_file = harmonized_table,
-                workspace_name = workspace_name
-        }
+        if (harmonized_table != "") {
+            call qc.run_qc {
+                input: data_file = harmonized_table,
+                    workspace_name = workspace_name
+            }
 
-        if (import_tables) {
-            call add_qc_report_to_table {
-                input: harmonized_table = harmonized_table,
-                    qc_report_path = run_qc.qc_report,
-                    workspace_name = workspace_name,
-                    workspace_namespace = workspace_namespace
+            if (import_tables) {
+                call add_qc_report_to_table {
+                    input: harmonized_table = harmonized_table,
+                        qc_report_path = run_qc.qc_report,
+                        workspace_name = workspace_name,
+                        workspace_namespace = workspace_namespace
+                }
             }
         }
     }
