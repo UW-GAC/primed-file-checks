@@ -117,6 +117,8 @@ task validate {
 
     runtime {
         docker: "uwgac/primed-file-checks:0.5.1-1"
+        disks: "local-disk 16 SSD"
+        memory: "8G"
     }
 }
 
@@ -138,5 +140,7 @@ task select_gsr_files {
 
     runtime {
         docker: "uwgac/primed-file-checks:0.5.1-1"
+        disks: "local-disk 16 SSD"
+        memory: "8G"
     }
 }

@@ -50,6 +50,8 @@ task validate_data {
 
     runtime {
         docker: "uwgac/primed-file-checks:0.5.1-1"
+        disks: "local-disk 16 SSD"
+        memory: "8G"
     }
 }
 
@@ -82,5 +84,7 @@ task summarize_data_check {
 
     runtime {
         docker: "us.gcr.io/broad-dsp-gcr-public/anvil-rstudio-bioconductor:3.17.0"
+        disks: "local-disk 16 SSD"
+        memory: "8G"
     }
 }
