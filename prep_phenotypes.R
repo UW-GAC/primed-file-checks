@@ -32,7 +32,7 @@ get_table <- function(x) {
         filter(names == x) %>%
         select(files) %>%
         unlist() %>%
-        read_tsv()
+        read_tsv(col_types=cols(.default=col_character()))
 }
 
 # make sure we have a subject table
@@ -51,7 +51,7 @@ if ("subject" %in% table_files$names) {
 check_subject_id <- function(phen_table) {
     for (i in 1:nrow(phen_table)) {
         message("checking subjects in file ", phen_table$file_path)
-        phen <- read_tsv(phen_table$file_path[i])
+        phen <- read_tsv(phen_table$file_path[i], col_types=cols(.default=col_character()))
         if (!("subject_id" %in% names(phen))) {
             stop("no subject_id column found")
         }
