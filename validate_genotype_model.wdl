@@ -143,7 +143,7 @@ task select_md5_files {
         Rscript -e "\
         tables <- readLines('~{write_lines(validated_table_files)}'); \
         names(tables) <- sub('^output_', '', sub('_table.tsv', '', basename(tables))); \
-        md5_tbls <- c('array_file', 'imputation_file', 'sequencing_file', 'simulation_file'); \
+        md5_tbls <- c('array_file', 'imputation_file', 'sequencing_file', 'simulation_file', 'sequencing_alignment'); \
         tables <- tables[names(tables) %in% md5_tbls]; \
         files <- list(); md5 <- list();
         for (t in names(tables)) { \
