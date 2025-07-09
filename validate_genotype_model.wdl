@@ -143,13 +143,21 @@ task select_md5_files {
         Rscript -e "\
         tables <- readLines('~{write_lines(validated_table_files)}'); \
         names(tables) <- sub('^output_', '', sub('_table.tsv', '', basename(tables))); \
-        md5_tbls <- c('array_file', 'imputation_file', 'sequencing_file', 'simulation_file', 'sequencing_alignment'); \
-        tables <- tables[names(tables) %in% md5_tbls]; \
+        md5_tbls <- c('array_file', 'imputation_file', 'sequencing_file', 'simulation_file'); \
         files <- list(); md5 <- list();
-        for (t in names(tables)) { \
+        for (t in intersect(md5_tbls, names(tables))) { \
           dat <- readr::read_tsv(tables[t]); \
           files[[t]] <- dat[['file_path']]; \
           md5[[t]] <- dat[['md5sum']]; \
+        }; \
+        if ('sequencing_sample' %in% names(tables)) { \
+          dat <- readr::read_tsv(tables[['sequencing_sample']]); \
+          for (type %in% c('cram', 'gvcf', 'vcf')) { \
+            if (paste0(type, '_file_path') %in% names(dat)) { \
+              files[[type]] <- dat[[paste0(type, '_file_path')]]; \
+              md5[[type]] <- dat[[paste0(type, '_md5sum')]]; \
+            }; \
+          }; \
         }; \
         if (length(unlist(files)) > 0) { \
           writeLines(unlist(files), 'file.txt'); \
