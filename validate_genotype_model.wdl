@@ -152,7 +152,7 @@ task select_md5_files {
             }
             if ('sequencing_sample' %in% names(tables)) {
                 dat <- readr::read_tsv(tables[['sequencing_sample']])
-                for (type %in% c('cram', 'gvcf', 'vcf')) {
+                for (type in c('cram', 'gvcf', 'vcf')) {
                     if (paste0(type, '_file_path') %in% names(dat)) {
                         files[[type]] <- dat[[paste0(type, '_file_path')]]
                         md5[[type]] <- dat[[paste0(type, '_md5sum')]]
