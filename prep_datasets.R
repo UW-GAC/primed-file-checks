@@ -31,7 +31,7 @@ table_files <- read_tsv(argv$table_files, col_names=c("names", "files"), col_typ
 
 # identify datasets
 dataset_files <- table_files %>%
-    filter(grepl("_dataset$", names) | grepl("_file$", names)) %>%
+    filter(grepl("^[[:alpha:]]+_dataset$", names) | grepl("^[[:alpha:]]+_file$", names)) %>%
     separate(names, into=c("type", "table"), sep="_") %>%
     pivot_wider(names_from=table, values_from=files)
 
