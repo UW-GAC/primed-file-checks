@@ -128,9 +128,18 @@ task select_gsr_files {
         File file_table
     }
 
+    #Rscript /usr/local/primed-file-checks/select_gsr_files.R --file_table ~{file_table}
     command <<<
-        Rscript /usr/local/primed-file-checks/select_gsr_files.R \
-            --file_table ~{file_table}
+        R << RSCRIPT
+            library(dplyr)
+            library(readr)
+            file_table <- read_tsv("~{file_table}")
+            file_table <- filter(file_table, file_type == "data")
+            data_files <- file_table[["file_path"]]
+            writeLines(data_files, "data_files.txt")
+            md5 <- file_table[["md5sum"]]
+            writeLines(md5, "md5sum.txt")
+        RSCRIPT
     >>>
 
     output {
