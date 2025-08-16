@@ -31,7 +31,7 @@ task validate_data {
         File data_file
         String dd_url
         String dd_table_name
-        File analysis_file
+        File? analysis_file
     }
 
     command <<<
@@ -39,7 +39,7 @@ task validate_data {
             --data_file ~{data_file} \
             --dd_file ~{dd_url} \
             --dd_table_name ~{dd_table_name} \
-            --analysis_file ~{analysis_file} \
+            ~{"--analysis_file " + analysis_file} \
             --stop_on_fail
     >>>
 
