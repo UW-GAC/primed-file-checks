@@ -21,7 +21,7 @@ dd_table_name <- argv$dd_table_name
 stopifnot(dd_table_name %in% names(dd))
 
 # read 1000 rows for checking data against expected type
-dat <- read_tsv(argv$data_file, n_max=1000)
+dat <- read_tsv(argv$data_file, n_max=1000, comment="#")
 dat <- list(dat)
 names(dat) <- dd_table_name
 
