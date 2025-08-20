@@ -49,7 +49,7 @@ task validate_data {
     }
 
     runtime {
-        docker: "uwgac/primed-file-checks:0.5.1-1"
+        docker: "uwgac/primed-file-checks:0.7.0-1"
         disks: "local-disk 16 SSD"
         memory: "8G"
     }
