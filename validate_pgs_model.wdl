@@ -12,6 +12,7 @@ workflow validate_pgs_model {
         String workspace_namespace
         Boolean overwrite = false
         Boolean import_tables = false
+        Boolean check_bucket_paths = true
         Int? hash_id_nchar
     }
 
@@ -22,7 +23,8 @@ workflow validate_pgs_model {
                workspace_name = workspace_name,
                workspace_namespace = workspace_namespace,
                overwrite = overwrite,
-               import_tables = import_tables
+               import_tables = import_tables,
+               check_bucket_paths = check_bucket_paths
     }
 
     # need this because validate.tables is optional but input to select_pgs_files is required
