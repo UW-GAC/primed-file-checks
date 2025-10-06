@@ -45,7 +45,7 @@ workflow validate_pgs_model {
         scatter (f in select_pgs_files.data_files) {
             call gsr.validate_data {
                 input: data_file = f,
-                    dd_table_name = "pgs_files_dd",
+                    dd_table_name = "pgs_scoring_file_dd",
                     dd_url = model_url
             }
         }
@@ -89,7 +89,7 @@ task select_pgs_files {
             library(readr)
             tables <- readLines('~{write_lines(validated_table_files)}')
             names(tables) <- sub('^output_', '', sub('_table.tsv', '', basename(tables)))
-            file_table <- read_tsv(tables['pgs_file'])
+            file_table <- read_tsv(tables['pgs_scoring_file'])
             file_table <- filter(file_table, file_type == "data")
             data_files <- file_table[["file_path"]]
             writeLines(data_files, "data_files.txt")
