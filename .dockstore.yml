@@ -20,6 +20,9 @@ workflows:
      primaryDescriptorPath: /validate_pgs_model.wdl
      testParameterFiles:
          - /validate_pgs_model.json
+   - name: validate_pgs_individual
+     subclass: WDL
+     primaryDescriptorPath: /validate_pgs_individual.wdl
    - name: gsr_data_report
      subclass: WDL
      primaryDescriptorPath: /gsr_data_report.wdl
