@@ -1,0 +1,12 @@
+{
+    "validate_pgs_model.table_files": {
+        "pgs_analysis": "gs://fc-edcfd4f3-abdb-4d9e-80ec-b7c2ad829ce3/data_tables/PGS000001_analysis_table.tsv",
+        "pgs_file": "gs://fc-edcfd4f3-abdb-4d9e-80ec-b7c2ad829ce3/data_tables/PGS000001_file_table.tsv",
+        "pgs_sample_devel": "gs://fc-edcfd4f3-abdb-4d9e-80ec-b7c2ad829ce3/data_tables/PGS000001_sample_table.tsv"
+    },
+    "validate_pgs_model.model_url": "https://raw.githubusercontent.com/UW-GAC/primed_data_models/refs/heads/pgs/PRIMED_PGS_data_model.json",
+    "validate_pgs_model.import_tables": true,
+    "validate_pgs_model.overwrite": false,
+    "validate_pgs_model.workspace_name": "PRIMED_example_PGS_catalog",
+    "validate_pgs_model.workspace_namespace": "primed-cc"
+}

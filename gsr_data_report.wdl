@@ -31,7 +31,7 @@ task validate_data {
         File data_file
         String dd_url
         String dd_table_name
-        File analysis_file
+        File? analysis_file
     }
 
     command <<<
@@ -39,7 +39,7 @@ task validate_data {
             --data_file ~{data_file} \
             --dd_file ~{dd_url} \
             --dd_table_name ~{dd_table_name} \
-            --analysis_file ~{analysis_file} \
+            ~{"--analysis_file " + analysis_file} \
             --stop_on_fail
     >>>
 
@@ -49,7 +49,7 @@ task validate_data {
     }
 
     runtime {
-        docker: "uwgac/primed-file-checks:0.5.1-1"
+        docker: "uwgac/primed-file-checks:0.7.0-1"
         disks: "local-disk 16 SSD"
         memory: "8G"
     }
