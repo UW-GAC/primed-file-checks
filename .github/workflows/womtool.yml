@@ -32,6 +32,8 @@ jobs:
             ./validate_genotype_model.wdl,
             ./validate_gsr_model.wdl,
             ./validate_phenotype_model.wdl,
+            ./validate_pgs_model.wdl,
+            ./validate_pgs_individual.wdl,
         ]
 
     name: "Run womtool: ${{ matrix.wdl-file }}"
